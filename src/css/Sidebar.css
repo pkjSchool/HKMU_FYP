@@ -1,0 +1,67 @@
+/* Sidebar.css */
+/* 側邊欄基礎按鈕樣式 */
+.sidebar button {
+    background: transparent;
+    border: 0;
+    padding: 0;
+    cursor: pointer;
+  }
+  
+  /* 側邊欄容器樣式 */
+  .sidebar {
+    position: absolute;
+    overflow: hidden;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    background: rgb(0 0 0 / 40%);
+  }
+  
+  /* 內容容器樣式 */
+  .inner {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 260px;
+  }
+  
+  /* 菜單容器樣式 */
+  .menu {
+    display: grid;
+    padding: 0 10px;
+  }
+  
+  /* 菜單按鈕樣式 */
+  .menu button {
+    display: flex;
+    gap: 16px;
+    align-items: center;
+    height: 56px;
+    width: 100%;
+    text-transform: capitalize;
+    line-height: 1;
+    padding: 0 10px;
+    border-radius: 8px;
+    color: #b8c2d8;
+    opacity: 0.9;
+  }
+  
+  /* 調整把手樣式 */
+  .handle {
+    position: absolute;
+    z-index: 100;
+    width: 8px;
+    top: 0;
+    bottom: 0;
+    right: 0;
+    user-select: none;
+    transition: 0.3s;
+  }
+  
+  /* 調整把手懸停和激活狀態 */
+  .handle:hover,
+  .handle:active {
+    background: rgb(255 255 255 / 6%);
+    cursor: col-resize;
+  }
+  
