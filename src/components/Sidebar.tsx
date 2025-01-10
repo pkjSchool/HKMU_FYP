@@ -1,5 +1,12 @@
 import { useRef, useState } from "react";
-import { FaHome, FaCog, FaUser } from "react-icons/fa"; // 引入需要的圖標
+import { 
+  FaHome, 
+  FaBook, 
+  FaGraduationCap, 
+  FaUser, 
+  FaRobot, 
+  FaEllipsisH 
+} from "react-icons/fa"; 
 import "../css/Sidebar.css";
 
 interface SidebarItem {
@@ -15,8 +22,11 @@ interface SidebarItem {
 // 初始化側邊欄項目數據
 const items: SidebarItem[] = [
   { name: "home", icon: <FaHome /> },
-  { name: "settings", icon: <FaCog /> },
+  { name: "learning", icon: <FaBook /> },
+  { name: "self study", icon: <FaGraduationCap /> },
   { name: "profile", icon: <FaUser /> },
+  { name: "ai generation", icon: <FaRobot /> },
+  { name: "more", icon: <FaEllipsisH /> }
 ];
 
 // Icon 組件 - 用於渲染圖標
