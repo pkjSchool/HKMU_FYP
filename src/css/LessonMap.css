@@ -1,0 +1,77 @@
+.lesson-map-container {
+    padding: 20px;
+    max-height: 80vh;
+    overflow-y: auto;
+    background-color: #ffffff;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+  
+  .chapter-container {
+    margin-bottom: 40px;
+  }
+  
+  .chapter-title {
+    font-size: 1.2rem;
+    margin-bottom: 20px;
+    color: #333;
+    font-weight: 600;
+  }
+  
+  .lessons-container {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding-left: 20px;
+  }
+  
+  .lesson-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .lesson-node-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 5px;
+  }
+  
+  .lesson-node {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    border: 2px solid #4CAF50;
+    background: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-size: 1rem;
+    font-weight: 500;
+  }
+  
+  .lesson-node:hover {
+    transform: scale(1.1);
+    background: #e8f5e9;
+  }
+  
+  .lesson-node.completed {
+    background: #4CAF50;
+    color: white;
+  }
+  
+  .connector-line {
+    width: 2px;
+    height: 30px;
+    background: #4CAF50;
+    margin: 5px 0;
+  }
+  
+  .lesson-status {
+    font-size: 0.8rem;
+    color: #ffd700;
+  }
+  
