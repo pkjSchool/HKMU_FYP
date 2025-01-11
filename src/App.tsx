@@ -1,35 +1,41 @@
-import React from 'react';
-import {Sidebar} from './components/Sidebar.tsx';
+import React, { useState } from 'react';
+import { Sidebar } from './components/Sidebar';
 import LessonMap from './components/LessonMap';
+import './css/App.css';
 
 const sampleChapters = [
   {
     title: 'Chapter 1',
     lessons: [
-      { id: 1, completed: true, stars: 3 },
-      { id: 2, completed: false, stars: 2 },
-      { id: 3, completed: false },
-      { id: 4, completed: false }
+      { id: 'ch1-1', completed: true, stars: 3 },
+      { id: 'ch1-2', completed: false, stars: 2 },
+      { id: 'ch1-3', completed: false },
+      { id: 'ch1-4', completed: false }
     ]
   },
   {
     title: 'Chapter 2',
     lessons: [
-      { id: 5, completed: false },
-      { id: 6, completed: false }
+      { id: 'ch2-1', completed: false },
+      { id: 'ch2-2', completed: false }
     ]
   }
 ];
 
 function App() {
-  const handleLessonClick = (lessonId: number) => {
+  const [sidebarWidth, setSidebarWidth] = useState<number>(60);
+
+  const handleLessonClick = (lessonId: string) => {
     console.log(`Lesson ${lessonId} clicked`);
   };
 
   return (
-    <div className="app">
-      <Sidebar />
-      <main className="main-content">
+    <div className="app-container">
+      <Sidebar onResize={setSidebarWidth} />
+      <div 
+        className="main-content" 
+        style={{ marginLeft: `${sidebarWidth}px` }} 
+      >
         <LessonMap 
           chapters={sampleChapters.map(chapter => ({
             ...chapter,
@@ -39,7 +45,7 @@ function App() {
             }))
           }))}
         />
-      </main>
+      </div>
     </div>
   );
 }

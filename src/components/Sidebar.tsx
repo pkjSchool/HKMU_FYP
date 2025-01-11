@@ -6,7 +6,7 @@ import {
   FaUser, 
   FaRobot, 
   FaEllipsisH 
-} from "react-icons/fa"; 
+} from "react-icons/fa";
 import "../css/Sidebar.css";
 
 interface SidebarItem {
@@ -14,12 +14,6 @@ interface SidebarItem {
   icon: React.ReactNode;
 }
 
-// 定義 Icon 組件的 props 接口
-// interface IconProps {
-//   children: string;
-// }
-
-// 初始化側邊欄項目數據
 const items: SidebarItem[] = [
   { name: "home", icon: <FaHome /> },
   { name: "learning", icon: <FaBook /> },
@@ -29,26 +23,24 @@ const items: SidebarItem[] = [
   { name: "more", icon: <FaEllipsisH /> }
 ];
 
-// Icon 組件 - 用於渲染圖標
-// const Icon: React.FC<IconProps> = ({ children }) => {
-//   return <i className={`lni lni-${children}`} />;
-// };
+interface SidebarProps {
+  onResize: (width: number) => void; 
+}
 
-export const Sidebar: React.FC = () => {
+export const Sidebar: React.FC<SidebarProps> = ({ onResize }) => {
   const [width, setWidth] = useState<number>(60);
-
   const sidebarRef = useRef<HTMLElement | null>(null);
 
   const resize = (e: MouseEvent): void => {
     const sidebar = sidebarRef.current;
     if (!sidebar) return;
-
+    
     let newWidth = e.clientX - sidebar.offsetLeft;
-
     if (newWidth < 60) newWidth = 60;
     if (newWidth > 259) newWidth = 260;
-
+    
     setWidth(newWidth);
+    onResize(newWidth); 
   };
 
   const initResize = (): void => {
@@ -66,10 +58,9 @@ export const Sidebar: React.FC = () => {
   return (
     <aside ref={sidebarRef} style={{ width: `${width}px` }} className="sidebar">
       <div className="handle" onMouseDown={initResize} />
-
       <div className="inner">
         <nav className="menu">
-          {items.map((item) => (
+          {items.map(item => (
             <button key={item.name}>
               {item.icon}
               <p>{item.name}</p>

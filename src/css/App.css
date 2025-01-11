@@ -1,0 +1,19 @@
+/* 整個頁面容器 */
+.app-container {
+  display: flex; /* 使用彈性佈局 */
+  height: 100vh; /* 確保佈局高度占滿整個視窗 */
+}
+
+/* Sidebar 的樣式已在 Sidebar.css 中定義 */
+
+/* 主內容區域 */
+.main-content {
+  flex: 1; /* 讓主內容區域填滿剩餘空間 */
+  display: flex; /* 使用彈性佈局，讓內容居中 */
+  justify-content: center; /* 水平居中 */
+  align-items: center; /* 垂直居中 */
+  padding: 20px;
+  background-color: #f9f9f9; /* 背景色可根據需求調整 */
+  overflow-y: auto; /* 如果內容過多，可以滾動 */
+  transition: margin-left 0.3s ease; /* 添加平滑過渡效果 */
+}

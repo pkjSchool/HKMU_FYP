@@ -2,7 +2,7 @@ import { FC } from 'react';
 import '../css/LessonMap.css';
 
 interface Lesson {
-  id: number;
+  id: string;
   completed: boolean;
   stars?: number;
   onClick?: () => void;
