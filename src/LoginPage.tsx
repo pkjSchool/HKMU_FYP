@@ -1,4 +1,5 @@
 import './css/App.css';
+import './css/bootstrap-modified.css';
 import React, {useEffect} from 'react';
 import TextBox from './input_control/TextBox';
 import {Controller, FormProvider, useForm} from 'react-hook-form';
@@ -37,12 +38,16 @@ function LoginPage() {
       <br/>username: {storedInfo.username}
       <br/>password: {storedInfo.password}
       <form onSubmit={handleSubmit(onSubmit)}>
-          <h1>Login</h1>
-          <div><label>username</label><input {...register("username", { required: "username is required" })} /></div>
-          {errors.username && <p role="alert">{errors.username.message}</p>}
-          <div><label>password</label><input type="password" {...register("password", { required: true })} /></div>
-          {errors.password?.type === "required" && (<p role="alert">password is required</p>)}
-          <input type="submit" />
+        <div className="card">
+          <div className="card-body">
+            <h2 className="card-title">Login</h2>
+            <div className="mb-3"><label className="form-label">username</label><input type="text" className="form-control" {...register("username", { required: "username is required" })} /></div>
+            {errors.username && <p role="alert" className="">{errors.username.message}</p>}
+            <div className="mb-3"><label className="form-label">password</label><input type="password" className="form-control" {...register("password", { required: true })} /></div>
+            {errors.password?.type === "required" && (<p role="alert">password is required</p>)}
+            <input type="submit" className="btn btn-primary mb-3" />
+          </div>
+        </div>
       </form>
     </div>
   );
