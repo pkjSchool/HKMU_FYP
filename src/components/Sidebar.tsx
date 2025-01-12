@@ -64,7 +64,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ onResize }) => {
       <div className="inner">
         <nav className="menu">
           {items.map(item => (
-            <NavLink to={item.link} key={item.name} className={({ isActive }) => isActive ? 'router-link-active' : '' } viewTransition>
+            <NavLink to={item.link} key={item.name} className={({ isActive }) => isActive ? 'router-link-active' : '' }>
               {item.icon}
               <p>{item.name}</p>
             </NavLink>
