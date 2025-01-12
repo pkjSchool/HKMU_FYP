@@ -8,19 +8,22 @@ import {
   FaEllipsisH 
 } from "react-icons/fa";
 import "../css/Sidebar.css";
+import { NavLink } from "react-router-dom";
 
 interface SidebarItem {
   name: string;
   icon: React.ReactNode;
+  link: string;
 }
 
 const items: SidebarItem[] = [
-  { name: "home", icon: <FaHome /> },
-  { name: "learning", icon: <FaBook /> },
-  { name: "self study", icon: <FaGraduationCap /> },
-  { name: "profile", icon: <FaUser /> },
-  { name: "ai generation", icon: <FaRobot /> },
-  { name: "more", icon: <FaEllipsisH /> }
+  { name: "home", icon: <FaHome />, link: "/" },
+  { name: "learning", icon: <FaBook />, link: "/learning" },
+  { name: "self study", icon: <FaGraduationCap />, link: "/self-study" },
+  { name: "profile", icon: <FaUser />, link: "/profile" },
+  { name: "ai generation", icon: <FaRobot />, link: "/ai-generation" },
+  { name: "more", icon: <FaEllipsisH />, link: "/more" },
+  { name: "login", icon: <FaEllipsisH />, link: "/login" }
 ];
 
 interface SidebarProps {
@@ -61,10 +64,10 @@ export const Sidebar: React.FC<SidebarProps> = ({ onResize }) => {
       <div className="inner">
         <nav className="menu">
           {items.map(item => (
-            <button key={item.name}>
+            <NavLink to={item.link} key={item.name} className={({ isActive }) => isActive ? 'router-link-active' : '' } viewTransition>
               {item.icon}
               <p>{item.name}</p>
-            </button>
+            </NavLink>
           ))}
         </nav>
       </div>

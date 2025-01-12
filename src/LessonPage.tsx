@@ -1,8 +1,5 @@
-import React, { useState } from 'react';
-import { Sidebar } from './components/Sidebar';
 import LessonMap from './components/LessonMap';
 import './css/App.css';
-import { Outlet } from "react-router-dom";
 
 const sampleChapters = [
   {
@@ -24,22 +21,20 @@ const sampleChapters = [
 ];
 
 function App() {
-  const [sidebarWidth, setSidebarWidth] = useState<number>(60);
-
   const handleLessonClick = (lessonId: string) => {
     console.log(`Lesson ${lessonId} clicked`);
   };
 
   return (
-    <div className="app-container">
-      <Sidebar onResize={setSidebarWidth} />
-      {<div 
-        className="main-content" 
-        style={{ marginLeft: `${sidebarWidth}px` }} 
-      >
-        <Outlet />
-      </div>}
-    </div>
+        <LessonMap 
+          chapters={sampleChapters.map(chapter => ({
+            ...chapter,
+            lessons: chapter.lessons.map(lesson => ({
+              ...lesson,
+              onClick: () => handleLessonClick(lesson.id)
+            }))
+          }))}
+        />
   );
 }
 
