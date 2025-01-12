@@ -2,6 +2,8 @@ import './css/App.css';
 import React, {useEffect} from 'react';
 import TextBox from './input_control/TextBox';
 import {Controller, FormProvider, useForm} from 'react-hook-form';
+import { useSelector, useDispatch } from "react-redux";
+import { setInfo } from "./store/loginInfo.js";
 
 interface IFormInput {
   username: string
@@ -9,14 +11,16 @@ interface IFormInput {
 }
 
 function LoginPage() {
+  const dispatch = useDispatch();
+  const storedInfo = useSelector((state:any) => state.loginInfo);
+
   const {watch, register, handleSubmit, formState: {errors}} = useForm<IFormInput>();
 
   const onSubmit = (data:any) => {
     // event.preventDefault();
     alert(JSON.stringify(data))
+    dispatch(setInfo({'username': data.username, 'password': data.password}))
   }
-
-  handleSubmit((e)=>console.log(e));
 
   // const [userName, setUserName] = React.useState('')
   // const [userPwd, setUserPwd] = React.useState('')
@@ -29,6 +33,9 @@ function LoginPage() {
 
   return (
     <div className="login-page">
+      React Redux Form
+      <br/>username: {storedInfo.username}
+      <br/>password: {storedInfo.password}
       <form onSubmit={handleSubmit(onSubmit)}>
           <h1>Login</h1>
           <div><label>username</label><input {...register("username", { required: "username is required" })} /></div>
