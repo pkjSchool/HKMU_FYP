@@ -1,4 +1,4 @@
-.sidebar button {
+.sidebar a {
     background: transparent;
     border: 0;
     padding: 0;
@@ -30,7 +30,7 @@
   }
   
   /* 菜單按鈕樣式 */
-  .menu button {
+  .menu a {
     display: flex;
     gap: 16px;
     align-items: center;
@@ -44,6 +44,11 @@
     opacity: 0.9;
   }
   
+  /* 調整菜單按鈕激活狀態 */
+  .menu a.router-link-active {
+    background: rgb(155 255 255);
+  }
+
   /* 調整把手樣式 */
   .handle {
     position: absolute;

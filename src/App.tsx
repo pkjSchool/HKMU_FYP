@@ -3,6 +3,7 @@ import { Sidebar } from "./components/Sidebar";
 import LessonMap from "./components/LessonMap";
 import TaskProgress from "./components/TaskProgress";
 import "./css/App.css";
+import { Outlet } from "react-router-dom";
 
 const sampleChapters = [
   {
@@ -40,20 +41,12 @@ function App() {
   return (
     <div className="app-container">
       <Sidebar onResize={setSidebarWidth} />
-      <div className="main-content" style={{ marginLeft: `${sidebarWidth}px` }}>
-        <LessonMap
-          chapters={sampleChapters.map((chapter) => ({
-            ...chapter,
-            lessons: chapter.lessons.map((lesson) => ({
-              ...lesson,
-              onClick: () => handleLessonClick(lesson.id),
-            })),
-          }))}
-        />
-        <>
-          <TaskProgress />
-        </>
-      </div>
+      {<div 
+        className="main-content" 
+        style={{ marginLeft: `${sidebarWidth}px` }} 
+      >
+        <Outlet />
+      </div>}
     </div>
   );
 }
