@@ -1,5 +1,6 @@
 import LessonMap from './components/LessonMap';
 import './css/App.css';
+import TaskProgress from './components/TaskProgress';
 
 const sampleChapters = [
   {
@@ -26,6 +27,7 @@ function App() {
   };
 
   return (
+    <>
         <LessonMap 
           chapters={sampleChapters.map(chapter => ({
             ...chapter,
@@ -35,6 +37,8 @@ function App() {
             }))
           }))}
         />
+        <TaskProgress />
+    </>
   );
 }
 
