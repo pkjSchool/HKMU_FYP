@@ -4,21 +4,28 @@ import TaskProgress from './components/TaskProgress';
 
 const sampleChapters = [
   {
-    title: 'Chapter 1',
+    title: "Chapter 1",
     lessons: [
-      { id: 'ch1-1', completed: true, stars: 3 },
-      { id: 'ch1-2', completed: false, stars: 2 },
-      { id: 'ch1-3', completed: false },
-      { id: 'ch1-4', completed: false }
-    ]
+      { id: "ch1-1", completed: true, stars: 3 },
+      { id: "ch1-2", completed: false, stars: 2 },
+      { id: "ch1-3", completed: false },
+      { id: "ch1-4", completed: false },
+    ],
   },
   {
-    title: 'Chapter 2',
+    title: "Chapter 2",
     lessons: [
-      { id: 'ch2-1', completed: false },
-      { id: 'ch2-2', completed: false }
-    ]
-  }
+      { id: "ch2-1", completed: false },
+      { id: "ch2-2", completed: false },
+    ],
+  },
+  {
+    title: "Chapter 3",
+    lessons: [
+      { id: "ch3-1", completed: false },
+      { id: "ch3-2", completed: false },
+    ],
+  },
 ];
 
 function App() {
