@@ -7,6 +7,7 @@ import {
   FaRobot, 
   FaEllipsisH 
 } from "react-icons/fa";
+import { GrTasks } from "react-icons/gr";
 import "../css/Sidebar.css";
 import { NavLink } from "react-router-dom";
 
@@ -20,6 +21,7 @@ const items: SidebarItem[] = [
   { name: "home", icon: <FaHome />, link: "/" },
   { name: "learning", icon: <FaBook />, link: "/learning" },
   { name: "self study", icon: <FaGraduationCap />, link: "/self-study" },
+  { name: "Task", icon: <GrTasks />, link: "/task" },
   { name: "profile", icon: <FaUser />, link: "/profile" },
   { name: "ai generation", icon: <FaRobot />, link: "/ai-generation" },
   { name: "more", icon: <FaEllipsisH />, link: "/more" },
