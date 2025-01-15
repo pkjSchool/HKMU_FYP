@@ -8,7 +8,7 @@ import { Outlet } from "react-router-dom";
 
 
 function App() {
-  const [sidebarWidth, setSidebarWidth] = useState<number>(60);
+  const [sidebarWidth, setSidebarWidth] = useState<number>(260);
 
   const handleLessonClick = (lessonId: string) => {
     console.log(`Lesson ${lessonId} clicked`);
@@ -19,7 +19,7 @@ function App() {
       <Sidebar onResize={setSidebarWidth} />
       {<div 
         className="main-content" 
-        style={{ marginLeft: `${sidebarWidth}px` }} 
+        style={{ marginLeft: `${sidebarWidth}px`, width: `calc(100% - ${sidebarWidth}px)` }} 
       >
         <Outlet />
       </div>}

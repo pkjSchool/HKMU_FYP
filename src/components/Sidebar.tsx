@@ -31,7 +31,7 @@ interface SidebarProps {
 }
 
 export const Sidebar: React.FC<SidebarProps> = ({ onResize }) => {
-  const [width, setWidth] = useState<number>(60);
+  const [width, setWidth] = useState<number>(260);
   const sidebarRef = useRef<HTMLElement | null>(null);
 
   const resize = (e: MouseEvent): void => {
