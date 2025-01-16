@@ -1,6 +1,33 @@
 import "bootstrap/dist/css/bootstrap.min.css";
 import { useState } from "react";
-const questions = [
+import { useParams } from "react-router-dom";
+import Quiz from "../components/Quiz";
+import test1Img from "../assets/test1.jpeg";
+import test2Img from "../assets/test2.jpeg";
+import test3Img from "../assets/test3.jpeg";
+import test4Img from "../assets/test4.jpeg";
+
+const questionsCh1_1 = [
+  {
+    questionText: "Which instrument is shown in the picture below?",
+    imageSrc: test1Img, 
+    answerOptions: [
+      { answerText: "Piano", isCorrect: true },
+      { answerText: "Guitar", isCorrect: false },
+      { answerText: "Violin", isCorrect: false },
+      { answerText: "Drum", isCorrect: false },
+    ],
+  },
+  {
+    questionText: "Which of the following is the correct symbol?",
+    imageSrc: test1Img, 
+    answerOptions: [
+      { isImage: true, imageSrc: test1Img, isCorrect: false },
+      { isImage: true, imageSrc: test2Img, isCorrect: true },
+      { isImage: true, imageSrc: test3Img, isCorrect: false },
+      { isImage: true, imageSrc: test4Img, isCorrect: false },
+    ],
+  },
   {
     questionText: "What is the name of the white keys on a piano?",
     answerOptions: [
@@ -47,85 +74,9 @@ const questions = [
     ],
   },
 ];
+
 function Ch1_1() {
-  const [currentQuestion, setCurrentQuestion] = useState(0);
-  const [answered, setAnswered] = useState(false);
-  const [selectedAnswer, setSelectedAnswer] = useState<number | null>(null);
-  const [score, setScore] = useState(0);
-  const [showScore, setShowScore] = useState(false);
-
-  const handelAnswerButtonClick = (index: number, isCorrect: boolean) => {
-    setAnswered(true);
-    setSelectedAnswer(index);
-    if (isCorrect) {
-      setScore(score + 1);
-    }
-  };
-
-  const NextQuestion = () => {
-    setSelectedAnswer(null);
-    setAnswered(false);
-    const nextQuestion = currentQuestion + 1;
-    if (nextQuestion < questions.length) {
-      setCurrentQuestion(nextQuestion);
-    } else {
-      setShowScore(true);
-    }
-  };
-
-  return (
-    <div className="d-flex justify-content-center align-items-center vh-100 bg-light">
-      <div className="card w-50 shadow">
-        <div className="card-header text-center fw-bold fs-4">Quiz App</div>
-        <div className="card-body">
-          {showScore ? (
-            <div className="card w-50 shadow">
-              <div className="card-header text-center fw-bold fs-4">
-                You scored {score} out of {questions.length}
-              </div>
-            </div>
-          ) : (
-            <>
-              <p className="card-text fs-5">
-                {questions[currentQuestion].questionText}
-              </p>
-              {questions[currentQuestion].answerOptions.map((option, index) => (
-                <button
-                  key={index}
-                  onClick={() =>
-                    handelAnswerButtonClick(index, option.isCorrect)
-                  }
-                  className={`btn btn-outline-secondary w-100 my-2 ${
-                    answered
-                      ? option.isCorrect
-                        ? "btn-success text-white"
-                        : selectedAnswer === index
-                        ? "btn-danger text-white"
-                        : ""
-                      : ""
-                  }`}
-                >
-                  {option.answerText}
-                </button>
-              ))}
-              <button
-                className={`block w-100 btn ${
-                  answered ? "btn-success" : "btn-outline-success"
-                }`}
-                onClick={NextQuestion}
-                disabled={!answered}
-              >
-                Next Question
-              </button>
-              <p className="text-center text-secondary w-100">
-                Question {currentQuestion + 1} of {questions.length}
-              </p>
-            </>
-          )}
-        </div>
-      </div>
-    </div>
-  );
+  return <Quiz title="Lesson 1: Piano Basics" questions={questionsCh1_1} />;
 }
 
 export default Ch1_1;
