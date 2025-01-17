@@ -6,7 +6,7 @@ import './css/bootstrap-modified.css';
 import './css/form.css';
 import './css/animate.min.css';
 import './css/animate.fix.css';
-
+// @ts-ignore
 import store from './store/globalConfig.js'
 import { Provider } from 'react-redux'
 
@@ -18,6 +18,7 @@ import AiGenerationPage from './AiGenerationPage.tsx'
 import MorePage from './MorePage.tsx'
 import LoginPage from './LoginPage.tsx'
 import TaskPage from './TaskPage.tsx'
+import LessonDetail from './LessonDetail.tsx'
 
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 
@@ -36,6 +37,7 @@ createRoot(document.getElementById('root')!).render(
             <Route path="/more" element={ <MorePage /> } />
           </Route>
           <Route path="/login" element={ <LoginPage /> } />
+          <Route path="/lesson/:lessonId" element={<LessonDetail />} />
         </Routes>
       </BrowserRouter>
     </Provider>
