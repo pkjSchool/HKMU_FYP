@@ -2,7 +2,7 @@ import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import App from './App.tsx'
 import './index.css'
-
+// @ts-ignore
 import store from './store/globalConfig.js'
 import { Provider } from 'react-redux'
 
