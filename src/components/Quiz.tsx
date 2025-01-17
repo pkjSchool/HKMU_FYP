@@ -3,7 +3,7 @@ import { useState } from "react";
 import quizBackground from "../assets/quiz_background.jpg";
 
 interface AnswerOption {
-  answerText: string;
+  answerText?: string;
   isImage?: boolean;
   imageSrc?: string;
   isCorrect: boolean;
