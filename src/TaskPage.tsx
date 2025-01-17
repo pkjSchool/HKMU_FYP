@@ -5,26 +5,19 @@ function TaskPage() {
 
     const sampleTasks = [
         {
-            title: "Group 1",
+            title: "Self Study",
             tasks: [
-                { name: "Task-1", progress: 100 },
-                { name: "Task-2", progress: 23 },
-                { name: "Task-3", progress: 0 },
-                { name: "Task-4", progress: 55 },
+                { name: "Accuracy more then 70%", progress: 100 },
+                { name: "Play 10 minutes long music", progress: 20 },
+                { name: "Get 3000 score", progress: 50 },
             ],
         },
         {
-            title: "Group 2",
+            title: "Learning",
             tasks: [
-                { name: "Task-1", progress: 100 },
-
-            ],
-        },
-        {
-            title: "Group 3",
-            tasks: [
-                { name: "Task-3", progress: 46 },
-                { name: "Task-4", progress: 65 },
+                { name: "Finish 1 lesson", progress: 100 },
+                { name: "Finish 2 lesson", progress: 50 },
+                { name: "Finish 3 lesson", progress: 33.3 },
             ],
         },
     ];
@@ -40,7 +33,7 @@ function TaskPage() {
                                 <h3>{taskGroup.title}</h3>
                                 <ul className="list-group">
                                     {taskGroup.tasks.map((task, i) => {
-                                        return <li className="list-group-item" key={i}>
+                                        return <li key={i} className="list-group-item animate__animated animate__fadeInRight" style={{"animationDelay": `${i*0.1}s`}}>
                                                     <h5>{task.name}</h5>
                                                     <div style={{display: "flex", "alignItems": "center"}}>
                                                         <div className="progress" role="progressbar" style={{width: "calc(100% - 20px)"}}>

@@ -4,6 +4,8 @@ import App from './App.tsx'
 import './index.css'
 import './css/bootstrap-modified.css';
 import './css/form.css';
+import './css/animate.min.css';
+import './css/animate.fix.css';
 
 import store from './store/globalConfig.js'
 import { Provider } from 'react-redux'
