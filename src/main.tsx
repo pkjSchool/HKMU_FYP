@@ -17,10 +17,11 @@ import SelfStudyPage from './SelfStudyPage.tsx'
 import AiGenerationPage from './AiGenerationPage.tsx'
 import MorePage from './MorePage.tsx'
 import LoginPage from './LoginPage.tsx'
+import PianoPlayingPage from './PianoPlayingPage.tsx'
 import TaskPage from './TaskPage.tsx'
 import LessonDetail from './LessonDetail.tsx'
 
-import { BrowserRouter, Route, Routes } from "react-router-dom";
+import { BrowserRouter, Route, Routes, Navigate } from "react-router-dom";
 
 createRoot(document.getElementById('root')!).render(
   // <StrictMode>
@@ -30,12 +31,13 @@ createRoot(document.getElementById('root')!).render(
           <Route path="/" element={ <App /> } >
             <Route path="/" element={ <LessonPage /> } />
             <Route path="/learning" element={ <LearningPage /> } />
-            <Route path="/self-study" element={ <SelfStudyPage /> } />
-            <Route path="/task" element={ <TaskPage /> } />
-            <Route path="/profile" element={ <ProfilePage /> } />
+            <Route path="/self-study" element={ <Navigate to="/playing" /> } />
+            <Route path="/profile" element={ <ProfilePage /> } /> 
             <Route path="/ai-generation" element={ <AiGenerationPage /> } />
             <Route path="/more" element={ <MorePage /> } />
           </Route>
+          
+          <Route path="/playing" element={ <PianoPlayingPage /> } />
           <Route path="/login" element={ <LoginPage /> } />
           <Route path="/lesson/:lessonId" element={<LessonDetail />} />
         </Routes>
