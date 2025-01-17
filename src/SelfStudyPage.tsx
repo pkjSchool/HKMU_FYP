@@ -1,11 +1,11 @@
 import './css/App.css';
-import MusicNoteBar from './components/MusicNoteBar';
+import PianoNoteBarRender from './components/PianoNoteBarRender';
 
 function SelfStudyPage() {
   return (
     <div>
       SelfStudyPage
-      <MusicNoteBar/>
+      <PianoNoteBarRender/>
     </div>
   );
 }

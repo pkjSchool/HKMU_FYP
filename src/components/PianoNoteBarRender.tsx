@@ -1,6 +1,6 @@
 import React, { useEffect, useRef } from 'react'
 
-const MusicNoteBar = (props:any) => {
+const PianoNoteBarRender = (props:any) => {
     const {music, ...setting} = props
 
     const draw = (ctx:any, count:any) => {
@@ -37,4 +37,4 @@ const MusicNoteBar = (props:any) => {
   );
 };
 
-export default MusicNoteBar;
+export default PianoNoteBarRender;
