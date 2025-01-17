@@ -1,5 +1,6 @@
 import { FC } from 'react';
 import '../css/LessonMap.css';
+import { NavLink } from "react-router-dom";
 
 interface Lesson {
   id: string;
@@ -27,12 +28,15 @@ const LessonMap: FC<LessonMapProps> = ({ chapters }) => {
             {chapter.lessons.map((lesson, lessonIndex) => (
               <div key={lessonIndex} className="lesson-item">
                 <div className="lesson-node-wrapper">
-                  <button 
-                    className={`lesson-node ${lesson.completed ? 'completed' : ''}`}
-                    onClick={() => lesson.onClick && lesson.onClick()}
+                <NavLink 
+                    to={`/lesson/${lesson.id}`}  
+                    className={({ isActive }) =>  
+                      `lesson-node ${lesson.completed ? 'completed' : ''} ${isActive ? 'active' : ''}`
+                    }
+                    onClick={() => lesson.onClick && lesson.onClick()}  
                   >
-                    {lessonIndex + 1}
-                  </button>
+                    {lessonIndex + 1} 
+                  </NavLink>
                   {lesson.stars !== undefined && (
                     <div className="lesson-status">
                       {Array(lesson.stars).fill('⭐').join('')}

@@ -1,5 +1,4 @@
-import './css/App.css';
-import './css/bootstrap-modified.css';
+import "./css/login.css";
 import React, {useEffect} from 'react';
 import TextBox from './input_control/TextBox';
 import {Controller, FormProvider, useForm} from 'react-hook-form';
@@ -23,6 +22,12 @@ function LoginPage() {
     dispatch(setInfo({'username': data.username, 'password': data.password}))
   }
 
+  useEffect(() => {
+
+      console.log('Component mounted');
+
+  }, []);
+
   // const [userName, setUserName] = React.useState('')
   // const [userPwd, setUserPwd] = React.useState('')
   // useEffect(() => {
@@ -33,22 +38,25 @@ function LoginPage() {
   // }, [watch])
 
   return (
-    <div className="login-page">
-      React Redux Form
-      <br/>username: {storedInfo.username}
-      <br/>password: {storedInfo.password}
-      <form onSubmit={handleSubmit(onSubmit)}>
-        <div className="card">
-          <div className="card-body">
-            <h2 className="card-title">Login</h2>
-            <div className="mb-3"><label className="form-label">username</label><input type="text" className="form-control" {...register("username", { required: "username is required" })} /></div>
-            {errors.username && <p role="alert" className="">{errors.username.message}</p>}
-            <div className="mb-3"><label className="form-label">password</label><input type="password" className="form-control" {...register("password", { required: true })} /></div>
-            {errors.password?.type === "required" && (<p role="alert">password is required</p>)}
-            <input type="submit" className="btn btn-primary mb-3" />
+    <div className="login-container">
+      <div className="login-page">
+        {/* React Redux Form
+        <br/>username: {storedInfo.username}
+        <br/>password: {storedInfo.password} */}
+        <form onSubmit={handleSubmit(onSubmit)}>
+          <div className="card">
+            <h1 className="card-header text-center">Login</h1>
+            <div className="card-body">
+              <div className="mb-3"><label className="form-label">Username</label><input type="text" className="form-control" {...register("username", { required: true })} /></div>
+              {/* {errors.username && <p role="alert" className="errorText">{errors.username.message}</p>} */}
+              {errors.username?.type === "required" && (<p role="alert" className="errorText">Username is required</p>)}
+              <div className="mb-3"><label className="form-label">Password</label><input type="password" className="form-control" {...register("password", { required: true })} /></div>
+              {errors.password?.type === "required" && (<p role="alert" className="errorText">Password is required</p>)}
+              <input type="submit" className="btn btn-primary mb-3" />
+            </div>
           </div>
-        </div>
-      </form>
+        </form>
+      </div>
     </div>
   );
 }
