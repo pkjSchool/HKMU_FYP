@@ -1,0 +1,5 @@
+.volume-slider::-webkit-slider-runnable-track {
+  appearance: none;
+  background: #c2c2c2; /* Active part of the track */
+  border-radius: 5px;
+}
