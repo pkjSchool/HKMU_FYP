@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { NavLink } from "react-router-dom";
 
 import "../css/VolumeSlider.css";
 
@@ -104,15 +105,14 @@ const CollapsibleNavBar = (props:any) => {
               </div>
               <div className="right-group" style={{ ...styles.innerGroup }}>
                 <div>
-
-                  <a href="/" style={{ color: "white" }}>
+                  <NavLink to="/" style={{ color: "white" }}>
                     <button className="left-btn" style={buttonStyles.TopNavBarBtn(hoveredButton, 7)} onMouseEnter={() => handleMouseEnter(7)} onMouseLeave={handleMouseLeave}>
                       <div className="glyph">
                         <MdOutlineExitToApp size={25} />
                       </div>
 
                     </button>
-                  </a>
+                  </NavLink>
                   <button className="settings-btn" style={buttonStyles.TopNavBarBtn(hoveredButton, 8)} onMouseEnter={() => handleMouseEnter(8)} onMouseLeave={handleMouseLeave}>
                     <div className="glyph">
                       <IoIosSettings size={25} />
