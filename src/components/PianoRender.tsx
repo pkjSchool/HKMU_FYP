@@ -54,7 +54,7 @@ const Piano = ({activeNote, onNoteOn, onNoteOff}: PianoActiveNote) => {
               }}
               onMouseDown={() => {onNoteOn(noteNumber)}}
               // onMouseOver={() => {onNoteOn(noteNumber)}}
-              // onMouseLeave={() => {onNoteOff(noteNumber)}}
+              onMouseLeave={() => {onNoteOff(noteNumber)}}
               onMouseUp={() => {onNoteOff(noteNumber)}}
               onTouchEnd={() => {onNoteOff(noteNumber)}}
             />
@@ -74,9 +74,9 @@ const Piano = ({activeNote, onNoteOn, onNoteOff}: PianoActiveNote) => {
                 left: `${(currentWhiteKeyIndex - 1) * whiteKeyWidthPercentage + whiteKeyWidthPercentage * 0.7}%`,
                 zIndex: 2,
               }}
-              onMouseDown={() => {onNoteOn(noteNumber)}}
+              onMouseDown={(event) => {console.log(event); onNoteOn(noteNumber)}}
               // onMouseOver={() => {onNoteOn(noteNumber)}}
-              // onMouseLeave={() => {onNoteOff(noteNumber)}}
+              onMouseLeave={() => {onNoteOff(noteNumber)}}
               onMouseUp={() => {onNoteOff(noteNumber)}}
               onTouchEnd={() => {onNoteOff(noteNumber)}}
             />
@@ -109,6 +109,7 @@ const Piano = ({activeNote, onNoteOn, onNoteOff}: PianoActiveNote) => {
         height: `${renderDimensions.whiteKeyHeight}px`,
         display: "flex",
         zIndex: 10,
+        userSelect: "none"
       }}
     >
       {/* White keys */}

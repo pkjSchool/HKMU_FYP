@@ -13,8 +13,11 @@ import {
 } from "./Tracks.js"
 import { Notification } from "../ui/Notification.js"
 
-const LOOK_AHEAD_TIME = 0.2
-const LOOK_AHEAD_TIME_WHEN_PLAYALONG = 0.02
+// const LOOK_AHEAD_TIME = 0.2
+// const LOOK_AHEAD_TIME_WHEN_PLAYALONG = 0.02
+
+const LOOK_AHEAD_TIME = 0
+const LOOK_AHEAD_TIME_WHEN_PLAYALONG = 0
 
 class Player {
 	constructor() {

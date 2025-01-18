@@ -1,8 +1,9 @@
-import { useState, useRef } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import MIDIController from './components/MidiController.js';
 import TopNavBar from './components/PianoPageTopNavBar.js';
 import PianoRender from './components/PianoRender.js';
 import MusicNotePlayerRender from './components/MusicNotePlayerRender';
+import { getPlayer, getPlayerState } from "./components/MusicNotePlayer/player/Player.js"
 
 const music = "data:audio/midi;base64,TVRoZAAAAAYAAQACA8BNVHJrAAAACwD/UQMHoSAA/y8ATVRyawAAAIYAwQ0AkUd/g2CRRX8AgUcAg2CBRQAAkUN/g2CRQX8AgUMAg2CBQQAAkUB/g2CRPn8AgUAAg2CBPgAAkTx/g2CRO38AgTwAg2CBOwAAkTl/g2CRN38AgTkAg2CBNwAAkTV/g2CRNH8AgTUAg2CBNAAAkTJ/g2CBMgAAkTB/g2CBMADDQP8vAA=="
 
@@ -16,7 +17,7 @@ function App() {
   const onNoteOn = (note: number) => {
     setActiveNotes((prev) => [...prev, note]);
     notePlayerRef.current.onNotePress(note)
-    MIDIControllerRef.current.playNote(note, 127)
+    MIDIControllerRef.current.playNote(note, 50)
     notePlayerRef.current.onNotePress(note)
   };
 

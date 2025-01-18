@@ -114,9 +114,9 @@ const CollapsibleNavBar = (props:any) => {
                     </span>
                     <button className="volume-btn" style={buttonStyles.TopNavBarBtn(hoveredButton, 6)} onMouseEnter={() => handleMouseEnter(6)} onMouseLeave={handleMouseLeave} onClick={handleVolumeButtonOnClick}>
                       {volume === 0 ? (
-                        <CiVolume size={25} color="white" />
+                        <CiVolume size={25} color="white" style={{pointerEvents: "none"}} />
                       ) : (
-                        <CiVolumeHigh size={25} color="white" />
+                        <CiVolumeHigh size={25} color="white" style={{pointerEvents: "none"}} />
                       )}
                     </button>
                   </label>
