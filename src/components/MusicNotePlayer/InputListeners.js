@@ -2,13 +2,14 @@ import { getPlayer } from "./player/Player.js"
 import { getSetting } from "./settings/Settings.js"
 
 export class InputListeners {
-	constructor(ui, render) {
+	constructor(ui, render, wrapperEle) {
 		this.grabSpeed = []
 		this.delay = false
+		this.wrapperEle = wrapperEle
 
-		this.addMouseAndTouchListeners(render, ui)
+		this.addMouseAndTouchListeners(render, ui, wrapperEle)
 
-		document.body.addEventListener("wheel", this.onWheel())
+		this.wrapperEle.addEventListener("wheel", this.onWheel())
 
 		this.addProgressBarMouseListeners(render)
 
@@ -25,27 +26,27 @@ export class InputListeners {
 		)
 	}
 
-	addMouseAndTouchListeners(render, ui) {
-		window.addEventListener("mouseup", ev => this.onMouseUp(ev, render))
-		document.body.addEventListener(
+	addMouseAndTouchListeners(render, ui, wrapperEle) {
+		wrapperEle.addEventListener("mouseup", ev => this.onMouseUp(ev, render))
+		wrapperEle.addEventListener(
 			"mousedown",
 			ev => this.onMouseDown(ev, render),
 			{ passive: false }
 		)
-		document.body.addEventListener(
+		wrapperEle.addEventListener(
 			"mousemove",
 			ev => this.onMouseMove(ev, render, ui),
 			{ passive: false }
 		)
-		window.addEventListener("touchend", ev => this.onMouseUp(ev, render), {
+		wrapperEle.addEventListener("touchend", ev => this.onMouseUp(ev, render), {
 			passive: false
 		})
-		document.body.addEventListener(
+		wrapperEle.addEventListener(
 			"touchstart",
 			ev => this.onMouseDown(ev, render),
 			{ passive: false }
 		)
-		document.body.addEventListener(
+		wrapperEle.addEventListener(
 			"touchmove",
 			ev => this.onMouseMove(ev, render, ui),
 			{ passive: false }
@@ -63,7 +64,7 @@ export class InputListeners {
 
 	onWheel() {
 		return event => {
-			if (event.target != document.body) {
+			if (event.target != this.wrapperEle) {
 				return
 			}
 			if (this.delay) {
@@ -179,9 +180,10 @@ export class InputListeners {
 	}
 
 	onMouseDown(ev, render) {
+		console.log("onMouseDown")
 		let pos = this.getXYFromMouseEvent(ev)
 		if (
-			ev.target == document.body &&
+			ev.target == this.wrapperEle &&
 			render.isOnMainCanvas(pos) &&
 			!this.grabbedProgressBar
 		) {
@@ -194,7 +196,7 @@ export class InputListeners {
 
 	onMouseUp(ev, render) {
 		let pos = this.getXYFromMouseEvent(ev)
-		if (ev.target == document.body && render.isOnMainCanvas(pos)) {
+		if (ev.target == this.wrapperEle && render.isOnMainCanvas(pos)) {
 			ev.preventDefault()
 		}
 		if (this.grabSpeed.length) {

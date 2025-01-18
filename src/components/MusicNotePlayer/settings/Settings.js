@@ -42,13 +42,13 @@ export const getSetting = settingId => {
 		? globalSettings.settingsById[settingId].value
 		: null
 
-	return (fixedSettings[settingId])?fixedSettings[settingId]:false
+	// return (fixedSettings[settingId])?fixedSettings[settingId]:false
 }
 export const setSetting = (settingId, value) => {
-	// globalSettings.settingsById[settingId].value = value
-	// if (settingCallbacks.hasOwnProperty(settingId)) {
-	// 	settingCallbacks[settingId].forEach(callback => callback())
-	// }
+	globalSettings.settingsById[settingId].value = value
+	if (settingCallbacks.hasOwnProperty(settingId)) {
+		settingCallbacks[settingId].forEach(callback => callback())
+	}
 	// saveCurrentSettings()
 }
 export const getSettingsDiv = () => {

@@ -26,13 +26,14 @@ const PROGRESS_BAR_CANVAS_HEIGHT = 20
  * Class that handles all rendering
  */
 export class Render {
-	constructor(cnvBG, cnvMain, progressBarCanvas, cnvForeground) {
+	constructor(cnvBG, cnvMain, progressBarCanvas, cnvForeground, wrapperEle) {
 		this.cnvBG = cnvBG
 		this.cnv = cnvMain
 		this.progressBarCanvas = progressBarCanvas
 		this.cnvForeground = cnvForeground
+		this.wrapperEle = wrapperEle
 
-		this.renderDimensions = new RenderDimensions()
+		this.renderDimensions = new RenderDimensions(this.wrapperEle)
 		this.renderDimensions.registerResizeCallback(this.setupCanvases.bind(this))
 
 		setSettingCallback("particleBlur", this.setCtxBlur.bind(this))

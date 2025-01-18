@@ -4,14 +4,18 @@ import { getSetting, setSettingCallback } from "../settings/Settings.js"
 const MAX_NOTE_NUMBER = 87
 const MIN_NOTE_NUMBER = 0
 
-const MIN_WIDTH = 1040
-const MIN_HEIGHT = 560
+const MIN_WIDTH = 10
+const MIN_HEIGHT = 10
 
 /**
  * Class to handle all the calculation of dimensions of the Notes & Keys on Screen-
  */
 export class RenderDimensions {
-	constructor() {
+	constructor(wrapperEle) {
+		this.wrapperEle = wrapperEle
+
+		this.pianoHeight = 120
+
 		window.addEventListener("resize", this.resize.bind(this))
 		this.resizeCallbacks = []
 		this.numberOfWhiteKeysShown = 52
@@ -26,8 +30,8 @@ export class RenderDimensions {
 	 * Recompute all dimensions dependent on Screen Size
 	 */
 	resize() {
-		this.windowWidth = Math.max(MIN_WIDTH, Math.floor(window.innerWidth))
-		this.windowHeight = Math.floor(window.innerHeight)
+		this.windowWidth = Math.max(MIN_WIDTH, Math.floor(this.wrapperEle.offsetWidth))
+		this.windowHeight = Math.floor(this.wrapperEle.offsetHeight)
 
 		this.keyDimensions = {}
 		this.computeKeyDimensions()
@@ -85,14 +89,15 @@ export class RenderDimensions {
 		let pianoSettingsRatio = getSetting("reverseNoteDirection")
 			? 1 - parseInt(this.pianoPositionY) / 100
 			: parseInt(this.pianoPositionY) / 100
-		let y =
-			this.windowHeight -
-			this.whiteKeyHeight -
-			Math.ceil(
-				pianoSettingsRatio *
-					(this.windowHeight - this.whiteKeyHeight - this.menuHeight - 24)
-			)
-
+		// let y =
+		// 	this.windowHeight -
+		// 	this.whiteKeyHeight -
+		// 	Math.ceil(
+		// 		pianoSettingsRatio *
+		// 			(this.windowHeight - this.whiteKeyHeight - this.menuHeight - 24)
+		// 	)
+		// console.log(this.windowHeight, this.pianoHeight)
+		let y = this.windowHeight - this.pianoHeight
 		return y
 	}
 
@@ -154,8 +159,8 @@ export class RenderDimensions {
 
 	/**
      *Returns rendering x/y-location & size for the given note & time-info
-     
-	 * @param {Integer} noteNumber 
+
+	 * @param {Integer} noteNumber
 	 * @param {Number} currentTime
 	 * @param {Number} noteStartTime
 	 * @param {Number} noteEndTime

@@ -9,6 +9,7 @@ const music = "data:audio/midi;base64,TVRoZAAAAAYAAQACA8BNVHJrAAAACwD/UQMHoSAA/y
 
 function App() {
   const [activeNotes, setActiveNotes] = useState<number[]>([]);
+
   const childRef = useRef();
 
   const onNoteOn = (note: number) => {
@@ -22,16 +23,15 @@ function App() {
   const handlePlay = () => { childRef.current.play() }
   const handlePause = () => { childRef.current.pause() }
   const handleStop = () => { childRef.current.stop() }
+  const handleMenuCollapsed = (isCollapsed:boolean) => { childRef.current.changeMenuHeight(isCollapsed?0:130) }
   // background: '#282c34', 
   return (
-    <div style={{ height: '100vh', width: '100vw' }}>
+    <div style={{ height: '100%', width: '100%' }}>
 
       <MIDIController onNoteOn={onNoteOn} onNoteOff={onNoteOff} />
-      <TopNavBar playCallback={handlePlay} pausingCallback={handlePause} stopCallback={handleStop} />
-      <MusicNotePlayerRender ref={childRef} music={music}/>
-      <PianoRender
-        activeNote={activeNotes}
-      />
+      <TopNavBar playCallback={handlePlay} pausingCallback={handlePause} stopCallback={handleStop} menuCollapsedCallback={handleMenuCollapsed} />
+      <MusicNotePlayerRender ref={childRef} music={music} />
+      <PianoRender activeNote={activeNotes} />
     </div>
   );
 }

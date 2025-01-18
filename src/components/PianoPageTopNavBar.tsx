@@ -11,7 +11,7 @@ import { IoIosSettings } from "react-icons/io";
 
 
 const CollapsibleNavBar = (props:any) => {
-  const {playCallback, pausingCallback, stopCallback} = props;
+  const {playCallback, pausingCallback, stopCallback, menuCollapsedCallback} = props;
 
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [hoveredButton, setHoveredButton] = useState<number>(-1);
@@ -31,17 +31,34 @@ const CollapsibleNavBar = (props:any) => {
 
   const toggleNavBar = () => {
     setIsCollapsed((prev) => !prev);
+    menuCollapsedCallback(isCollapsed);
   };
+
+  const clickPlay = () => {
+    playCallback();
+  }
+
+  const clickPause = () => {
+    pausingCallback();
+  }
+
+  const clickStop = () => {
+    stopCallback();
+  }
 
 
   return (
     <div style={{
-      position: "relative",
+      position: "absolute",
+      top: isCollapsed ? "0px" : "-130px",
+      left: "0px",
       width: "100%",
-      height: "150px",
+      height: "130px",
+      zIndex: 100,
+      transition: "top 0.3s ease",
     }}>
 
-      <div className="topnavbar-warrper" style={{ ...styles.navbar, height: isCollapsed ? "0px" : "130px" }}>
+      <div className="topnavbar-warrper" style={{ ...styles.navbar, height: "100%" }}>
         <div className="container" style={styles.container}>
           <div className="topContainer-1" style={styles.topContainer}>
             <div className="btn-group-1" style={styles.btnGroup}>
@@ -66,17 +83,17 @@ const CollapsibleNavBar = (props:any) => {
 
           <div className="topContainer-2" style={styles.topContainer}>
             <div className="btn-group-2" style={{ ...styles.btnGroup, flexDirection: "row" }}>
-              <button style={buttonStyles.TopNavBarBtn(hoveredButton, 3)} onMouseEnter={() => handleMouseEnter(3)} onMouseLeave={handleMouseLeave} onClick={() => { playCallback() }}>
+              <button style={buttonStyles.TopNavBarBtn(hoveredButton, 3)} onMouseEnter={() => handleMouseEnter(3)} onMouseLeave={handleMouseLeave} onClick={() => { clickPlay() }}>
                 <div className="glyph">
                   <FaPlay size={40} color="white" />
                 </div>
               </button>
-              <button style={buttonStyles.TopNavBarBtn(hoveredButton, 4)} onMouseEnter={() => handleMouseEnter(4)} onMouseLeave={handleMouseLeave} onClick={() => { pausingCallback() }}>
+              <button style={buttonStyles.TopNavBarBtn(hoveredButton, 4)} onMouseEnter={() => handleMouseEnter(4)} onMouseLeave={handleMouseLeave} onClick={() => { clickPause() }}>
                 <div className="glyph">
                   <FaPause size={40} color="white" />
                 </div>
               </button>
-              <button style={buttonStyles.TopNavBarBtn(hoveredButton, 5)} onMouseEnter={() => handleMouseEnter(5)} onMouseLeave={handleMouseLeave} onClick={() => { stopCallback() }}>
+              <button style={buttonStyles.TopNavBarBtn(hoveredButton, 5)} onMouseEnter={() => handleMouseEnter(5)} onMouseLeave={handleMouseLeave} onClick={() => { clickStop() }}>
                 <div className="glyph">
                   <FaStop size={40} color="white" />
                 </div>
@@ -146,7 +163,7 @@ const styles: Styles = {
     position: "relative",
     width: "100%",
     backgroundColor: "#5f5f5f",
-    transition: "height 0.3s ease",
+    // transition: "height 0.3s ease",
     overflow: "hidden",
   },
   container: {
@@ -209,7 +226,8 @@ const styleFunctions: StyleFunctions = {
   }),
   floatingButton: (isCollapsed: boolean) => ({
     position: "absolute",
-    top: isCollapsed ? "10px" : "130px",
+    // top: isCollapsed ? "10px" : "130px",
+    top: "170px",
     left: "50%",
     transform: "translateX(-50%)",
     transition: "top 0.3s ease",

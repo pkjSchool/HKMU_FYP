@@ -8,11 +8,11 @@ import './css/form.css';
 import './css/animate.min.css';
 import './css/animate.fix.css';
 
-import './components/MusicNotePlayer/css/Interface.css'
-import './components/MusicNotePlayer/css/Inputs.css'
-import './components/MusicNotePlayer/css/Settings.css'
-import './components/MusicNotePlayer/css/nano.min.css'
-import './components/MusicNotePlayer/css/bootstrap-theme.min.css'
+// import './components/MusicNotePlayer/css/Interface.css'
+// import './components/MusicNotePlayer/css/Inputs.css'
+// import './components/MusicNotePlayer/css/Settings.css'
+// import './components/MusicNotePlayer/css/nano.min.css'
+// import './components/MusicNotePlayer/css/bootstrap-theme.min.css'
 
 // @ts-ignore
 import store from './store/globalConfig.js'
