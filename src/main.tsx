@@ -2,8 +2,9 @@ import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import App from './App.tsx'
 
+import "bootstrap/dist/css/bootstrap.min.css";
 import './index.css'
-import './css/bootstrap-modified.css';
+// import './css/bootstrap-modified.css';
 import './css/form.css';
 import './css/animate.min.css';
 import './css/animate.fix.css';
