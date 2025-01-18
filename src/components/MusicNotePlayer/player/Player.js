@@ -425,16 +425,17 @@ class Player {
 	addInputNoteOn(noteNumber) {
 		if (this.inputActiveNotes.hasOwnProperty(noteNumber)) {
 			console.log("NOTE ALREADY PLAING")
-			this.audioPlayer.noteOffContinuous(
-				this.inputActiveNotes[noteNumber].audioNote
-			)
+			// this.audioPlayer.noteOffContinuous(
+			// 	this.inputActiveNotes[noteNumber].audioNote
+			// )
 			delete this.inputActiveNotes[noteNumber]
 		}
-		let audioNote = this.audioPlayer.createContinuousNote(
-			noteNumber,
-			this.volume,
-			this.inputInstrument
-		)
+		// let audioNote = this.audioPlayer.createContinuousNote(
+		// 	noteNumber,
+		// 	this.volume,
+		// 	this.inputInstrument
+		// )
+		let audioNote = null
 		let activeNoteObj = {
 			audioNote: audioNote,
 			wasUsed: false,
@@ -449,9 +450,9 @@ class Player {
 			console.log("NOTE NOT PLAYING")
 			return
 		}
-		this.audioPlayer.noteOffContinuous(
-			this.inputActiveNotes[noteNumber].audioNote
-		)
+		// this.audioPlayer.noteOffContinuous(
+		// 	this.inputActiveNotes[noteNumber].audioNote
+		// )
 		this.inputActiveNotes[noteNumber].offTime =
 			this.audioPlayer.getContextTime() * 1000
 		this.inputPlayedNotes.push(this.inputActiveNotes[noteNumber])

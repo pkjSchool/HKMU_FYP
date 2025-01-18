@@ -9,11 +9,11 @@ export class InputListeners {
 
 		this.addMouseAndTouchListeners(render, ui, wrapperEle)
 
-		this.wrapperEle.addEventListener("wheel", this.onWheel())
+		// this.wrapperEle.addEventListener("wheel", this.onWheel())
 
 		this.addProgressBarMouseListeners(render)
 
-		window.addEventListener("keydown", this.onKeyDown(ui))
+		// window.addEventListener("keydown", this.onKeyDown(ui))
 
 		// ui.setOnMenuHeightChange(val => render.onMenuHeightChanged(val))
 		ui.setOnMenuHeightChange(val => {})

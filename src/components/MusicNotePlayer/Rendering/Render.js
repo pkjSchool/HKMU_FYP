@@ -40,7 +40,7 @@ export class Render {
 
 		this.setupCanvases()
 
-		this.pianoRender = new PianoRender(this.renderDimensions)
+		// this.pianoRender = new PianoRender(this.renderDimensions)
 
 		this.overlayRender = new OverlayRender(this.ctx, this.renderDimensions)
 		// this.addStartingOverlayMessage()
@@ -50,7 +50,7 @@ export class Render {
 			this.ctx,
 			this.ctxForeground,
 			this.renderDimensions,
-			this.pianoRender
+			// this.pianoRender
 		)
 		this.sustainRender = new SustainRender(this.ctx, this.renderDimensions)
 		this.markerRender = new MarkerRenderer(this.ctx, this.renderDimensions)
@@ -92,7 +92,7 @@ export class Render {
 		}
 	}
 	setPianoInputListeners(onNoteOn, onNoteOff) {
-		this.pianoRender.setPianoInputListeners(onNoteOn, onNoteOff)
+		// this.pianoRender.setPianoInputListeners(onNoteOn, onNoteOff)
 	}
 
 	/**
@@ -113,14 +113,14 @@ export class Render {
 			this.renderDimensions.windowHeight
 		)
 
-		this.pianoRender.clearPlayedKeysCanvases()
+		// this.pianoRender.clearPlayedKeysCanvases()
 		if (
 			this.showKeyNamesOnPianoWhite != getSetting("showKeyNamesOnPianoWhite") ||
 			this.showKeyNamesOnPianoBlack != getSetting("showKeyNamesOnPianoBlack")
 		) {
 			this.showKeyNamesOnPianoWhite = getSetting("showKeyNamesOnPianoWhite")
 			this.showKeyNamesOnPianoBlack = getSetting("showKeyNamesOnPianoBlack")
-			this.pianoRender.resize()
+			// this.pianoRender.resize()
 		}
 
 		if (
@@ -130,7 +130,7 @@ export class Render {
 			this.renderDimensions.pianoPositionY = parseInt(
 				getSetting("pianoPosition")
 			)
-			this.pianoRender.repositionCanvases()
+			// this.pianoRender.repositionCanvases()
 		}
 		this.backgroundRender.renderIfColorsChanged()
 
@@ -479,7 +479,7 @@ export class Render {
 	}
 	onMenuHeightChanged(menuHeight) {
 		this.renderDimensions.menuHeight = menuHeight
-		this.pianoRender.repositionCanvases()
+		// this.pianoRender.repositionCanvases()
 		this.getProgressBarCanvas().style.top = menuHeight + "px"
 		this.noteRender.setMenuHeight(menuHeight)
 	}

@@ -23,6 +23,7 @@ class MusicNotePlayerRender extends React.Component<any, any> {
   cnvrender: Render;
   ui: UI;
   listeners: InputListeners;
+  noteNumberOffset: number;
 
   constructor(props: any) {
     super(props);
@@ -32,6 +33,7 @@ class MusicNotePlayerRender extends React.Component<any, any> {
     };
 
     this.animeId = 0;
+    this.noteNumberOffset = -21;
 
     this.foregroundCanvasRef = React.createRef();
     this.bgCanvasRef = React.createRef();
@@ -61,11 +63,11 @@ class MusicNotePlayerRender extends React.Component<any, any> {
   };
 
   onNotePress = (note:number) => {
-    console.log("note pressed", note)
+    getPlayer().addInputNoteOn(note+this.noteNumberOffset)
   }
 
   onNoteRelease = (note:number) => {
-    console.log("note released", note)
+    getPlayer().addInputNoteOff(note+this.noteNumberOffset)
   }
 
   componentDidMount() {

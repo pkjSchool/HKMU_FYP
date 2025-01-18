@@ -7,22 +7,29 @@ import { PianoParticleRender } from "./PianoParticleRender.js"
  * Class to render the notes on screen.
  */
 export class NoteRender {
-	constructor(ctx, ctxForeground, renderDimensions, pianoRender) {
+	constructor(ctx, ctxForeground, renderDimensions
+		// , pianoRender
+	) {
 		this.ctx = ctx
 		this.renderDimensions = renderDimensions
 		this.ctxForeground = ctxForeground
 
-		this.pianoRender = pianoRender
+		// this.pianoRender = pianoRender
 		this.lastActiveNotes = {}
 		this.noteParticleRender = new NoteParticleRender(
 			this.ctxForeground,
 			this.renderDimensions
 		)
-		this.pianoParticleRender = new PianoParticleRender(
-			this.pianoRender.playedKeysCtxWhite,
-			this.pianoRender.playedKeysCtxBlack,
-			this.renderDimensions
-		)
+		// this.pianoParticleRender = new PianoParticleRender(
+		// 	this.pianoRender.playedKeysCtxWhite,
+		// 	this.pianoRender.playedKeysCtxBlack,
+		// 	this.renderDimensions
+		// )
+		// this.pianoParticleRender = new PianoParticleRender(
+		// 	this.pianoRender.playedKeysCtxWhite,
+		// 	this.pianoRender.playedKeysCtxBlack,
+		// 	this.renderDimensions
+		// )
 	}
 	render(time, renderInfoByTrackMap, inputActiveNotes, inputPlayedNotes) {
 		this.noteParticleRender.render()
@@ -61,7 +68,7 @@ export class NoteRender {
 			this.createNoteParticles(activeNotesByTrackMap[trackIndex])
 		})
 		if (getSetting("drawPianoKeyHitEffect")) {
-			this.pianoParticleRender.render()
+			// this.pianoParticleRender.render()
 		}
 
 		this.lastActiveNotes = currentActiveNotes
@@ -353,10 +360,10 @@ export class NoteRender {
 		let whiteActive = inputActiveNotes.filter(noteInfo => !noteInfo.isBlack)
 		inputActiveNotes.forEach(noteInfo => {
 			this.createNoteParticle(noteInfo)
-			this.pianoRender.drawActiveInputKey(
-				parseInt(noteInfo.noteNumber),
-				this.ctx.fillStyle
-			)
+			// this.pianoRender.drawActiveInputKey(
+			// 	parseInt(noteInfo.noteNumber),
+			// 	this.ctx.fillStyle
+			// )
 			this.drawNoteAfter(noteInfo)
 			this.ctx.fill()
 		})
@@ -420,12 +427,12 @@ export class NoteRender {
 
 	renderActivePianoKeys(activeNotes, currentActiveNotes, currentActiveObj) {
 		if (getSetting("highlightActivePianoKeys")) {
-			activeNotes.white.forEach(noteRenderInfo => {
-				this.pianoRender.drawActiveKey(noteRenderInfo, noteRenderInfo.fillStyle)
-			})
-			activeNotes.black.forEach(noteRenderInfo => {
-				this.pianoRender.drawActiveKey(noteRenderInfo, noteRenderInfo.fillStyle)
-			})
+			// activeNotes.white.forEach(noteRenderInfo => {
+			// 	this.pianoRender.drawActiveKey(noteRenderInfo, noteRenderInfo.fillStyle)
+			// })
+			// activeNotes.black.forEach(noteRenderInfo => {
+			// 	this.pianoRender.drawActiveKey(noteRenderInfo, noteRenderInfo.fillStyle)
+			// })
 
 			//stroke newly hit ones
 			//TODO: Doesn't look very nice.
@@ -434,14 +441,14 @@ export class NoteRender {
 					currentActiveNotes[noteRenderInfo.noteId] = true
 					currentActiveObj[noteRenderInfo.noteNumber] = noteRenderInfo
 					if (!this.lastActiveNotes.hasOwnProperty(noteRenderInfo.noteId)) {
-						this.pianoParticleRender.add(noteRenderInfo)
+						// this.pianoParticleRender.add(noteRenderInfo)
 					}
 				})
 				activeNotes.black.forEach(noteRenderInfo => {
 					currentActiveNotes[noteRenderInfo.noteId] = true
 					currentActiveObj[noteRenderInfo.noteNumber] = noteRenderInfo
 					if (!this.lastActiveNotes.hasOwnProperty(noteRenderInfo.noteId)) {
-						this.pianoParticleRender.add(noteRenderInfo)
+						// this.pianoParticleRender.add(noteRenderInfo)
 					}
 				})
 			}
