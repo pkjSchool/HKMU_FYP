@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { NavLink } from "react-router-dom";
 
 import "../css/VolumeSlider.css";
@@ -31,7 +31,7 @@ const CollapsibleNavBar = (props:any) => {
 
   const toggleNavBar = () => {
     setIsCollapsed((prev) => !prev);
-    menuCollapsedCallback(isCollapsed);
+    menuCollapsedCallback(!isCollapsed);
   };
 
   const clickPlay = () => {
@@ -46,11 +46,14 @@ const CollapsibleNavBar = (props:any) => {
     stopCallback();
   }
 
+  useEffect(() => {
+    menuCollapsedCallback(isCollapsed);
+  }, []);
 
   return (
     <div style={{
       position: "absolute",
-      top: isCollapsed ? "0px" : "-130px",
+      top: isCollapsed ? "-130px" : "0px",
       left: "0px",
       width: "100%",
       height: "130px",
@@ -109,11 +112,11 @@ const CollapsibleNavBar = (props:any) => {
                     <span style={{ color: "white" }}>
                       Volume
                     </span>
-                    <button className="volume-btn" style={buttonStyles.TopNavBarBtn(hoveredButton, 6)} onMouseEnter={() => handleMouseEnter(6)} onMouseLeave={handleMouseLeave}>
+                    <button className="volume-btn" style={buttonStyles.TopNavBarBtn(hoveredButton, 6)} onMouseEnter={() => handleMouseEnter(6)} onMouseLeave={handleMouseLeave} onClick={handleVolumeButtonOnClick}>
                       {volume === 0 ? (
-                        <CiVolume size={25} color="white" onClick={handleVolumeButtonOnClick} />
+                        <CiVolume size={25} color="white" />
                       ) : (
-                        <CiVolumeHigh size={25} color="white" onClick={handleVolumeButtonOnClick} />
+                        <CiVolumeHigh size={25} color="white" />
                       )}
                     </button>
                   </label>

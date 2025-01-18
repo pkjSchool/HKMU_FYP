@@ -5,9 +5,9 @@ import { SettingUI } from "../ui/SettingUI.js"
 // 	saveCurrentSettings
 // } from "./LocalStorageHandler.js"
 
-const fixedSettings = {
-    'enableMetronome': true
-}
+// const fixedSettings = {
+//     'enableMetronome': true
+// }
 
 class Settings {
 	constructor(ui) {

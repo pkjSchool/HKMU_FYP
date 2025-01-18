@@ -172,11 +172,11 @@ class MusicNotePlayerRender extends React.Component<any, any> {
     }
 
     return (
-      <div ref={this.wrapperRef} style={{position: "relative",height: "100%", width: "100%"}}>
-        <canvas ref={this.bgCanvasRef} style={{backgroundColor: "black",position: "absolute",top: "0px",left: "0px",zIndex: -5}}/>
-        <canvas ref={this.mainCanvasRef} style={{position: "absolute",top: "0px",left: "0px",zIndex: -5}}/>
+      <div ref={this.wrapperRef} style={{position: "relative",height: "100%", width: "100%",zIndex: 0}}>
+        <canvas ref={this.bgCanvasRef} style={{backgroundColor: "black",position: "absolute",top: "0px",left: "0px",zIndex: -5, pointerEvents: "none"}}/>
+        <canvas ref={this.mainCanvasRef} style={{position: "absolute",top: "0px",left: "0px",zIndex: -5, pointerEvents: "none"}}/>
         <canvas ref={this.progressBarCanvasRef} style={{...progressBarCanvas, position: "absolute", top: "0px", left: "0px", zIndex: 0}}/>
-        <canvas ref={this.foregroundCanvasRef} style={{position: "absolute",top: "0px",left: "0px",zIndex: -5}}/>
+        <canvas ref={this.foregroundCanvasRef} style={{position: "absolute",top: "0px",left: "0px",zIndex: -5, pointerEvents: "none"}}/>
       </div>
     );
   }

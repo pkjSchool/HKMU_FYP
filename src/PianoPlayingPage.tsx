@@ -26,7 +26,7 @@ function App() {
   const handleMenuCollapsed = (isCollapsed:boolean) => { childRef.current.changeMenuHeight(isCollapsed?0:130) }
   // background: '#282c34', 
   return (
-    <div style={{ height: '100%', width: '100%' }}>
+    <div style={{ position: "relative", height: '100%', width: '100%', overflow: 'hidden' }}>
 
       <MIDIController onNoteOn={onNoteOn} onNoteOff={onNoteOff} />
       <TopNavBar playCallback={handlePlay} pausingCallback={handlePause} stopCallback={handleStop} menuCollapsedCallback={handleMenuCollapsed} />

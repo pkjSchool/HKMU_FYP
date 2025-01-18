@@ -96,6 +96,7 @@ const Piano = ({activeNote}: PianoActiveNote) => {
         width: "100%",
         height: `${renderDimensions.whiteKeyHeight}px`,
         display: "flex",
+        zIndex: 10,
       }}
     >
       {/* White keys */}

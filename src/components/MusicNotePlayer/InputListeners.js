@@ -15,7 +15,8 @@ export class InputListeners {
 
 		window.addEventListener("keydown", this.onKeyDown(ui))
 
-		ui.setOnMenuHeightChange(val => render.onMenuHeightChanged(val))
+		// ui.setOnMenuHeightChange(val => render.onMenuHeightChanged(val))
+		ui.setOnMenuHeightChange(val => {})
 
 		ui.fireInitialListeners()
 
