@@ -4,79 +4,6 @@ import { getPlayer, getPlayerState } from "./MusicNotePlayer/player/Player.js"
 import { UI } from "./MusicNotePlayer/ui/UI.js"
 import { InputListeners } from "./MusicNotePlayer/InputListeners.js"
 
-// const MusicNotePlayerRender = forwardRef((props:any, ref) => {
-//     const {music, ...setting} = props
-
-//     const [menuHeight, setMenuHeight] = useState(0);
-
-//     const foregroundCanvasRef = useRef(null)
-//     const bgCanvasRef = useRef(null)
-//     const mainCanvasRef = useRef(null)
-//     const progressBarCanvasRef = useRef(null)
-//     const wrapperRef = useRef(null)
-
-//     useImperativeHandle(ref, () => ({
-//         play,
-//         pause,
-//         stop,
-//         changeMenuHeight
-//     }));
-
-//     const play = () => {
-//       getPlayer().startPlay()
-//     };
-
-//     const pause = () => {
-//       getPlayer().pause()
-//     };
-
-//     const stop = () => {
-//       getPlayer().stop()
-//     };
-
-//     const changeMenuHeight = (h:number) => {
-//       setMenuHeight(h)
-//     };
-
-//     useEffect(() => {
-//         const wrapperEle = wrapperRef.current
-
-//         const cnvForeground = foregroundCanvasRef.current
-//         const cnvBG = bgCanvasRef.current
-//         const cnvMain = mainCanvasRef.current
-//         const progressBarCanvas = progressBarCanvasRef.current
-
-//         let animeId = 0
-
-//         const render = new Render(cnvBG, cnvMain, progressBarCanvas, cnvForeground, wrapperEle)
-//         const ui = new UI(render)
-//         const listeners = new InputListeners(ui, render, wrapperEle)
-//         const player = getPlayer()
-//         player.loadSong(music, "fileNameSpecific", "name")
-
-//         const renderer = () => {
-//           render.render(getPlayerState())
-//           animeId = window.requestAnimationFrame(renderer)
-//         }
-
-//         renderer()
-
-//         return () => {
-//             window.cancelAnimationFrame(animeId)
-//         }
-//     }
-//     , [])
-
-//   return (
-//     <div ref={wrapperRef} style={{position: "relative",height: "100%", width: "100%"}}>
-//       <canvas ref={bgCanvasRef} style={{backgroundColor: "black",position: "absolute",top: "0px",left: "0px",zIndex: -5}}/>
-//       <canvas ref={mainCanvasRef} style={{position: "absolute",top: "0px",left: "0px",zIndex: -5}}/>
-//       <canvas ref={progressBarCanvasRef} style={{...progressBarCanvas, position: "absolute", top: "0px", left: "0px", zIndex: 0}}/>
-//       <canvas ref={foregroundCanvasRef} style={{position: "absolute",top: "0px",left: "0px",zIndex: -5}}/>
-//     </div>
-//   );
-// });
-
 const progressBarCanvas: Object = {
   transition: "all 0.4s ease-out",
   backgroundColor: "#757575",
@@ -132,6 +59,14 @@ class MusicNotePlayerRender extends React.Component<any, any> {
     this.setState({menuHeight: h})
     this.cnvrender.onMenuHeightChanged(h)
   };
+
+  onNotePress = (note:number) => {
+    console.log("note pressed", note)
+  }
+
+  onNoteRelease = (note:number) => {
+    console.log("note released", note)
+  }
 
   componentDidMount() {
 

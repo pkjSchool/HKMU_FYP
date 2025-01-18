@@ -3,9 +3,11 @@ import { isBlack } from "../util/utils.tsx"; // Utility function for black keys
 
 interface PianoActiveNote {
   activeNote: number[] | null;
+  onNoteOn: (note: number) => void;
+  onNoteOff: (note: number) => void;
 }
 
-const Piano = ({activeNote}: PianoActiveNote) => {
+const Piano = ({activeNote, onNoteOn, onNoteOff}: PianoActiveNote) => {
     const renderDimensions = {
         whiteKeyHeight: 120,
         blackKeyHeight: 80,
@@ -50,6 +52,11 @@ const Piano = ({activeNote}: PianoActiveNote) => {
                 backgroundColor: isActive ? "lightblue" : "white",
                 zIndex: 1,
               }}
+              onMouseDown={() => {onNoteOn(noteNumber)}}
+              // onMouseOver={() => {onNoteOn(noteNumber)}}
+              // onMouseLeave={() => {onNoteOff(noteNumber)}}
+              onMouseUp={() => {onNoteOff(noteNumber)}}
+              onTouchEnd={() => {onNoteOff(noteNumber)}}
             />
           );
           currentWhiteKeyIndex++;
@@ -67,6 +74,11 @@ const Piano = ({activeNote}: PianoActiveNote) => {
                 left: `${(currentWhiteKeyIndex - 1) * whiteKeyWidthPercentage + whiteKeyWidthPercentage * 0.7}%`,
                 zIndex: 2,
               }}
+              onMouseDown={() => {onNoteOn(noteNumber)}}
+              // onMouseOver={() => {onNoteOn(noteNumber)}}
+              // onMouseLeave={() => {onNoteOff(noteNumber)}}
+              onMouseUp={() => {onNoteOff(noteNumber)}}
+              onTouchEnd={() => {onNoteOff(noteNumber)}}
             />
           );
         }

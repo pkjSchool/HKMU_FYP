@@ -10,28 +10,35 @@ const music = "data:audio/midi;base64,TVRoZAAAAAYAAQACA8BNVHJrAAAACwD/UQMHoSAA/y
 function App() {
   const [activeNotes, setActiveNotes] = useState<number[]>([]);
 
-  const childRef = useRef();
+  const notePlayerRef = useRef();
+  const MIDIControllerRef = useRef();
 
   const onNoteOn = (note: number) => {
     setActiveNotes((prev) => [...prev, note]);
+    notePlayerRef.current.onNotePress(note)
+    MIDIControllerRef.current.playNote(note, 127)
+    notePlayerRef.current.onNotePress(note)
   };
 
   const onNoteOff = (note: number) => {
     setActiveNotes((prev) => prev.filter((n) => n !== note));
+    notePlayerRef.current.onNoteRelease(note)
+    MIDIControllerRef.current.stopNote(note)
+    notePlayerRef.current.onNoteRelease(note)
   };
 
-  const handlePlay = () => { childRef.current.play() }
-  const handlePause = () => { childRef.current.pause() }
-  const handleStop = () => { childRef.current.stop() }
-  const handleMenuCollapsed = (isCollapsed:boolean) => { childRef.current.changeMenuHeight(isCollapsed?0:130) }
+  const handlePlay = () => { notePlayerRef.current.play() }
+  const handlePause = () => { notePlayerRef.current.pause() }
+  const handleStop = () => { notePlayerRef.current.stop() }
+  const handleMenuCollapsed = (isCollapsed:boolean) => { notePlayerRef.current.changeMenuHeight(isCollapsed?0:130) }
   // background: '#282c34', 
   return (
     <div style={{ position: "relative", height: '100%', width: '100%', overflow: 'hidden' }}>
 
-      <MIDIController onNoteOn={onNoteOn} onNoteOff={onNoteOff} />
+      <MIDIController ref={MIDIControllerRef} onNoteOn={onNoteOn} onNoteOff={onNoteOff} />
       <TopNavBar playCallback={handlePlay} pausingCallback={handlePause} stopCallback={handleStop} menuCollapsedCallback={handleMenuCollapsed} />
-      <MusicNotePlayerRender ref={childRef} music={music} />
-      <PianoRender activeNote={activeNotes} />
+      <MusicNotePlayerRender ref={notePlayerRef} music={music} />
+      <PianoRender activeNote={activeNotes} onNoteOn={onNoteOn} onNoteOff={onNoteOff} />
     </div>
   );
 }
