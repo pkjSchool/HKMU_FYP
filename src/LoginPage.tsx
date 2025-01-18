@@ -45,7 +45,7 @@ function LoginPage() {
         <br/>password: {storedInfo.password} */}
         <form onSubmit={handleSubmit(onSubmit)}>
           <div className="card">
-            <h1 className="card-header text-center">Login</h1>
+            <h2 className="card-header text-center">Login</h2>
             <div className="card-body">
               <div className="mb-3"><label className="form-label">Username</label><input type="text" className="form-control" {...register("username", { required: true })} /></div>
               {/* {errors.username && <p role="alert" className="errorText">{errors.username.message}</p>} */}
