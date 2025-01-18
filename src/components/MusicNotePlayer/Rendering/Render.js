@@ -26,7 +26,12 @@ const PROGRESS_BAR_CANVAS_HEIGHT = 20
  * Class that handles all rendering
  */
 export class Render {
-	constructor() {
+	constructor(cnvBG, cnvMain, progressBarCanvas, cnvForeground) {
+		this.cnvBG = cnvBG
+		this.cnv = cnvMain
+		this.progressBarCanvas = progressBarCanvas
+		this.cnvForeground = cnvForeground
+
 		this.renderDimensions = new RenderDimensions()
 		this.renderDimensions.registerResizeCallback(this.setupCanvases.bind(this))
 
@@ -368,71 +373,81 @@ export class Render {
 			this.renderDimensions.windowWidth,
 			this.renderDimensions.windowHeight
 		)
+
+		// this.getProgressBarCanvas().style.height = PROGRESS_BAR_CANVAS_HEIGHT + "px"
+		this.getProgressBarCanvas().id = "progressBarCanvas"
+		// this.getForegroundCanvas().style.zIndex = "101"
+
+        this.ctxForeground = this.cnvForeground.getContext('2d');
+        this.ctxBG = this.cnvBG.getContext('2d');
+        this.ctx = this.cnv.getContext('2d');
+        this.progressBarCtx = this.progressBarCanvas.getContext('2d');
+
 		this.setCtxBlur()
 	}
 	getBgCanvas() {
-		if (!this.cnvBG) {
-			this.cnvBG = DomHelper.createCanvas(
-				this.renderDimensions.windowWidth,
-				this.renderDimensions.windowHeight,
-				{
-					backgroundColor: "black",
-					position: "absolute",
-					top: "0px",
-					left: "0px"
-				}
-			)
-			document.body.appendChild(this.cnvBG)
-			this.ctxBG = this.cnvBG.getContext("2d")
-		}
+		// if (!this.cnvBG) {
+		// 	this.cnvBG = DomHelper.createCanvas(
+		// 		this.renderDimensions.windowWidth,
+		// 		this.renderDimensions.windowHeight,
+		// 		{
+		// 			backgroundColor: "black",
+		// 			position: "absolute",
+		// 			top: "0px",
+		// 			left: "0px"
+		// 		}
+		// 	)
+		// 	document.body.appendChild(this.cnvBG)
+		// 	this.ctxBG = this.cnvBG.getContext("2d")
+		// }
 		return this.cnvBG
 	}
 	getMainCanvas() {
-		if (!this.cnv) {
-			this.cnv = DomHelper.createCanvas(
-				this.renderDimensions.windowWidth,
-				this.renderDimensions.windowHeight,
-				{
-					position: "absolute",
-					top: "0px",
-					left: "0px"
-				}
-			)
-			document.body.appendChild(this.cnv)
-			this.ctx = this.cnv.getContext("2d")
-		}
+		// if (!this.cnv) {
+		// 	this.cnv = DomHelper.createCanvas(
+		// 		this.renderDimensions.windowWidth,
+		// 		this.renderDimensions.windowHeight,
+		// 		{
+		// 			position: "absolute",
+		// 			top: "0px",
+		// 			left: "0px"
+		// 		}
+		// 	)
+		// 	document.body.appendChild(this.cnv)
+		// 	this.ctx = this.cnv.getContext("2d")
+		// }
 		return this.cnv
 	}
 	getForegroundCanvas() {
-		if (!this.cnvForeground) {
-			this.cnvForeground = DomHelper.createCanvas(
-				this.renderDimensions.windowWidth,
-				this.renderDimensions.windowHeight,
-				{
-					position: "absolute",
-					top: "0px",
-					left: "0px"
-				}
-			)
-			this.cnvForeground.style.pointerEvents = "none"
-			this.cnvForeground.style.zIndex = "101"
-			document.body.appendChild(this.cnvForeground)
-			this.ctxForeground = this.cnvForeground.getContext("2d")
-		}
+		// if (!this.cnvForeground) {
+		// 	this.cnvForeground = DomHelper.createCanvas(
+		// 		this.renderDimensions.windowWidth,
+		// 		this.renderDimensions.windowHeight,
+		// 		{
+		// 			position: "absolute",
+		// 			top: "0px",
+		// 			left: "0px"
+		// 		}
+		// 	)
+		// 	this.cnvForeground.style.pointerEvents = "none"
+		// 	this.cnvForeground.style.zIndex = "101"
+		// 	document.body.appendChild(this.cnvForeground)
+		// 	this.ctxForeground = this.cnvForeground.getContext("2d")
+		// }
 		return this.cnvForeground
 	}
 
 	getProgressBarCanvas() {
-		if (!this.progressBarCanvas) {
-			this.progressBarCanvas = DomHelper.createCanvas(
-				this.renderDimensions.windowWidth,
-				PROGRESS_BAR_CANVAS_HEIGHT,
-				{}
-			)
-			this.progressBarCanvas.id = "progressBarCanvas"
-			document.body.appendChild(this.progressBarCanvas)
-			this.progressBarCtx = this.progressBarCanvas.getContext("2d")
-		}
+		// if (!this.progressBarCanvas) {
+		// 	this.progressBarCanvas = DomHelper.createCanvas(
+		// 		this.renderDimensions.windowWidth,
+		// 		PROGRESS_BAR_CANVAS_HEIGHT,
+		// 		{}
+		// 	)
+		// 	this.progressBarCanvas.id = "progressBarCanvas"
+		// 	document.body.appendChild(this.progressBarCanvas)
+		// 	this.progressBarCtx = this.progressBarCanvas.getContext("2d")
+		// }
 		return this.progressBarCanvas
 	}
 

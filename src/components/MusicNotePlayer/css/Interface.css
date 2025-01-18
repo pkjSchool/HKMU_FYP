@@ -66,6 +66,7 @@ body {
 	left: 0px;
 	bottom: 0px;
 }
+.pianoCanvas {display: none;}
 .zoomGroup:hover,
 .pianoCanvas:hover ~ .zoomGroup {
 	z-index: 1055;

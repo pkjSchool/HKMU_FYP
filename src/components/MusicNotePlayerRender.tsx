@@ -7,14 +7,20 @@ import { InputListeners } from "./MusicNotePlayer/InputListeners.js"
 const MusicNotePlayerRender = (props:any) => {
     const {music, ...setting} = props
 
-    const canvasRef = useRef(null)
+    const foregroundCanvasRef = useRef(null)
+    const bgCanvasRef = useRef(null)
+    const mainCanvasRef = useRef(null)
+    const progressBarCanvasRef = useRef(null)
 
     useEffect(() => {
-        const canvas = canvasRef.current
-        const context = canvas.getContext('2d');
+        const cnvForeground = foregroundCanvasRef.current
+        const cnvBG = bgCanvasRef.current        
+        const cnvMain = mainCanvasRef.current
+        const progressBarCanvas = progressBarCanvasRef.current
+
         let animeId = 0
 
-        const render = new Render()
+        const render = new Render(cnvBG, cnvMain, progressBarCanvas, cnvForeground)
         const ui = new UI(render)
         const listeners = new InputListeners(ui, render)
         const player = getPlayer()
@@ -34,7 +40,12 @@ const MusicNotePlayerRender = (props:any) => {
     , [])
 
   return (
-    <canvas ref={canvasRef} {...setting} width="800" height="1"/>
+    <>
+      <canvas ref={bgCanvasRef} style={{backgroundColor: "black",position: "absolute",top: "0px",left: "0px"}}/>
+      <canvas ref={mainCanvasRef} style={{position: "absolute",top: "0px",left: "0px"}}/>
+      <canvas ref={progressBarCanvasRef} style={{position: "absolute",top: "0px",left: "0px"}}/>
+      <canvas ref={foregroundCanvasRef} style={{position: "absolute",top: "0px",left: "0px"}}/>
+    </>
   );
 };
 

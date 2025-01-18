@@ -15,25 +15,25 @@ export class UI {
 			"only screen and (max-width: 1600px)"
 		).matches
 
-		this.songUI = new SongUI()
+		// this.songUI = new SongUI()
 		//add callbacks to the player
-		getPlayer().newSongCallbacks.push(this.newSongCallback.bind(this))
+		// getPlayer().newSongCallbacks.push(this.newSongCallback.bind(this))
 
-		document.body.addEventListener("mousemove", this.mouseMoved.bind(this))
+		// document.body.addEventListener("mousemove", this.mouseMoved.bind(this))
 
-		this.createControlMenu()
+		// this.createControlMenu()
 
-		this.menuHeight = 200
+		// this.menuHeight = 200
 
-		document
-			.querySelectorAll(".innerMenuDiv")
-			.forEach(
-				el =>
-					(el.style.height =
-						"calc(100% - " + (this.getNavBar().clientHeight + 24) + "px)")
-			)
+		// document
+		// 	.querySelectorAll(".innerMenuDiv")
+		// 	.forEach(
+		// 		el =>
+		// 			(el.style.height =
+		// 				"calc(100% - " + (this.getNavBar().clientHeight + 24) + "px)")
+		// 	)
 
-		document.body.appendChild(new ZoomUI().getContentDiv(render))
+		// document.body.appendChild(new ZoomUI().getContentDiv(render))
 	}
 
 	setExampleSongs(exampleSongsJson) {
