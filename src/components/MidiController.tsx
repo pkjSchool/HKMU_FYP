@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, forwardRef, useImperativeHandle } from 'react';
 import { notePathMap } from '../Map.js';
 
 
@@ -7,11 +7,16 @@ interface MIDIControllerProps {
   onNoteOff: (note: number) => void;
 }
 
-const MIDIController = ({ onNoteOn, onNoteOff }: MIDIControllerProps) => {
+const MIDIController = forwardRef(({ onNoteOn, onNoteOff }: MIDIControllerProps, ref) => {
   const [midiAccess, setMidiAccess] = useState<WebMidi.MIDIAccess | null>(null);
   const [inputs, setInputs] = useState<WebMidi.MIDIInput[]>([]);
   const [audioBuffers, setAudioBuffers] = useState<{ [key: string]: AudioBuffer }>({});
   const audioContext = new (window.AudioContext || (window as any).webkitAudioContext)();
+
+    useImperativeHandle(ref, () => ({
+      playNote,
+      stopNote
+    }));
 
   useEffect(() => {
     if (navigator.requestMIDIAccess) {
@@ -111,6 +116,6 @@ const MIDIController = ({ onNoteOn, onNoteOff }: MIDIControllerProps) => {
   };
 
   return null;
-};
+});
 
 export default MIDIController;

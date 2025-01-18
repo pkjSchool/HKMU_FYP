@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { NavLink } from "react-router-dom";
 
 import "../css/VolumeSlider.css";
 
@@ -9,7 +10,9 @@ import { IoIosSettings } from "react-icons/io";
 
 
 
-const CollapsibleNavBar = () => {
+const CollapsibleNavBar = (props:any) => {
+  const {playCallback, pausingCallback, stopCallback, menuCollapsedCallback} = props;
+
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [hoveredButton, setHoveredButton] = useState<number>(-1);
   const [volume, setVolume] = useState<number>(100);
@@ -28,17 +31,37 @@ const CollapsibleNavBar = () => {
 
   const toggleNavBar = () => {
     setIsCollapsed((prev) => !prev);
+    menuCollapsedCallback(!isCollapsed);
   };
 
+  const clickPlay = () => {
+    playCallback();
+  }
+
+  const clickPause = () => {
+    pausingCallback();
+  }
+
+  const clickStop = () => {
+    stopCallback();
+  }
+
+  useEffect(() => {
+    menuCollapsedCallback(isCollapsed);
+  }, []);
 
   return (
     <div style={{
-      position: "relative",
+      position: "absolute",
+      top: isCollapsed ? "-130px" : "0px",
+      left: "0px",
       width: "100%",
-      height: "150px",
+      height: "130px",
+      zIndex: 100,
+      transition: "top 0.3s ease",
     }}>
 
-      <div className="topnavbar-warrper" style={{ ...styles.navbar, height: isCollapsed ? "0px" : "130px" }}>
+      <div className="topnavbar-warrper" style={{ ...styles.navbar, height: "100%" }}>
         <div className="container" style={styles.container}>
           <div className="topContainer-1" style={styles.topContainer}>
             <div className="btn-group-1" style={styles.btnGroup}>
@@ -63,17 +86,17 @@ const CollapsibleNavBar = () => {
 
           <div className="topContainer-2" style={styles.topContainer}>
             <div className="btn-group-2" style={{ ...styles.btnGroup, flexDirection: "row" }}>
-              <button style={buttonStyles.TopNavBarBtn(hoveredButton, 3)} onMouseEnter={() => handleMouseEnter(3)} onMouseLeave={handleMouseLeave}>
+              <button style={buttonStyles.TopNavBarBtn(hoveredButton, 3)} onMouseEnter={() => handleMouseEnter(3)} onMouseLeave={handleMouseLeave} onClick={() => { clickPlay() }}>
                 <div className="glyph">
                   <FaPlay size={40} color="white" />
                 </div>
               </button>
-              <button style={buttonStyles.TopNavBarBtn(hoveredButton, 4)} onMouseEnter={() => handleMouseEnter(4)} onMouseLeave={handleMouseLeave}>
+              <button style={buttonStyles.TopNavBarBtn(hoveredButton, 4)} onMouseEnter={() => handleMouseEnter(4)} onMouseLeave={handleMouseLeave} onClick={() => { clickPause() }}>
                 <div className="glyph">
                   <FaPause size={40} color="white" />
                 </div>
               </button>
-              <button style={buttonStyles.TopNavBarBtn(hoveredButton, 5)} onMouseEnter={() => handleMouseEnter(5)} onMouseLeave={handleMouseLeave}>
+              <button style={buttonStyles.TopNavBarBtn(hoveredButton, 5)} onMouseEnter={() => handleMouseEnter(5)} onMouseLeave={handleMouseLeave} onClick={() => { clickStop() }}>
                 <div className="glyph">
                   <FaStop size={40} color="white" />
                 </div>
@@ -89,11 +112,11 @@ const CollapsibleNavBar = () => {
                     <span style={{ color: "white" }}>
                       Volume
                     </span>
-                    <button className="volume-btn" style={buttonStyles.TopNavBarBtn(hoveredButton, 6)} onMouseEnter={() => handleMouseEnter(6)} onMouseLeave={handleMouseLeave}>
+                    <button className="volume-btn" style={buttonStyles.TopNavBarBtn(hoveredButton, 6)} onMouseEnter={() => handleMouseEnter(6)} onMouseLeave={handleMouseLeave} onClick={handleVolumeButtonOnClick}>
                       {volume === 0 ? (
-                        <CiVolume size={25} color="white" onClick={handleVolumeButtonOnClick} />
+                        <CiVolume size={25} color="white" />
                       ) : (
-                        <CiVolumeHigh size={25} color="white" onClick={handleVolumeButtonOnClick} />
+                        <CiVolumeHigh size={25} color="white" />
                       )}
                     </button>
                   </label>
@@ -102,15 +125,14 @@ const CollapsibleNavBar = () => {
               </div>
               <div className="right-group" style={{ ...styles.innerGroup }}>
                 <div>
-
-                  <a href="/" style={{ color: "white" }}>
+                  <NavLink to="/" style={{ color: "white" }}>
                     <button className="left-btn" style={buttonStyles.TopNavBarBtn(hoveredButton, 7)} onMouseEnter={() => handleMouseEnter(7)} onMouseLeave={handleMouseLeave}>
                       <div className="glyph">
                         <MdOutlineExitToApp size={25} />
                       </div>
 
                     </button>
-                  </a>
+                  </NavLink>
                   <button className="settings-btn" style={buttonStyles.TopNavBarBtn(hoveredButton, 8)} onMouseEnter={() => handleMouseEnter(8)} onMouseLeave={handleMouseLeave}>
                     <div className="glyph">
                       <IoIosSettings size={25} />
@@ -144,7 +166,7 @@ const styles: Styles = {
     position: "relative",
     width: "100%",
     backgroundColor: "#5f5f5f",
-    transition: "height 0.3s ease",
+    // transition: "height 0.3s ease",
     overflow: "hidden",
   },
   container: {
@@ -207,7 +229,8 @@ const styleFunctions: StyleFunctions = {
   }),
   floatingButton: (isCollapsed: boolean) => ({
     position: "absolute",
-    top: isCollapsed ? "10px" : "130px",
+    // top: isCollapsed ? "10px" : "130px",
+    top: "170px",
     left: "50%",
     transform: "translateX(-50%)",
     transition: "top 0.3s ease",

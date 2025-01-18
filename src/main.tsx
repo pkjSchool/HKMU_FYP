@@ -1,11 +1,19 @@
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import App from './App.tsx'
+
 import './index.css'
 import './css/bootstrap-modified.css';
 import './css/form.css';
 import './css/animate.min.css';
 import './css/animate.fix.css';
+
+// import './components/MusicNotePlayer/css/Interface.css'
+// import './components/MusicNotePlayer/css/Inputs.css'
+// import './components/MusicNotePlayer/css/Settings.css'
+// import './components/MusicNotePlayer/css/nano.min.css'
+// import './components/MusicNotePlayer/css/bootstrap-theme.min.css'
+
 // @ts-ignore
 import store from './store/globalConfig.js'
 import { Provider } from 'react-redux'
@@ -32,13 +40,12 @@ createRoot(document.getElementById('root')!).render(
             <Route path="/" element={ <LessonPage /> } />
             <Route path="/learning" element={ <LearningPage /> } />
             <Route path="/self-study" element={ <Navigate to="/playing" /> } />
-            <Route path="/music-player" element={ <SelfStudyPage /> } />
             <Route path="/task" element={ <TaskPage /> } />
             <Route path="/profile" element={ <ProfilePage /> } /> 
             <Route path="/ai-generation" element={ <AiGenerationPage /> } />
             <Route path="/more" element={ <MorePage /> } />
           </Route>
-          
+          <Route path="/music-player" element={ <SelfStudyPage /> } />
           <Route path="/playing" element={ <PianoPlayingPage /> } />
           <Route path="/login" element={ <LoginPage /> } />
           <Route path="/lesson/:lessonId" element={<LessonDetail />} />
