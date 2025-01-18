@@ -1,16 +1,34 @@
-import React, { useEffect, useRef } from 'react'
+import React, { useEffect, useRef, forwardRef, useImperativeHandle } from 'react'
 import { Render } from "./MusicNotePlayer/Rendering/Render.js"
 import { getPlayer, getPlayerState } from "./MusicNotePlayer/player/Player.js"
 import { UI } from "./MusicNotePlayer/ui/UI.js"
 import { InputListeners } from "./MusicNotePlayer/InputListeners.js"
 
-const MusicNotePlayerRender = (props:any) => {
+const MusicNotePlayerRender = forwardRef((props:any, ref) => {
     const {music, ...setting} = props
 
     const foregroundCanvasRef = useRef(null)
     const bgCanvasRef = useRef(null)
     const mainCanvasRef = useRef(null)
     const progressBarCanvasRef = useRef(null)
+
+    useImperativeHandle(ref, () => ({
+        play,
+        pause,
+        stop
+    }));
+
+    const play = () => {
+      getPlayer().startPlay()
+    };
+
+    const pause = () => {
+      getPlayer().pause()
+    };
+
+    const stop = () => {
+      getPlayer().stop()
+    };
 
     useEffect(() => {
         const cnvForeground = foregroundCanvasRef.current
@@ -47,6 +65,6 @@ const MusicNotePlayerRender = (props:any) => {
       <canvas ref={foregroundCanvasRef} style={{position: "absolute",top: "0px",left: "0px"}}/>
     </>
   );
-};
+});
 
 export default MusicNotePlayerRender;

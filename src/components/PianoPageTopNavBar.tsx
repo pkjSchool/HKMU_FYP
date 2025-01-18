@@ -9,7 +9,9 @@ import { IoIosSettings } from "react-icons/io";
 
 
 
-const CollapsibleNavBar = () => {
+const CollapsibleNavBar = (props:any) => {
+  const {playCallback, pausingCallback, stopCallback} = props;
+
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [hoveredButton, setHoveredButton] = useState<number>(-1);
   const [volume, setVolume] = useState<number>(100);
@@ -63,17 +65,17 @@ const CollapsibleNavBar = () => {
 
           <div className="topContainer-2" style={styles.topContainer}>
             <div className="btn-group-2" style={{ ...styles.btnGroup, flexDirection: "row" }}>
-              <button style={buttonStyles.TopNavBarBtn(hoveredButton, 3)} onMouseEnter={() => handleMouseEnter(3)} onMouseLeave={handleMouseLeave}>
+              <button style={buttonStyles.TopNavBarBtn(hoveredButton, 3)} onMouseEnter={() => handleMouseEnter(3)} onMouseLeave={handleMouseLeave} onClick={() => { playCallback() }}>
                 <div className="glyph">
                   <FaPlay size={40} color="white" />
                 </div>
               </button>
-              <button style={buttonStyles.TopNavBarBtn(hoveredButton, 4)} onMouseEnter={() => handleMouseEnter(4)} onMouseLeave={handleMouseLeave}>
+              <button style={buttonStyles.TopNavBarBtn(hoveredButton, 4)} onMouseEnter={() => handleMouseEnter(4)} onMouseLeave={handleMouseLeave} onClick={() => { pausingCallback() }}>
                 <div className="glyph">
                   <FaPause size={40} color="white" />
                 </div>
               </button>
-              <button style={buttonStyles.TopNavBarBtn(hoveredButton, 5)} onMouseEnter={() => handleMouseEnter(5)} onMouseLeave={handleMouseLeave}>
+              <button style={buttonStyles.TopNavBarBtn(hoveredButton, 5)} onMouseEnter={() => handleMouseEnter(5)} onMouseLeave={handleMouseLeave} onClick={() => { stopCallback() }}>
                 <div className="glyph">
                   <FaStop size={40} color="white" />
                 </div>
