@@ -53,7 +53,7 @@ function ProfilePage() {
 
         <form onSubmit={handleSubmit(onSubmit)}>
           <div className="card">
-            <h1 className="card-header">Information</h1>
+            <h2 className="card-header">Information</h2>
             <div className="card-body">
               <div className="mb-3"><b>Username</b>: user1</div>
               <div className="mb-3"><label className="form-label">Display Name</label><input type="text" className="form-control" {...register("displayName", { required: true })} /></div>
