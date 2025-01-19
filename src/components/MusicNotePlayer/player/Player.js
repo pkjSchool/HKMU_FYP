@@ -13,8 +13,11 @@ import {
 } from "./Tracks.js"
 import { Notification } from "../ui/Notification.js"
 
-const LOOK_AHEAD_TIME = 0.2
-const LOOK_AHEAD_TIME_WHEN_PLAYALONG = 0.02
+// const LOOK_AHEAD_TIME = 0.2
+// const LOOK_AHEAD_TIME_WHEN_PLAYALONG = 0.02
+
+const LOOK_AHEAD_TIME = 0
+const LOOK_AHEAD_TIME_WHEN_PLAYALONG = 0
 
 class Player {
 	constructor() {
@@ -42,6 +45,8 @@ class Player {
 		this.inputPlayedNotes = []
 
 		this.playbackSpeed = 1
+
+		this.finishListeners = []
 
 		console.log("Player created.")
 		this.playTick()
@@ -269,6 +274,7 @@ class Player {
 		if (this.isSongEnded(currentTime)) {
 			this.pause()
 			this.requestNextTick()
+			this.runFinishListener()
 			return
 		}
 		if (getSetting("enableMetronome")) {
@@ -473,6 +479,17 @@ class Player {
 		})
 	
 		return this.noteSequence
+	}
+	addFinishListener(event) {
+		this.finishListeners.push(event)
+	}
+	clearFinishListener() {
+		this.finishListeners = []
+	}
+	runFinishListener() {
+		for(let i in this.finishListeners) {
+			this.finishListeners[i]()
+		}
 	}
 }
 const thePlayer = new Player()
