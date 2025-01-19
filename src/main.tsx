@@ -40,7 +40,7 @@ createRoot(document.getElementById('root')!).render(
           <Route path="/" element={ <App /> } >
             <Route path="/" element={ <LessonPage /> } />
             <Route path="/learning" element={ <LearningPage /> } />
-            <Route path="/self-study" element={ <Navigate to="/playing" /> } />
+            <Route path="/self-study" element={ <Navigate to="/playing" replace={true} /> } />
             <Route path="/task" element={ <TaskPage /> } />
             <Route path="/profile" element={ <ProfilePage /> } /> 
             <Route path="/ai-generation" element={ <AiGenerationPage /> } />
