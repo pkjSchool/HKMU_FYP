@@ -46,6 +46,8 @@ class Player {
 
 		this.playbackSpeed = 1
 
+		this.finishListeners = []
+
 		console.log("Player created.")
 		this.playTick()
 	}
@@ -272,6 +274,7 @@ class Player {
 		if (this.isSongEnded(currentTime)) {
 			this.pause()
 			this.requestNextTick()
+			this.runFinishListener()
 			return
 		}
 		if (getSetting("enableMetronome")) {
@@ -476,6 +479,17 @@ class Player {
 		})
 	
 		return this.noteSequence
+	}
+	addFinishListener(event) {
+		this.finishListeners.push(event)
+	}
+	clearFinishListener() {
+		this.finishListeners = []
+	}
+	runFinishListener() {
+		for(let i in this.finishListeners) {
+			this.finishListeners[i]()
+		}
 	}
 }
 const thePlayer = new Player()
