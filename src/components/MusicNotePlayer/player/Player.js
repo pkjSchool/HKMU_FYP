@@ -508,3 +508,12 @@ export const getPlayerState = () => {
 export const getPlayingNotes = () => {
 	return thePlayer.getPlayingNotes()
 }
+
+export const resetNoteMeasurement = () => {
+	const playerStatus =  thePlayer.getState()
+	for(let tracksIdx in playerStatus.song.activeTracks){
+		for(let notesIdx in playerStatus.song.activeTracks[tracksIdx].notes){
+			playerStatus.song.activeTracks[tracksIdx].notes[notesIdx].isEntered = false
+		}
+	}
+}
