@@ -34,7 +34,7 @@ function processStar() {
 }
 
 const PianoPlayingResult = (props:any) => {
-    const {againCallback} = props;
+    const {againCallback, result} = props;
     
     useEffect(()=>{
         setTimeout(()=>{
@@ -46,6 +46,10 @@ const PianoPlayingResult = (props:any) => {
         (againCallback)?againCallback():null
     }
 
+    const getResultData = (label:string) => {
+        return result?result[label]:null
+    }
+
     return (
         <div style={boxWrapper}>
             <div style={boxOverlay}></div>
@@ -53,7 +57,7 @@ const PianoPlayingResult = (props:any) => {
                 
                 <div style={contextWrapper}>
                     
-                    <h2 className="text-center fw-bold">Music Sheet 1</h2>
+                    <h2 className="text-center fw-bold">{getResultData("name")}</h2>
 
                     <div className="mt-3 mb-3" style={starWrapper}>
                         <IoStar className={starAnime} style={{...starSmall, ...starOrder1}} />
@@ -61,16 +65,23 @@ const PianoPlayingResult = (props:any) => {
                         <IoStar className={starAnime} style={{...starSmall, ...starOrder3}} />
                     </div>
 
-                    <div style={starScore}>100</div>
+                    <div style={starScore}>{getResultData("score")}</div>
 
                     <div className="row mt-3" style={itemRow}>
                         <div className="col-6" style={itemWrapper}>
-                            <div  style={itemLabel}>Time</div>
-                            <div  style={itemText}>10:00</div>
+                            <div  style={itemLabel}>Music Long</div>
+                            <div  style={itemText}>{getResultData("musicTime")}</div>
                         </div>
                         <div className="col-6" style={itemWrapper}>
+                            <div  style={itemLabel}>Play Time</div>
+                            <div  style={itemText}>{getResultData("playTime")}</div>
+                        </div>
+                    </div>
+
+                    <div className="row mt-3" style={itemRow}>
+                        <div className="col-6" style={itemWrapper}>
                             <div  style={itemLabel}>Accuracy</div>
-                            <div  style={itemText}>50%</div>
+                            <div  style={itemText}>{getResultData("accuracy")}%</div>
                         </div>
                     </div>
 
