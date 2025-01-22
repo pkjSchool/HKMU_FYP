@@ -22,17 +22,24 @@ function App() {
   const MIDIControllerRef = useRef();
 
   const onNoteOn = (note: number) => {
-    setActiveNotes((prev) => [...prev, note]);
-    notePlayerRef.current.onNotePress(note)
-    MIDIControllerRef.current.playNote(note, 50)
-    notePlayerRef.current.onNotePress(note)
+    const noteArrIdx = activeNotes.indexOf(note)
+    if(noteArrIdx < 0){
+      setActiveNotes((prev) => [...prev, note]);
+
+      MIDIControllerRef.current.playNote(note, 50)
+      notePlayerRef.current.onNotePress(note)
+    }
   };
 
   const onNoteOff = (note: number) => {
-    setActiveNotes((prev) => prev.filter((n) => n !== note));
-    notePlayerRef.current.onNoteRelease(note)
-    MIDIControllerRef.current.stopNote(note)
-    notePlayerRef.current.onNoteRelease(note)
+    const noteArrIdx = activeNotes.indexOf(note)
+    if(noteArrIdx >= 0){
+      // setActiveNotes((prev) => prev.filter((n) => n !== note));
+      setActiveNotes((prev) => prev.splice(noteArrIdx, 0));
+      
+      MIDIControllerRef.current.stopNote(note)
+      notePlayerRef.current.onNoteRelease(note)
+    }
   };
 
   const handlePlay = () => { notePlayerRef.current.play() }
