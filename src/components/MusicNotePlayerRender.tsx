@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useRef, forwardRef, useImperativeHandle } from 'react'
 import { Render } from "./MusicNotePlayer/Rendering/Render.js"
 import { getPlayer, getPlayerState } from "./MusicNotePlayer/player/Player.js"
-import { UI } from "./MusicNotePlayer/ui/UI.js"
 import { InputListeners } from "./MusicNotePlayer/InputListeners.js"
 
 const progressBarCanvas: Object = {
@@ -21,7 +20,6 @@ class MusicNotePlayerRender extends React.Component<any, any> {
   wrapperRef: React.RefObject<HTMLDivElement>;
   animeId: number;
   cnvrender: Render;
-  ui: UI;
   listeners: InputListeners;
   noteNumberOffset: number;
 
@@ -63,11 +61,11 @@ class MusicNotePlayerRender extends React.Component<any, any> {
   };
 
   onNotePress = (note:number) => {
-    getPlayer().addInputNoteOn(note+this.noteNumberOffset)
+    getPlayer().addInputNoteOn(note + this.noteNumberOffset)
   }
 
   onNoteRelease = (note:number) => {
-    getPlayer().addInputNoteOff(note+this.noteNumberOffset)
+    getPlayer().addInputNoteOff(note + this.noteNumberOffset)
   }
 
   componentDidMount() {
@@ -82,8 +80,7 @@ class MusicNotePlayerRender extends React.Component<any, any> {
       this.animeId = 0;
 
       this.cnvrender = new Render(cnvBG, cnvMain, progressBarCanvas, cnvForeground, wrapperEle)
-      this.ui = new UI(this.cnvrender)
-      this.listeners = new InputListeners(this.ui, this.cnvrender, wrapperEle)
+      this.listeners = new InputListeners(this.cnvrender, wrapperEle)
       const player = getPlayer()
       player.loadSong(this.props.music, "fileNameSpecific", "name")
 
@@ -99,15 +96,6 @@ class MusicNotePlayerRender extends React.Component<any, any> {
   }
 
   render() {
-    const progressBarCanvas: Object = {
-      transition: "all 0.3s ease",
-      backgroundColor: "#757575",
-      boxSizing: "border-box",
-      borderBottom: "4px solid #616161",
-      float: "left",
-      cursor: "pointer",
-    }
-
     return (
       <div ref={this.wrapperRef} style={{position: "relative",height: "100%", width: "100%",zIndex: 0}}>
         <canvas ref={this.bgCanvasRef} style={{backgroundColor: "black",position: "absolute",top: "0px",left: "0px",zIndex: -5, pointerEvents: "none"}}/>

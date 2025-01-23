@@ -1,5 +1,4 @@
 import { hasBuffer, setBuffer } from "./audio/Buffers.js"
-import { getLoader } from "./ui/Loader.js"
 import { replaceAllString, iOS } from "./Util.js"
 import { Base64Binary } from "./Base64Binary.js"
 
@@ -20,9 +19,7 @@ export class SoundfontLoader {
 		)
 			.then(response => {
 				if (response.ok) {
-					getLoader().setLoadMessage(
-						"Loaded " + instrument + " from " + soundfontName + " soundfont."
-					)
+					// getLoader().setLoadMessage("Loaded " + instrument + " from " + soundfontName + " soundfont.")
 					return response.text()
 				}
 				throw Error(response.statusText)
@@ -112,25 +109,6 @@ export class SoundfontLoader {
 			)
 		})
 		return await promise
-
-		//ios can't handle the promise based decodeAudioData
-		// return await ctx
-		// 	.decodeAudioData(base64Buffer, function (decodedBuffer) {
-		// 		audioBuffer = decodedBuffer
-		// 	})
-		// 	.then(
-		// 		() => {
-		// 			return {
-		// 				buffer: audioBuffer,
-		// 				noteKey: noteKey,
-		// 				instrument: instrument,
-		// 				soundfontName: soundfontName
-		// 			}
-		// 		},
-		// 		e => {
-		// 			console.log(e)
-		// 		}
-		// 	)
 	}
 	static getBase64Buffer(str) {
 		let base64 = str.split(",")[1]

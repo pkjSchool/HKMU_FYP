@@ -1,6 +1,6 @@
 import { getSetting } from "../settings/Settings.js"
 import { SoundfontLoader } from "../SoundfontLoader.js"
-import { getLoader } from "../ui/Loader.js"
+// import { getLoader } from "../ui/Loader.js"
 import {
 	createContinuousAudioNote,
 	createCompleteAudioNote
@@ -99,9 +99,9 @@ export class AudioPlayer {
 
 	async switchSoundfont(soundfontName, currentSong) {
 		this.soundfontName = soundfontName
-		getLoader().setLoadMessage("Loading Instruments")
+		// getLoader().setLoadMessage("Loading Instruments")
 		await this.loadInstrumentsForSong(currentSong)
-		getLoader().setLoadMessage("Loading Buffers")
+		// getLoader().setLoadMessage("Loading Buffers")
 		return await this.loadBuffers()
 	}
 	base64ToArrayBuffer(base64) {
@@ -113,16 +113,14 @@ export class AudioPlayer {
 		return bytes.buffer;
 	}
 	loadMetronomeSounds() {
-		let audioPl = this
-
-		audioPl.context.decodeAudioData(
+		this.context.decodeAudioData(
 			this.base64ToArrayBuffer(metronome1),
-			data => (audioPl.metronomSound1 = data)
+			data => (this.metronomSound1 = data)
 		)
 
-		audioPl.context.decodeAudioData(
+		this.context.decodeAudioData(
 			this.base64ToArrayBuffer(metronome2),
-			data => (audioPl.metronomSound1 = data)
+			data => (this.metronomSound1 = data)
 		)
 	}
 	async loadInstrumentsForSong(currentSong) {

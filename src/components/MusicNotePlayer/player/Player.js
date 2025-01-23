@@ -1,9 +1,7 @@
 import { MidiLoader } from "../MidiLoader.js"
 import { Song } from "../Song.js"
 import { AudioPlayer } from "../audio/AudioPlayer.js"
-import { getLoader } from "../ui/Loader.js"
 import { getSetting } from "../settings/Settings.js"
-import { getMidiHandler } from "../MidiInputHandler.js"
 import {
 	getTracks,
 	getTrackVolume,
@@ -11,10 +9,6 @@ import {
 	isTrackRequiredToPlay,
 	setupTracks
 } from "./Tracks.js"
-import { Notification } from "../ui/Notification.js"
-
-// const LOOK_AHEAD_TIME = 0.2
-// const LOOK_AHEAD_TIME_WHEN_PLAYALONG = 0.02
 
 const LOOK_AHEAD_TIME = 0
 const LOOK_AHEAD_TIME_WHEN_PLAYALONG = 0
@@ -23,10 +17,7 @@ class Player {
 	constructor() {
 		this.audioPlayer = new AudioPlayer()
 
-		getMidiHandler().setNoteOnCallback(this.addInputNoteOn.bind(this))
-		getMidiHandler().setNoteOffCallback(this.addInputNoteOff.bind(this))
-
-		this.startDelay = -2.5
+		this.startDelay = -0
 		this.lastTime = this.audioPlayer.getContextTime()
 		this.progress = 0
 		this.paused = true
@@ -36,7 +27,6 @@ class Player {
 		this.muted = false
 		this.volume = 100
 		this.mutedAtVolume = 100
-		this.soundfontName = "FluidR3_GM"
 		this.inputInstrument = "acoustic_grand_piano"
 		this.lastMicNote = -1
 
@@ -131,8 +121,8 @@ class Player {
 
 	async loadSong(theSong, fileName, name) {
 		this.audioPlayer.stopAllSources()
-		getLoader().startLoad()
-		getLoader().setLoadMessage("Loading " + fileName + ".")
+		// getLoader().startLoad()
+		// getLoader().setLoadMessage("Loading " + fileName + ".")
 		if (this.audioPlayer.isRunning()) {
 			this.audioPlayer.suspend()
 		}
@@ -140,20 +130,23 @@ class Player {
 		this.loading = true
 
 
-		getLoader().setLoadMessage("Parsing Midi File.")
+		// getLoader().setLoadMessage("Parsing Midi File.")
 		try {
 			let midiFile = await MidiLoader.loadFile(theSong)
 			this.setSong(new Song(midiFile, fileName, name))
-			getLoader().setLoadMessage("Loading Instruments")
+			// getLoader().setLoadMessage("Loading Instruments")
 
+			// await this.audioPlayer.loadInstrumentsForSong(this.song)
 			await this.audioPlayer.loadInstrumentsForSong(this.song)
 
-			getLoader().setLoadMessage("Creating Buffers")
-			return this.audioPlayer.loadBuffers().then(v => getLoader().stopLoad())
+			// getLoader().setLoadMessage("Creating Buffers")
+			return this.audioPlayer.loadBuffers()
+			// return this.audioPlayer.loadBuffers()
+			// .then(v => getLoader().stopLoad())
 		} catch (error) {
 			console.log(error)
-			Notification.create("Couldn't read Midi-File - " + error, 2000)
-			getLoader().stopLoad()
+			// Notification.create("Couldn't read Midi-File - " + error, 2000)
+			// getLoader().stopLoad()
 		}
 	}
 
@@ -402,15 +395,15 @@ class Player {
 		}
 		let currentTime = this.getTime()
 
-		if (getMidiHandler().isOutputActive()) {
-			getMidiHandler().playNote(
-				note.noteNumber + 21,
-				note.velocity,
-				note.noteOffVelocity,
-				(note.timestamp - currentTime * 1000) / this.playbackSpeed,
-				(note.offTime - currentTime * 1000) / this.playbackSpeed
-			)
-		} else {
+		// if (getMidiHandler().isOutputActive()) {
+			// getMidiHandler().playNote(
+			// 	note.noteNumber + 21,
+			// 	note.velocity,
+			// 	note.noteOffVelocity,
+			// 	(note.timestamp - currentTime * 1000) / this.playbackSpeed,
+			// 	(note.offTime - currentTime * 1000) / this.playbackSpeed
+			// )
+		// } else {
 			this.audioPlayer.playCompleteNote(
 				currentTime,
 				note,
@@ -418,7 +411,7 @@ class Player {
 				this.getNoteVolume(note),
 				isAnyTrackPlayalong()
 			)
-		}
+		// }
 	}
 	getNoteVolume(note) {
 		return (
@@ -431,22 +424,17 @@ class Player {
 	addInputNoteOn(noteNumber) {
 		if (this.inputActiveNotes.hasOwnProperty(noteNumber)) {
 			console.log("NOTE ALREADY PLAING")
-			// this.audioPlayer.noteOffContinuous(
-			// 	this.inputActiveNotes[noteNumber].audioNote
-			// )
 			delete this.inputActiveNotes[noteNumber]
 		}
-		// let audioNote = this.audioPlayer.createContinuousNote(
-		// 	noteNumber,
-		// 	this.volume,
-		// 	this.inputInstrument
-		// )
+
+		let currentTime = this.getState().time
+
 		let audioNote = null
 		let activeNoteObj = {
 			audioNote: audioNote,
 			wasUsed: false,
 			noteNumber: noteNumber,
-			timestamp: this.audioPlayer.getContextTime() * 1000
+			timestamp: currentTime * 1000
 		}
 
 		this.inputActiveNotes[noteNumber] = activeNoteObj
@@ -456,17 +444,16 @@ class Player {
 			console.log("NOTE NOT PLAYING")
 			return
 		}
-		// this.audioPlayer.noteOffContinuous(
-		// 	this.inputActiveNotes[noteNumber].audioNote
-		// )
-		this.inputActiveNotes[noteNumber].offTime =
-			this.audioPlayer.getContextTime() * 1000
+
+		let currentTime = this.getState().time
+
+		this.inputActiveNotes[noteNumber].offTime = currentTime * 1000
 		this.inputPlayedNotes.push(this.inputActiveNotes[noteNumber])
 
 		delete this.inputActiveNotes[noteNumber]
 	}
 	getPlayingNotes() {
-		let currentTime = this.getTime()
+		let currentTime = currentTime
 		let playingNotes = []
 	
 		if (!this.noteSequence) {
@@ -514,6 +501,8 @@ export const resetNoteMeasurement = () => {
 	for(let tracksIdx in playerStatus.song.activeTracks){
 		for(let notesIdx in playerStatus.song.activeTracks[tracksIdx].notes){
 			playerStatus.song.activeTracks[tracksIdx].notes[notesIdx].isEntered = false
+			playerStatus.song.activeTracks[tracksIdx].notes[notesIdx].noteEnterStart = null
+			playerStatus.song.activeTracks[tracksIdx].notes[notesIdx].noteEnterEnd = null
 		}
 	}
 }

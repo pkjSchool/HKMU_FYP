@@ -1,5 +1,5 @@
 import { getDefaultSettings } from "./DefaultSettings.js"
-import { SettingUI } from "../ui/SettingUI.js"
+// import { SettingUI } from "../ui/SettingUI.js"
 // import {
 // 	getGlobalSavedSettings,
 // 	saveCurrentSettings
@@ -26,7 +26,7 @@ class Settings {
 				})
 			)
 		)
-		this.settingsUi = new SettingUI()
+		// this.settingsUi = new SettingUI()
 	}
 	setSettingValue(settingId, value) {
 		this.settingsById[settingId].value = value
@@ -52,7 +52,7 @@ export const setSetting = (settingId, value) => {
 	// saveCurrentSettings()
 }
 export const getSettingsDiv = () => {
-	return globalSettings.settingsUi.getSettingsDiv(globalSettings.settings)
+	// return globalSettings.settingsUi.getSettingsDiv(globalSettings.settings)
 }
 var settingCallbacks = {}
 export const setSettingCallback = (settingId, callback) => {
@@ -79,11 +79,11 @@ export const resetSettingsToDefault = () => {
 		)
 	)
 
-	let parent = globalSettings.settingsUi.getSettingsDiv(globalSettings.settings)
-		.parentElement
-	parent.removeChild(
-		globalSettings.settingsUi.getSettingsDiv(globalSettings.settings)
-	)
-	globalSettings.settingsUi.mainDiv = null
+	// let parent = globalSettings.settingsUi.getSettingsDiv(globalSettings.settings)
+	// 	.parentElement
+	// parent.removeChild(
+	// 	globalSettings.settingsUi.getSettingsDiv(globalSettings.settings)
+	// )
+	// globalSettings.settingsUi.mainDiv = null
 	parent.appendChild(getSettingsDiv())
 }

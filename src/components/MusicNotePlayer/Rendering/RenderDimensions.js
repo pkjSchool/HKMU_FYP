@@ -22,8 +22,6 @@ export class RenderDimensions {
 		this.minNoteNumber = MIN_NOTE_NUMBER
 		this.maxNoteNumber = MAX_NOTE_NUMBER
 		this.menuHeight = 200
-		setSettingCallback("blackKeyHeight", this.resize.bind(this))
-		setSettingCallback("whiteKeyHeight", this.resize.bind(this))
 		this.resize()
 	}
 	/**
@@ -89,14 +87,7 @@ export class RenderDimensions {
 		let pianoSettingsRatio = getSetting("reverseNoteDirection")
 			? 1 - parseInt(this.pianoPositionY) / 100
 			: parseInt(this.pianoPositionY) / 100
-		// let y =
-		// 	this.windowHeight -
-		// 	this.whiteKeyHeight -
-		// 	Math.ceil(
-		// 		pianoSettingsRatio *
-		// 			(this.windowHeight - this.whiteKeyHeight - this.menuHeight - 24)
-		// 	)
-		// console.log(this.windowHeight, this.pianoHeight)
+
 		let y = this.windowHeight - this.pianoHeight
 		return y
 	}
@@ -282,116 +273,4 @@ export class RenderDimensions {
 		)
 	}
 
-	//ZOOM
-	showAll() {
-		this.setZoom(MIN_NOTE_NUMBER, MAX_NOTE_NUMBER)
-	}
-	fitSong(range) {
-		range.min = Math.max(range.min, MIN_NOTE_NUMBER)
-		range.max = Math.min(range.max, MAX_NOTE_NUMBER)
-		while (
-			isBlack(range.min - MIN_NOTE_NUMBER) &&
-			range.min > MIN_NOTE_NUMBER
-		) {
-			range.min--
-		}
-		while (
-			isBlack(range.max - MIN_NOTE_NUMBER) &&
-			range.max < MAX_NOTE_NUMBER
-		) {
-			range.max++
-		}
-		this.setZoom(range.min, range.max)
-	}
-	zoomIn() {
-		this.minNoteNumber++
-		this.maxNoteNumber--
-		while (
-			isBlack(this.minNoteNumber - MIN_NOTE_NUMBER) &&
-			this.minNoteNumber < this.maxNoteNumber
-		) {
-			this.minNoteNumber++
-		}
-		while (
-			isBlack(this.maxNoteNumber - MIN_NOTE_NUMBER) &&
-			this.maxNoteNumber > this.minNoteNumber
-		) {
-			this.maxNoteNumber--
-		}
-		this.setZoom(this.minNoteNumber, this.maxNoteNumber)
-	}
-	zoomOut() {
-		this.minNoteNumber--
-		this.maxNoteNumber++
-		while (
-			isBlack(this.minNoteNumber - MIN_NOTE_NUMBER) &&
-			this.minNoteNumber > MIN_NOTE_NUMBER
-		) {
-			this.minNoteNumber--
-		}
-		while (
-			isBlack(this.maxNoteNumber - MIN_NOTE_NUMBER) &&
-			this.maxNoteNumber < MAX_NOTE_NUMBER
-		) {
-			this.maxNoteNumber++
-		}
-		this.setZoom(
-			Math.max(MIN_NOTE_NUMBER, this.minNoteNumber),
-			Math.min(MAX_NOTE_NUMBER, this.maxNoteNumber)
-		)
-	}
-	moveViewLeft() {
-		if (this.minNoteNumber == MIN_NOTE_NUMBER) return
-		this.minNoteNumber--
-		this.maxNoteNumber--
-		while (
-			isBlack(this.minNoteNumber - MIN_NOTE_NUMBER) &&
-			this.minNoteNumber > MIN_NOTE_NUMBER
-		) {
-			this.minNoteNumber--
-		}
-		while (isBlack(this.maxNoteNumber - MIN_NOTE_NUMBER)) {
-			this.maxNoteNumber--
-		}
-		this.setZoom(
-			Math.max(MIN_NOTE_NUMBER, this.minNoteNumber),
-			this.maxNoteNumber
-		)
-	}
-	moveViewRight() {
-		if (this.maxNoteNumber == MAX_NOTE_NUMBER) return
-		this.minNoteNumber++
-		this.maxNoteNumber++
-		while (isBlack(this.minNoteNumber - MIN_NOTE_NUMBER)) {
-			this.minNoteNumber++
-		}
-		while (
-			isBlack(this.maxNoteNumber - MIN_NOTE_NUMBER) &&
-			this.maxNoteNumber < MAX_NOTE_NUMBER
-		) {
-			this.maxNoteNumber++
-		}
-
-		this.setZoom(
-			this.minNoteNumber,
-			Math.min(MAX_NOTE_NUMBER, this.maxNoteNumber)
-		)
-	}
-
-	/**
-	 *
-	 * @param {Number} minNoteNumber
-	 * @param {Number} maxNoteNumber
-	 */
-	setZoom(minNoteNumber, maxNoteNumber) {
-		let numOfWhiteKeysInRange = 0
-		for (let i = minNoteNumber; i <= maxNoteNumber; i++) {
-			numOfWhiteKeysInRange += isBlack(i - MIN_NOTE_NUMBER) ? 0 : 1
-		}
-		this.minNoteNumber = minNoteNumber
-		this.maxNoteNumber = maxNoteNumber
-		this.numberOfWhiteKeysShown = numOfWhiteKeysInRange
-
-		this.resize()
-	}
 }

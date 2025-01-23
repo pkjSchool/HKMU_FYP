@@ -2,32 +2,17 @@ import { getPlayer } from "./player/Player.js"
 import { getSetting } from "./settings/Settings.js"
 
 export class InputListeners {
-	constructor(ui, render, wrapperEle) {
+	constructor(render, wrapperEle) {
 		this.grabSpeed = []
 		this.delay = false
 		this.wrapperEle = wrapperEle
 
-		this.addMouseAndTouchListeners(render, ui, wrapperEle)
-
-		// this.wrapperEle.addEventListener("wheel", this.onWheel())
+		this.addMouseAndTouchListeners(render, wrapperEle)
 
 		this.addProgressBarMouseListeners(render)
-
-		// window.addEventListener("keydown", this.onKeyDown(ui))
-
-		// ui.setOnMenuHeightChange(val => render.onMenuHeightChanged(val))
-		ui.setOnMenuHeightChange(val => {})
-
-		ui.fireInitialListeners()
-
-		let player = getPlayer()
-		render.setPianoInputListeners(
-			player.addInputNoteOn.bind(player),
-			player.addInputNoteOff.bind(player)
-		)
 	}
 
-	addMouseAndTouchListeners(render, ui, wrapperEle) {
+	addMouseAndTouchListeners(render, wrapperEle) {
 		wrapperEle.addEventListener("mouseup", ev => this.onMouseUp(ev, render))
 		wrapperEle.addEventListener(
 			"mousedown",
@@ -36,7 +21,7 @@ export class InputListeners {
 		)
 		wrapperEle.addEventListener(
 			"mousemove",
-			ev => this.onMouseMove(ev, render, ui),
+			ev => this.onMouseMove(ev, render),
 			{ passive: false }
 		)
 		wrapperEle.addEventListener("touchend", ev => this.onMouseUp(ev, render), {
@@ -49,7 +34,7 @@ export class InputListeners {
 		)
 		wrapperEle.addEventListener(
 			"touchmove",
-			ev => this.onMouseMove(ev, render, ui),
+			ev => this.onMouseMove(ev, render),
 			{ passive: false }
 		)
 	}
@@ -63,61 +48,61 @@ export class InputListeners {
 			.addEventListener("mousedown", this.onMouseDownProgressCanvas(render))
 	}
 
-	onWheel() {
-		return event => {
-			if (event.target != this.wrapperEle) {
-				return
-			}
-			if (this.delay) {
-				return
-			}
-			this.delay = true
+	// onWheel() {
+	// 	return event => {
+	// 		if (event.target != this.wrapperEle) {
+	// 			return
+	// 		}
+	// 		if (this.delay) {
+	// 			return
+	// 		}
+	// 		this.delay = true
 
-			let alreadyScrolling = getPlayer().scrolling != 0
+	// 		let alreadyScrolling = getPlayer().scrolling != 0
 
-			//Because Firefox does not set .wheelDelta
-			let wheelDelta = event.wheelDelta ? event.wheelDelta : -1 * event.deltaY
+	// 		//Because Firefox does not set .wheelDelta
+	// 		let wheelDelta = event.wheelDelta ? event.wheelDelta : -1 * event.deltaY
 
-			let evDel =
-				((wheelDelta + 1) / (Math.abs(wheelDelta) + 1)) *
-				Math.min(500, Math.abs(wheelDelta))
+	// 		let evDel =
+	// 			((wheelDelta + 1) / (Math.abs(wheelDelta) + 1)) *
+	// 			Math.min(500, Math.abs(wheelDelta))
 
-			var wheel = (evDel / Math.abs(evDel)) * 500
+	// 		var wheel = (evDel / Math.abs(evDel)) * 500
 
-			getPlayer().scrolling -= 0.001 * wheel
-			if (!alreadyScrolling) {
-				getPlayer().handleScroll()
-			}
-			this.delay = false
-		}
-	}
+	// 		getPlayer().scrolling -= 0.001 * wheel
+	// 		if (!alreadyScrolling) {
+	// 			getPlayer().handleScroll()
+	// 		}
+	// 		this.delay = false
+	// 	}
+	// }
 
-	onKeyDown(ui) {
-		return e => {
-			if (!getPlayer().isFreeplay) {
-				if (e.code == "Space") {
-					e.preventDefault()
-					if (!getPlayer().paused) {
-						ui.clickPause(e)
-					} else {
-						ui.clickPlay(e)
-					}
-				} else if (e.code == "ArrowUp") {
-					getPlayer().increaseSpeed(0.05)
-					ui.getSpeedDisplayField().value =
-						Math.floor(getPlayer().playbackSpeed * 100) + "%"
-				} else if (e.code == "ArrowDown") {
-					getPlayer().increaseSpeed(-0.05)
-					ui.getSpeedDisplayField().value =
-						Math.floor(getPlayer().playbackSpeed * 100) + "%"
-				} else if (e.code == "ArrowLeft") {
-					getPlayer().setTime(getPlayer().getTime() - 5)
-				} else if (e.code == "ArrowRight") {
-					getPlayer().setTime(getPlayer().getTime() + 5)
-				}
-			}
-		}
-	}
+	// onKeyDown(ui) {
+	// 	return e => {
+	// 		if (!getPlayer().isFreeplay) {
+	// 			if (e.code == "Space") {
+	// 				e.preventDefault()
+	// 				if (!getPlayer().paused) {
+	// 					ui.clickPause(e)
+	// 				} else {
+	// 					ui.clickPlay(e)
+	// 				}
+	// 			} else if (e.code == "ArrowUp") {
+	// 				getPlayer().increaseSpeed(0.05)
+	// 				ui.getSpeedDisplayField().value =
+	// 					Math.floor(getPlayer().playbackSpeed * 100) + "%"
+	// 			} else if (e.code == "ArrowDown") {
+	// 				getPlayer().increaseSpeed(-0.05)
+	// 				ui.getSpeedDisplayField().value =
+	// 					Math.floor(getPlayer().playbackSpeed * 100) + "%"
+	// 			} else if (e.code == "ArrowLeft") {
+	// 				getPlayer().setTime(getPlayer().getTime() - 5)
+	// 			} else if (e.code == "ArrowRight") {
+	// 				getPlayer().setTime(getPlayer().getTime() + 5)
+	// 			}
+	// 		}
+	// 	}
+	// }
 
 	onMouseDownProgressCanvas(render) {
 		return ev => {
@@ -146,7 +131,7 @@ export class InputListeners {
 		}
 	}
 
-	onMouseMove(ev, render, ui) {
+	onMouseMove(ev, render) {
 		let pos = this.getXYFromMouseEvent(ev)
 		if (this.grabbedProgressBar && getPlayer().song) {
 			let newTime =
@@ -175,9 +160,7 @@ export class InputListeners {
 			this.lastYGrabbed = pos.y
 		}
 
-		render.setMouseCoords(ev.clientX, ev.clientY)
-
-		ui.mouseMoved()
+		// render.setMouseCoords(ev.clientX, ev.clientY)
 	}
 
 	onMouseDown(ev, render) {
