@@ -8,8 +8,11 @@ import { CiVolume, CiVolumeHigh } from "react-icons/ci";
 import { IoIosSettings } from "react-icons/io";
 
 
+interface TopNavBarProps {
+  setMusicFile: React.Dispatch<React.SetStateAction<File | null>>;
+}
 
-const CollapsibleNavBar = () => {
+const CollapsibleNavBar: React.FC<TopNavBarProps> = ({ setMusicFile }) => {
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [hoveredButton, setHoveredButton] = useState<number>(-1);
   const [volume, setVolume] = useState<number>(100);
@@ -30,32 +33,40 @@ const CollapsibleNavBar = () => {
     setIsCollapsed((prev) => !prev);
   };
 
+  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
+    const uploadedFile = event.target.files?.[0] || null;
+    setMusicFile(uploadedFile);
+  };  
+
 
   return (
     <div style={{
       position: "relative",
       width: "100%",
-      height: "150px",
     }}>
 
       <div className="topnavbar-warrper" style={{ ...styles.navbar, height: isCollapsed ? "0px" : "130px" }}>
         <div className="container" style={styles.container}>
           <div className="topContainer-1" style={styles.topContainer}>
             <div className="btn-group-1" style={styles.btnGroup}>
-              <button style={buttonStyles.TopNavBarBtn(hoveredButton, 1)} onMouseEnter={() => handleMouseEnter(1)} onMouseLeave={handleMouseLeave}>
+              <label style={{...buttonStyles.TopNavBarBtn(hoveredButton, 1), height:"45.69px", justifyContent:"center", alignItems:"center"}} 
+                onMouseEnter={() => handleMouseEnter(1)} 
+                onMouseLeave={handleMouseLeave}>
+
                 <div className="glyph">
                   <FaRegFolderOpen size={25} />
                 </div>
+                <input type="file" accept=".midi, .mid" style={{display: "none"}} onChange={(e) => handleFileChange(e)}/>
                 <span className="text" style={styles.text}>
                   Open
                 </span>
-              </button>
+              </label >
               <button style={buttonStyles.TopNavBarBtn(hoveredButton, 2)} onMouseEnter={() => handleMouseEnter(2)} onMouseLeave={handleMouseLeave}>
                 <div className="glyph">
                   <MdAudiotrack size={25} />
                 </div>
                 <span className="text" style={styles.text}>
-                  Songs
+                  Music
                 </span>
               </button>
             </div>
@@ -89,7 +100,10 @@ const CollapsibleNavBar = () => {
                     <span style={{ color: "white" }}>
                       Volume
                     </span>
-                    <button className="volume-btn" style={buttonStyles.TopNavBarBtn(hoveredButton, 6)} onMouseEnter={() => handleMouseEnter(6)} onMouseLeave={handleMouseLeave}>
+                    <button className="volume-btn" style={buttonStyles.TopNavBarBtn(hoveredButton, 6)}
+                      onMouseEnter={() => handleMouseEnter(6)}
+                      onMouseLeave={handleMouseLeave}>
+
                       {volume === 0 ? (
                         <CiVolume size={25} color="white" onClick={handleVolumeButtonOnClick} />
                       ) : (
@@ -97,7 +111,7 @@ const CollapsibleNavBar = () => {
                       )}
                     </button>
                   </label>
-                  <input type="range" className="volume-slider" min={0} max={100} step={1} defaultValue={100} value={volume} style={styles.volumeSlider} onChange={(e) => { setVolume(parseInt(e.target.value)) }} />
+                  <input type="range" className="volume-slider" min={0} max={100} step={1} value={volume} style={styles.volumeSlider} onChange={(e) => { setVolume(parseInt(e.target.value)) }} />
                 </div>
               </div>
               <div className="right-group" style={{ ...styles.innerGroup }}>

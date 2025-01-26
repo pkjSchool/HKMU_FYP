@@ -8,4 +8,5 @@ function isBlack(noteNumber: number) : number {
 		: 0
 }
 
+
 export { isBlack };

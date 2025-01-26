@@ -1,5 +1,5 @@
 import {useEffect, useState} from "react";
-import { isBlack } from "../util/utils.tsx"; // Utility function for black keys
+import { isBlack } from "../util/utils.ts"; // Utility function for black keys
 
 interface PianoActiveNote {
   activeNote: number[] | null;
