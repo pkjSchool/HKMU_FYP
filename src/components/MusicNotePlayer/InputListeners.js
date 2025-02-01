@@ -7,9 +7,9 @@ export class InputListeners {
 		this.delay = false
 		this.wrapperEle = wrapperEle
 
-		this.addMouseAndTouchListeners(render, wrapperEle)
+		// this.addMouseAndTouchListeners(render, wrapperEle)
 
-		this.addProgressBarMouseListeners(render)
+		// this.addProgressBarMouseListeners(render)
 	}
 
 	addMouseAndTouchListeners(render, wrapperEle) {
@@ -39,14 +39,14 @@ export class InputListeners {
 		)
 	}
 
-	addProgressBarMouseListeners(render) {
-		render
-			.getProgressBarCanvas()
-			.addEventListener("mousemove", this.onMouseMoveProgressCanvas(render))
-		render
-			.getProgressBarCanvas()
-			.addEventListener("mousedown", this.onMouseDownProgressCanvas(render))
-	}
+	// addProgressBarMouseListeners(render) {
+	// 	render
+	// 		.getProgressBarCanvas()
+	// 		.addEventListener("mousemove", this.onMouseMoveProgressCanvas(render))
+	// 	render
+	// 		.getProgressBarCanvas()
+	// 		.addEventListener("mousedown", this.onMouseDownProgressCanvas(render))
+	// }
 
 	// onWheel() {
 	// 	return event => {

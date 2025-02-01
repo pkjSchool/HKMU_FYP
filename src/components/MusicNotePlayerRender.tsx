@@ -1,22 +1,13 @@
-import React, { useState, useEffect, useRef, forwardRef, useImperativeHandle } from 'react'
+import React from 'react'
 import { Render } from "./MusicNotePlayer/Rendering/Render.js"
 import { getPlayer, getPlayerState } from "./MusicNotePlayer/player/Player.js"
 import { InputListeners } from "./MusicNotePlayer/InputListeners.js"
-
-const progressBarCanvas: Object = {
-  transition: "all 0.4s ease-out",
-  backgroundColor: "#757575",
-  boxSizing: "border-box",
-  borderBottom: "4px solid #616161",
-  float: "left",
-  cursor: "pointer",
-}
 
 class MusicNotePlayerRender extends React.Component<any, any> {
   foregroundCanvasRef: React.RefObject<HTMLCanvasElement>;
   bgCanvasRef: React.RefObject<HTMLCanvasElement>;
   mainCanvasRef: React.RefObject<HTMLCanvasElement>;
-  progressBarCanvasRef: React.RefObject<HTMLCanvasElement>;
+  // progressBarCanvasRef: React.RefObject<HTMLCanvasElement>;
   wrapperRef: React.RefObject<HTMLDivElement>;
   animeId: number;
   cnvrender: Render;
@@ -36,7 +27,7 @@ class MusicNotePlayerRender extends React.Component<any, any> {
     this.foregroundCanvasRef = React.createRef();
     this.bgCanvasRef = React.createRef();
     this.mainCanvasRef = React.createRef();
-    this.progressBarCanvasRef = React.createRef();
+    // this.progressBarCanvasRef = React.createRef();
     this.wrapperRef = React.createRef();
 
     // this.handleToggleClick = this.handleToggleClick.bind(this);
@@ -75,11 +66,11 @@ class MusicNotePlayerRender extends React.Component<any, any> {
       const cnvForeground = this.foregroundCanvasRef.current
       const cnvBG = this.bgCanvasRef.current
       const cnvMain = this.mainCanvasRef.current
-      const progressBarCanvas = this.progressBarCanvasRef.current
+      // const progressBarCanvas = this.progressBarCanvasRef.current
 
       this.animeId = 0;
 
-      this.cnvrender = new Render(cnvBG, cnvMain, progressBarCanvas, cnvForeground, wrapperEle)
+      this.cnvrender = new Render(cnvBG, cnvMain, cnvForeground, wrapperEle)
       this.listeners = new InputListeners(this.cnvrender, wrapperEle)
       const player = getPlayer()
       player.loadSong(this.props.music, "fileNameSpecific", "name")
@@ -100,7 +91,7 @@ class MusicNotePlayerRender extends React.Component<any, any> {
       <div ref={this.wrapperRef} style={{position: "relative",height: "100%", width: "100%",zIndex: 0}}>
         <canvas ref={this.bgCanvasRef} style={{backgroundColor: "black",position: "absolute",top: "0px",left: "0px",zIndex: -5, pointerEvents: "none"}}/>
         <canvas ref={this.mainCanvasRef} style={{position: "absolute",top: "0px",left: "0px",zIndex: -5, pointerEvents: "none"}}/>
-        <canvas ref={this.progressBarCanvasRef} style={{...progressBarCanvas, position: "absolute", top: "0px", left: "0px", zIndex: 0}}/>
+        {/* <canvas ref={this.progressBarCanvasRef} style={{...progressBarCanvas, position: "absolute", top: "0px", left: "0px", zIndex: 0}}/> */}
         <canvas ref={this.foregroundCanvasRef} style={{position: "absolute",top: "0px",left: "0px",zIndex: -5, pointerEvents: "none"}}/>
       </div>
     );

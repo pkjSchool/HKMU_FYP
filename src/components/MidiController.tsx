@@ -13,10 +13,10 @@ const MIDIController = forwardRef(({ onNoteOn, onNoteOff }: MIDIControllerProps,
   const [audioBuffers, setAudioBuffers] = useState<{ [key: string]: AudioBuffer }>({});
   const audioContext = new (window.AudioContext || (window as any).webkitAudioContext)();
 
-    useImperativeHandle(ref, () => ({
-      playNote,
-      stopNote
-    }));
+  useImperativeHandle(ref, () => ({
+    playNote,
+    stopNote
+  }));
 
   useEffect(() => {
     if (navigator.requestMIDIAccess) {

@@ -4,7 +4,7 @@ import { SustainRender } from "./SustainRenderer.js"
 import { RenderDimensions } from "./RenderDimensions.js"
 import { BackgroundRender } from "./BackgroundRender.js"
 import { MeasureLinesRender } from "./MeasureLinesRender.js"
-import { ProgressBarRender } from "./ProgressBarRender.js"
+// import { ProgressBarRender } from "./ProgressBarRender.js"
 import { getSetting, setSettingCallback } from "../settings/Settings.js"
 import { isBlack } from "../Util.js"
 import { getTrackColor, isTrackDrawn } from "../player/Tracks.js"
@@ -14,10 +14,10 @@ import { getPlayerState } from "../player/Player.js"
 const PROGRESS_BAR_CANVAS_HEIGHT = 20
 
 export class Render {
-	constructor(cnvBG, cnvMain, progressBarCanvas, cnvForeground, wrapperEle) {
+	constructor(cnvBG, cnvMain, cnvForeground, wrapperEle) {
 		this.cnvBG = cnvBG
 		this.cnv = cnvMain
-		this.progressBarCanvas = progressBarCanvas
+		// this.progressBarCanvas = progressBarCanvas
 		this.cnvForeground = cnvForeground
 		this.wrapperEle = wrapperEle
 
@@ -44,10 +44,10 @@ export class Render {
 			this.renderDimensions
 		)
 
-		this.progressBarRender = new ProgressBarRender(
-			this.progressBarCtx,
-			this.renderDimensions
-		)
+		// this.progressBarRender = new ProgressBarRender(
+		// 	this.progressBarCtx,
+		// 	this.renderDimensions
+		// )
 
 		this.backgroundRender = new BackgroundRender(
 			this.ctxBG,
@@ -118,7 +118,7 @@ export class Render {
 				? playerState.song.getMeasureLines()
 				: []
 
-			this.progressBarRender.render(time, end, playerState.song.markers)
+			// this.progressBarRender.render(time, end, playerState.song.markers)
 			this.measureLinesRender.render(time, measureLines)
 			this.sustainRender.render(
 				time,
@@ -139,13 +139,13 @@ export class Render {
 			// this.inSongTextRender.render(time, playerState.song.markers)
 		}
 
-		if (getSetting("showBPM")) {
-			this.drawBPM(playerState)
-		}
+		// if (getSetting("showBPM")) {
+		// 	this.drawBPM(playerState)
+		// }
 	}
 
 	getRenderTime(playerState) {
-		return playerState.time + getSetting("renderOffset") / 1000
+		return playerState.time + 0
 	}
 	getRenderInfoByTrackMap(playerState) {
 		let renderInfoByTrackMap = {}
@@ -304,16 +304,16 @@ export class Render {
 		}
 	}
 
-	drawBPM(playerState) {
-		this.ctx.font = "20px Arial black"
-		this.ctx.fillStyle = "rgba(255,255,255,0.8)"
-		this.ctx.textBaseline = "top"
-		this.ctx.fillText(
-			Math.round(playerState.bpm) + " BPM",
-			20,
-			this.renderDimensions.menuHeight + PROGRESS_BAR_CANVAS_HEIGHT + 12
-		)
-	}
+	// drawBPM(playerState) {
+	// 	this.ctx.font = "20px Arial black"
+	// 	this.ctx.fillStyle = "rgba(255,255,255,0.8)"
+	// 	this.ctx.textBaseline = "top"
+	// 	this.ctx.fillText(
+	// 		Math.round(playerState.bpm) + " BPM",
+	// 		20,
+	// 		this.renderDimensions.menuHeight + PROGRESS_BAR_CANVAS_HEIGHT + 12
+	// 	)
+	// }
 
 	setCanvasSize(cnv, width, height) {
 		if (cnv.width != width) {
@@ -337,11 +337,11 @@ export class Render {
 			this.renderDimensions.windowHeight
 		)
 
-		this.setCanvasSize(
-			this.getProgressBarCanvas(),
-			this.renderDimensions.windowWidth,
-			PROGRESS_BAR_CANVAS_HEIGHT
-		)
+		// this.setCanvasSize(
+		// 	this.getProgressBarCanvas(),
+		// 	this.renderDimensions.windowWidth,
+		// 	PROGRESS_BAR_CANVAS_HEIGHT
+		// )
 
 		this.setCanvasSize(
 			this.getForegroundCanvas(),
@@ -350,13 +350,13 @@ export class Render {
 		)
 
 		// this.getProgressBarCanvas().style.height = PROGRESS_BAR_CANVAS_HEIGHT + "px"
-		this.getProgressBarCanvas().id = "progressBarCanvas"
+		// this.getProgressBarCanvas().id = "progressBarCanvas"
 		// this.getForegroundCanvas().style.zIndex = "101"
 
         this.ctxForeground = this.cnvForeground.getContext('2d');
         this.ctxBG = this.cnvBG.getContext('2d');
         this.ctx = this.cnv.getContext('2d');
-        this.progressBarCtx = this.progressBarCanvas.getContext('2d');
+        // this.progressBarCtx = this.progressBarCanvas.getContext('2d');
 
 		this.setCtxBlur()
 	}
@@ -370,9 +370,9 @@ export class Render {
 		return this.cnvForeground
 	}
 
-	getProgressBarCanvas() {
-		return this.progressBarCanvas
-	}
+	// getProgressBarCanvas() {
+	// 	return this.progressBarCanvas
+	// }
 
 	isNoteDrawn(note, tracks) {
 		return !tracks[note.track] || !tracks[note.track].draw
@@ -398,7 +398,7 @@ export class Render {
 	}
 	onMenuHeightChanged(menuHeight) {
 		this.renderDimensions.menuHeight = menuHeight
-		this.getProgressBarCanvas().style.top = menuHeight + "px"
+		// this.getProgressBarCanvas().style.top = menuHeight + "px"
 		this.noteRender.setMenuHeight(menuHeight)
 	}
 }

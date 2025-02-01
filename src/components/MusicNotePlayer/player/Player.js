@@ -17,7 +17,7 @@ class Player {
 	constructor() {
 		this.audioPlayer = new AudioPlayer()
 
-		this.startDelay = -0
+		this.startDelay = -2
 		this.lastTime = this.audioPlayer.getContextTime()
 		this.progress = 0
 		this.paused = true
@@ -37,6 +37,7 @@ class Player {
 		this.playbackSpeed = 1
 
 		this.finishListeners = []
+		this.timeUpdatedListeners = []
 
 		console.log("Player created.")
 		this.playTick()
@@ -70,6 +71,7 @@ class Player {
 	setTime(seconds) {
 		this.audioPlayer.stopAllSources()
 		this.progress += seconds - this.getTime()
+		this.runTimeUpdatedListener()
 		this.resetNoteSequence()
 	}
 	increaseSpeed(val) {
@@ -138,6 +140,8 @@ class Player {
 
 			// await this.audioPlayer.loadInstrumentsForSong(this.song)
 			await this.audioPlayer.loadInstrumentsForSong(this.song)
+
+			this.runTimeUpdatedListener()
 
 			// getLoader().setLoadMessage("Creating Buffers")
 			return this.audioPlayer.loadBuffers()
@@ -256,6 +260,7 @@ class Player {
 		this.lastTime = currentContextTime
 		if (!this.paused && this.scrolling == 0) {
 			this.progress += Math.min(0.1, delta)
+			this.runTimeUpdatedListener()
 		} else {
 			this.requestNextTick()
 			return
@@ -294,6 +299,7 @@ class Player {
 				this.playNote(this.noteSequence.shift())
 			} else {
 				this.progress = oldProgress
+				this.runTimeUpdatedListener()
 				break
 			}
 		}
@@ -363,6 +369,7 @@ class Player {
 
 	stop() {
 		this.progress = 0
+		this.runTimeUpdatedListener()
 		this.scrollOffset = 0
 		this.playing = false
 		this.pause()
@@ -467,6 +474,7 @@ class Player {
 	
 		return this.noteSequence
 	}
+	
 	addFinishListener(event) {
 		this.finishListeners.push(event)
 	}
@@ -477,6 +485,24 @@ class Player {
 		for(let i in this.finishListeners) {
 			this.finishListeners[i]()
 		}
+	}
+
+	addTimeUpdatedListener(event) {
+		this.timeUpdatedListeners.push(event)
+	}
+	clearTimeUpdatedListener() {
+		this.timeUpdatedListeners = []
+	}
+	runTimeUpdatedListener() {
+		let time = this.getTime()
+		for(let i in this.timeUpdatedListeners) {
+			this.timeUpdatedListeners[i](time, this.song.getEnd(), this.getBPM(time))
+		}
+	}
+
+	clearInputRecords() {
+		this.inputActiveNotes = {}
+		this.inputPlayedNotes = []
 	}
 }
 const thePlayer = new Player()
@@ -497,7 +523,7 @@ export const getPlayingNotes = () => {
 }
 
 export const resetNoteMeasurement = () => {
-	const playerStatus =  thePlayer.getState()
+	const playerStatus = thePlayer.getState()
 	for(let tracksIdx in playerStatus.song.activeTracks){
 		for(let notesIdx in playerStatus.song.activeTracks[tracksIdx].notes){
 			playerStatus.song.activeTracks[tracksIdx].notes[notesIdx].isEntered = false
@@ -505,4 +531,6 @@ export const resetNoteMeasurement = () => {
 			playerStatus.song.activeTracks[tracksIdx].notes[notesIdx].noteEnterEnd = null
 		}
 	}
+
+	thePlayer.clearInputRecords()
 }

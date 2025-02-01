@@ -5,6 +5,7 @@ import PianoRender from './components/PianoRender.js';
 import MusicNotePlayerRender from './components/MusicNotePlayerRender';
 import PianoPlayingResult from './components/PianoPlayingResult';
 import { getPlayer, getPlayerState, resetNoteMeasurement } from "./components/MusicNotePlayer/player/Player.js"
+import { formatTime } from "./util/utils";
 
 const music = "data:audio/midi;base64,TVRoZAAAAAYAAQACA8BNVHJrAAAACwD/UQMHoSAA/y8ATVRyawAAAIYAwQ0AkUd/g2CRRX8AgUcAg2CBRQAAkUN/g2CRQX8AgUMAg2CBQQAAkUB/g2CRPn8AgUAAg2CBPgAAkTx/g2CRO38AgTwAg2CBOwAAkTl/g2CRN38AgTkAg2CBNwAAkTV/g2CRNH8AgTUAg2CBNAAAkTJ/g2CBMgAAkTB/g2CBMADDQP8vAA=="
 
@@ -20,6 +21,7 @@ function App() {
 
   const notePlayerRef = useRef();
   const MIDIControllerRef = useRef();
+  const topNavBarRef = useRef();
 
   const onNoteOn = (note: number) => {
     const noteArrIdx = activeNotes.indexOf(note)
@@ -45,16 +47,19 @@ function App() {
   const handlePlay = () => { notePlayerRef.current.play() }
   const handlePause = () => { notePlayerRef.current.pause() }
   const handleStop = () => { notePlayerRef.current.stop() }
-  const handleMenuCollapsed = (isCollapsed:boolean) => { notePlayerRef.current.changeMenuHeight(isCollapsed?0:130) }
+  const handleMenuCollapsed = (isCollapsed:boolean) => { notePlayerRef.current.changeMenuHeight(isCollapsed?0:160) }
+  const handleProgressChanged = (progress:number) => { getPlayer().setTime(progress) }
+
+  const onPlayerTimeUpdated = (time:number, end:number, bpm:number) => { topNavBarRef.current.onPlayerTimeUpdated(time, end, bpm) }
   // background: '#282c34', 
 
   const changeStartTime = () => {
-    console.log("changeStartTime")
+    // console.log("changeStartTime")
     startTime.current = Date.now()
   }
 
   const changeEndTime = () => {
-    console.log("changeEndTime")
+    // console.log("changeEndTime")
     endTime.current = Date.now()
   }
 
@@ -103,8 +108,8 @@ function App() {
     const result = {
       score: entered*100,
       name: playerStatus.song.name,
-      musicTime: playerStatus.end/1000,
-      playTime: ((endTime.current - startTime.current)/1000).toFixed(2),
+      musicTime: formatTime(playerStatus.end/1000),
+      playTime: formatTime((endTime.current - startTime.current)/1000),
       accuracy: accuracy,
     }
 
@@ -121,8 +126,11 @@ function App() {
       handleFinish()
     })
 
+    getPlayer().addTimeUpdatedListener(onPlayerTimeUpdated)
+
     return () => {
       getPlayer().clearFinishListener()
+      getPlayer().clearTimeUpdatedListener()
     }
 
   }, [])
@@ -137,7 +145,7 @@ function App() {
     <div style={{ position: "relative", height: '100%', width: '100%', overflow: 'hidden' }}>
       {resultComp}
       <MIDIController ref={MIDIControllerRef} onNoteOn={onNoteOn} onNoteOff={onNoteOff} />
-      <TopNavBar playCallback={handlePlay} pausingCallback={handlePause} stopCallback={handleStop} menuCollapsedCallback={handleMenuCollapsed} />
+      <TopNavBar ref={topNavBarRef} playCallback={handlePlay} pausingCallback={handlePause} stopCallback={handleStop} menuCollapsedCallback={handleMenuCollapsed} progressCallback={handleProgressChanged} />
       <MusicNotePlayerRender ref={notePlayerRef} music={music} />
       <PianoRender activeNote={activeNotes} onNoteOn={onNoteOn} onNoteOff={onNoteOff} />
     </div>
