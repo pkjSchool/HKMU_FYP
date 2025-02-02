@@ -1,73 +1,39 @@
 import { isBlack } from "../Util.js"
-import { getSetting, setSettingCallback } from "../settings/Settings.js"
+import { getSetting } from "../settings/Settings.js"
 
-const MAX_NOTE_NUMBER = 87
-const MIN_NOTE_NUMBER = 0
-
-const MIN_WIDTH = 10
-const MIN_HEIGHT = 10
-
-/**
- * Class to handle all the calculation of dimensions of the Notes & Keys on Screen-
- */
 export class RenderDimensions {
 	constructor(wrapperEle) {
 		this.wrapperEle = wrapperEle
 
 		this.pianoHeight = 120
+		this.whiteKeyHeight = 120
+		this.blackKeyHeight = 80
+		this.menuHeight = 200
 
-		window.addEventListener("resize", this.resize.bind(this))
+		this.minNoteNumber = 0
+		this.maxNoteNumber = 87
 		this.resizeCallbacks = []
 		this.numberOfWhiteKeysShown = 52
-		this.minNoteNumber = MIN_NOTE_NUMBER
-		this.maxNoteNumber = MAX_NOTE_NUMBER
-		this.menuHeight = 200
+
+		window.addEventListener("resize", this.resize.bind(this))
 		this.resize()
 	}
-	/**
-	 * Recompute all dimensions dependent on Screen Size
-	 */
+
 	resize() {
-		this.windowWidth = Math.max(MIN_WIDTH, Math.floor(this.wrapperEle.offsetWidth))
+		this.windowWidth = Math.floor(this.wrapperEle.offsetWidth)
 		this.windowHeight = Math.floor(this.wrapperEle.offsetHeight)
 
+		this.whiteKeyWidth = this.windowWidth / this.numberOfWhiteKeysShown
+		this.blackKeyWidth = Math.floor(this.whiteKeyWidth * 0.6)
+
 		this.keyDimensions = {}
-		this.computeKeyDimensions()
 		this.resizeCallbacks.forEach(func => func())
 	}
+
 	registerResizeCallback(callback) {
 		this.resizeCallbacks.push(callback)
 	}
 
-	/**
-	 * Computes the key dimensions. Should be called on resize.
-	 */
-	computeKeyDimensions() {
-		this.pianoPositionY = getSetting("pianoPosition")
-		this.whiteKeyWidth =
-			// Math.max(
-			// 	20,
-			this.windowWidth / this.numberOfWhiteKeysShown
-		// )
-
-		this.whiteKeyHeight = Math.min(
-			Math.floor(this.windowHeight * 0.2),
-			this.whiteKeyWidth * 4.5
-		)
-		this.blackKeyWidth = Math.floor(this.whiteKeyWidth * 0.5829787234)
-		this.blackKeyHeight =
-			Math.floor((this.whiteKeyHeight * 2) / 3) *
-			(getSetting("blackKeyHeight") / 100)
-
-		//Do this after computing blackKey, as its dependent on the white key size ( without adjusting for the setting )
-		this.whiteKeyHeight *= getSetting("whiteKeyHeight") / 100
-	}
-
-	/**
-	 * Returns the dimensions for the piano-key of the given note
-	 *
-	 * @param {Number} noteNumber
-	 */
 	getKeyDimensions(noteNumber) {
 		if (!this.keyDimensions.hasOwnProperty(noteNumber)) {
 			let isNoteBlack = isBlack(noteNumber)
@@ -83,33 +49,18 @@ export class RenderDimensions {
 		}
 		return this.keyDimensions[noteNumber]
 	}
-	getAbsolutePianoPosition() {
-		let pianoSettingsRatio = getSetting("reverseNoteDirection")
-			? 1 - parseInt(this.pianoPositionY) / 100
-			: parseInt(this.pianoPositionY) / 100
 
-		let y = this.windowHeight - this.pianoHeight
-		return y
+	getAbsolutePianoPosition() {
+		return this.windowHeight - this.pianoHeight
 	}
 
-	/**
-	 * Returns x-value  of the given Notenumber
-	 *
-	 * @param {Integer} noteNumber
-	 */
 	getKeyX(noteNumber) {
 		return (
-			(this.getWhiteKeyNumber(noteNumber) -
-				this.getWhiteKeyNumber(this.minNoteNumber)) *
-				this.whiteKeyWidth +
+			(this.getWhiteKeyNumber(noteNumber) - this.getWhiteKeyNumber(this.minNoteNumber)) * this.whiteKeyWidth +
 			(this.whiteKeyWidth - this.blackKeyWidth / 2) * isBlack(noteNumber)
 		)
 	}
 
-	/**
-	 * Returns the "white key index" of the note number. Ignores if the key itself is black
-	 * @param {Number} noteNumber
-	 */
 	getWhiteKeyNumber(noteNumber) {
 		return (
 			noteNumber -
@@ -121,42 +72,17 @@ export class RenderDimensions {
 		)
 	}
 
-	/**
-	 * Returns y value corresponding to the given time
-	 *
-	 * @param {Number} time
-	 */
 	getYForTime(time) {
 		const height = this.windowHeight - this.whiteKeyHeight
 		let noteToHeightConst = this.getNoteToHeightConst()
-		if (time < 0) {
-			noteToHeightConst /= getSetting("playedNoteFalloffSpeed")
-		}
 
-		if (getSetting("reverseNoteDirection")) {
-			return (
-				(time / noteToHeightConst) * height +
-				this.getAbsolutePianoPosition() +
-				this.whiteKeyHeight
-			)
-		} else {
-			return (
-				height -
-				(time / noteToHeightConst) * height -
-				(height - this.getAbsolutePianoPosition())
-			)
-		}
+		return (
+			height -
+			(time / noteToHeightConst) * height -
+			(height - this.getAbsolutePianoPosition())
+		)
 	}
 
-	/**
-     *Returns rendering x/y-location & size for the given note & time-info
-
-	 * @param {Integer} noteNumber
-	 * @param {Number} currentTime
-	 * @param {Number} noteStartTime
-	 * @param {Number} noteEndTime
-	 * @param {Number} sustainOffTime
-	 */
 	getNoteDimensions(
 		noteNumber,
 		currentTime,
@@ -184,10 +110,6 @@ export class RenderDimensions {
 			rad = h / 2
 		}
 		let y = this.getYForTime(noteEndTime - currentTime)
-		let reversed = getSetting("reverseNoteDirection")
-		if (reversed) {
-			y -= h
-		}
 
 		let sustainY = 0
 		let sustainH = 0
@@ -196,9 +118,6 @@ export class RenderDimensions {
 				((sustainOffTime - noteEndTime) / this.getNoteToHeightConst()) *
 				(this.windowHeight - this.whiteKeyHeight)
 			sustainY = this.getYForTime(sustainOffTime - currentTime)
-			if (reversed) {
-				sustainY -= sustainH
-			}
 		}
 
 		//adjust height/y for notes that have passed the piano / have been played
@@ -209,7 +128,7 @@ export class RenderDimensions {
 
 		if (showSustainedNotes) {
 			if (!isNaN(sustainOffTime) && sustainOffTime < currentTime) {
-				sustainY += (reversed ? -1 : 1) * this.whiteKeyHeight
+				sustainY += this.whiteKeyHeight
 			}
 			if (
 				!isNaN(sustainOffTime) &&
@@ -217,30 +136,22 @@ export class RenderDimensions {
 				noteEndTime < currentTime
 			) {
 				sustainH += this.whiteKeyHeight
-				if (reversed) {
-					sustainY -= this.whiteKeyHeight
-				}
 			}
 		}
 
 		if (endTime < currentTime) {
-			let endRatio =
-				(currentTime - endTime) / this.getMilisecondsDisplayedAfter()
-
-			endRatio = Math.max(0, 1 - getSetting("noteEndedShrink") * endRatio)
+			let endRatio = 0
 
 			x = x + (w - w * endRatio) / 2
 			w *= endRatio
 
 			let tmpH = h
 			h *= endRatio
-			y += (reversed ? -1 : 1) * (tmpH - h)
+			y += (tmpH - h)
 
 			let tmpSustainH = sustainH
 			sustainH *= endRatio
-			sustainY +=
-				(reversed ? -1 : 1) * (tmpSustainH - sustainH) +
-				(reversed ? -1 : 1) * (tmpH - h)
+			sustainY += (tmpSustainH - sustainH) + (tmpH - h)
 		}
 		return {
 			x: x + 1,
@@ -259,18 +170,7 @@ export class RenderDimensions {
 	}
 
 	getSecondsDisplayedBefore() {
-		let pianoPos = getSetting("pianoPosition") / 100
-		return Math.ceil(((1 - pianoPos) * this.getNoteToHeightConst()) / 1000)
-	}
-	getSecondsDisplayedAfter() {
-		return Math.ceil(this.getMilisecondsDisplayedAfter() / 1000)
-	}
-	getMilisecondsDisplayedAfter() {
-		let pianoPos = getSetting("pianoPosition") / 100
-		return (
-			pianoPos *
-			(this.getNoteToHeightConst() / getSetting("playedNoteFalloffSpeed"))
-		)
+		return Math.ceil(this.getNoteToHeightConst() / 1000)
 	}
 
 }

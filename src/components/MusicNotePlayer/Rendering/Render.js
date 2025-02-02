@@ -1,29 +1,22 @@
 import { NoteRender } from "./NoteRender.js"
-import { SustainRender } from "./SustainRenderer.js"
+// import { SustainRender } from "./SustainRenderer.js"
 // import { MarkerRenderer } from "./MarkerRenderer.js"
 import { RenderDimensions } from "./RenderDimensions.js"
 import { BackgroundRender } from "./BackgroundRender.js"
 import { MeasureLinesRender } from "./MeasureLinesRender.js"
-// import { ProgressBarRender } from "./ProgressBarRender.js"
-import { getSetting, setSettingCallback } from "../settings/Settings.js"
+import { getSetting } from "../settings/Settings.js"
 import { isBlack } from "../Util.js"
-import { getTrackColor, isTrackDrawn } from "../player/Tracks.js"
 import { getPlayerState } from "../player/Player.js"
-// import { InSongTextRenderer } from "./InSongTextRenderer.js"
-
-const PROGRESS_BAR_CANVAS_HEIGHT = 20
 
 export class Render {
 	constructor(cnvBG, cnvMain, cnvForeground, wrapperEle) {
 		this.cnvBG = cnvBG
 		this.cnv = cnvMain
-		// this.progressBarCanvas = progressBarCanvas
 		this.cnvForeground = cnvForeground
 		this.wrapperEle = wrapperEle
 
 		this.renderDimensions = new RenderDimensions(this.wrapperEle)
 		this.renderDimensions.registerResizeCallback(this.setupCanvases.bind(this))
-		setSettingCallback("particleBlur", this.setCtxBlur.bind(this))
 
 		this.setupCanvases()
 
@@ -32,22 +25,13 @@ export class Render {
 			this.ctxForeground,
 			this.renderDimensions
 		)
-		this.sustainRender = new SustainRender(this.ctx, this.renderDimensions)
+		// this.sustainRender = new SustainRender(this.ctx, this.renderDimensions)
 		// this.markerRender = new MarkerRenderer(this.ctx, this.renderDimensions)
-		// this.inSongTextRender = new InSongTextRenderer(
-		// 	this.ctx,
-		// 	this.renderDimensions
-		// )
 
 		this.measureLinesRender = new MeasureLinesRender(
 			this.ctx,
 			this.renderDimensions
 		)
-
-		// this.progressBarRender = new ProgressBarRender(
-		// 	this.progressBarCtx,
-		// 	this.renderDimensions
-		// )
 
 		this.backgroundRender = new BackgroundRender(
 			this.ctxBG,
@@ -59,8 +43,6 @@ export class Render {
 
 		this.playerState = getPlayerState()
 
-		this.showKeyNamesOnPianoWhite = getSetting("showKeyNamesOnPianoWhite")
-		this.showKeyNamesOnPianoBlack = getSetting("showKeyNamesOnPianoBlack")
 	}
 
 	setCtxBlur() {
@@ -90,24 +72,6 @@ export class Render {
 			this.renderDimensions.windowHeight
 		)
 
-		if (
-			this.showKeyNamesOnPianoWhite != getSetting("showKeyNamesOnPianoWhite") ||
-			this.showKeyNamesOnPianoBlack != getSetting("showKeyNamesOnPianoBlack")
-		) {
-			this.showKeyNamesOnPianoWhite = getSetting("showKeyNamesOnPianoWhite")
-			this.showKeyNamesOnPianoBlack = getSetting("showKeyNamesOnPianoBlack")
-		}
-
-		if (
-			this.renderDimensions.pianoPositionY !=
-			parseInt(getSetting("pianoPosition"))
-		) {
-			this.renderDimensions.pianoPositionY = parseInt(
-				getSetting("pianoPosition")
-			)
-		}
-		this.backgroundRender.renderIfColorsChanged()
-
 		let renderInfosByTrackMap = this.getRenderInfoByTrackMap(playerState)
 		let inputActiveRenderInfos = this.getInputActiveRenderInfos(playerState)
 		let inputPlayedRenderInfos = this.getInputPlayedRenderInfos(playerState)
@@ -118,13 +82,7 @@ export class Render {
 				? playerState.song.getMeasureLines()
 				: []
 
-			// this.progressBarRender.render(time, end, playerState.song.markers)
 			this.measureLinesRender.render(time, measureLines)
-			this.sustainRender.render(
-				time,
-				playerState.song.sustainsBySecond,
-				playerState.song.sustainPeriods
-			)
 
 			let currentActiveNotes = this.noteRender.render(
 				time,
@@ -134,14 +92,15 @@ export class Render {
 			)
 
 			this.recordEnteredNotes(playerState, currentActiveNotes)
-			
-			// this.markerRender.render(time, playerState.song.markers)
-			// this.inSongTextRender.render(time, playerState.song.markers)
-		}
 
-		// if (getSetting("showBPM")) {
-		// 	this.drawBPM(playerState)
-		// }
+			// this.sustainRender.render(
+			// 	time,
+			// 	playerState.song.sustainsBySecond,
+			// 	playerState.song.sustainPeriods
+			// )
+
+			// this.markerRender.render(time, playerState.song.markers)
+		}
 	}
 
 	getRenderTime(playerState) {
@@ -152,13 +111,10 @@ export class Render {
 		if (playerState)
 			if (playerState.song) {
 				playerState.song.activeTracks.forEach((track, trackIndex) => {
-					if (isTrackDrawn(trackIndex)) {
 						renderInfoByTrackMap[trackIndex] = { black: [], white: [] }
 
 						let time = this.getRenderTime(playerState)
-						let firstSecondShown = Math.floor(
-							time - this.renderDimensions.getSecondsDisplayedAfter() - 4
-						)
+						let firstSecondShown = Math.floor(time - 4)
 						let lastSecondShown = Math.ceil(
 							time + this.renderDimensions.getSecondsDisplayedBefore()
 						)
@@ -175,7 +131,6 @@ export class Render {
 									)
 							}
 						}
-					}
 				})
 			}
 		return renderInfoByTrackMap
@@ -184,11 +139,8 @@ export class Render {
 		if (playerState)
 			if (playerState.song) {
 				playerState.song.activeTracks.forEach((track, trackIndex) => {
-					if (isTrackDrawn(trackIndex)) {
 						let time = this.getRenderTime(playerState)
-						let firstSecondShown = Math.floor(
-							time - this.renderDimensions.getSecondsDisplayedAfter() - 4
-						)
+						let firstSecondShown = Math.floor(time - 4)
 						let lastSecondShown = Math.ceil(
 							time + this.renderDimensions.getSecondsDisplayedBefore()
 						)
@@ -205,7 +157,6 @@ export class Render {
 									})
 							}
 						}
-					}
 				})
 			}
 	}
@@ -282,8 +233,8 @@ export class Render {
 			fillStyle: note.fillStyle
 				? note.fillStyle
 				: isKeyBlack
-				? getTrackColor(note.track).black
-				: getTrackColor(note.track).white,
+				? this.playerState.trackColors[note.track].black
+				: this.playerState.trackColors[note.track].white,
 			currentTime: time,
 			isBlack: isKeyBlack,
 			noteDims: noteDims,
@@ -303,17 +254,6 @@ export class Render {
 			noteEnterEnd: note.noteEnterEnd
 		}
 	}
-
-	// drawBPM(playerState) {
-	// 	this.ctx.font = "20px Arial black"
-	// 	this.ctx.fillStyle = "rgba(255,255,255,0.8)"
-	// 	this.ctx.textBaseline = "top"
-	// 	this.ctx.fillText(
-	// 		Math.round(playerState.bpm) + " BPM",
-	// 		20,
-	// 		this.renderDimensions.menuHeight + PROGRESS_BAR_CANVAS_HEIGHT + 12
-	// 	)
-	// }
 
 	setCanvasSize(cnv, width, height) {
 		if (cnv.width != width) {
@@ -337,26 +277,15 @@ export class Render {
 			this.renderDimensions.windowHeight
 		)
 
-		// this.setCanvasSize(
-		// 	this.getProgressBarCanvas(),
-		// 	this.renderDimensions.windowWidth,
-		// 	PROGRESS_BAR_CANVAS_HEIGHT
-		// )
-
 		this.setCanvasSize(
 			this.getForegroundCanvas(),
 			this.renderDimensions.windowWidth,
 			this.renderDimensions.windowHeight
 		)
 
-		// this.getProgressBarCanvas().style.height = PROGRESS_BAR_CANVAS_HEIGHT + "px"
-		// this.getProgressBarCanvas().id = "progressBarCanvas"
-		// this.getForegroundCanvas().style.zIndex = "101"
-
         this.ctxForeground = this.cnvForeground.getContext('2d');
         this.ctxBG = this.cnvBG.getContext('2d');
         this.ctx = this.cnv.getContext('2d');
-        // this.progressBarCtx = this.progressBarCanvas.getContext('2d');
 
 		this.setCtxBlur()
 	}
@@ -369,10 +298,6 @@ export class Render {
 	getForegroundCanvas() {
 		return this.cnvForeground
 	}
-
-	// getProgressBarCanvas() {
-	// 	return this.progressBarCanvas
-	// }
 
 	isNoteDrawn(note, tracks) {
 		return !tracks[note.track] || !tracks[note.track].draw
@@ -398,7 +323,6 @@ export class Render {
 	}
 	onMenuHeightChanged(menuHeight) {
 		this.renderDimensions.menuHeight = menuHeight
-		// this.getProgressBarCanvas().style.top = menuHeight + "px"
 		this.noteRender.setMenuHeight(menuHeight)
 	}
 }

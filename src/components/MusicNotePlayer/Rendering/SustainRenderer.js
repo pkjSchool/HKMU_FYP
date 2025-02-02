@@ -28,9 +28,7 @@ export class SustainRender {
 	 * @param {Object} sustainsBySecond
 	 */
 	renderSustainOnOffs(time, sustainsBySecond) {
-		let lookBackTime = Math.floor(
-			time - this.renderDimensions.getSecondsDisplayedAfter() - 4
-		)
+		let lookBackTime = Math.floor(time - 4)
 		let lookAheadTime = Math.ceil(
 			time + this.renderDimensions.getSecondsDisplayedBefore() + 1
 		)
@@ -74,9 +72,7 @@ export class SustainRender {
 	 * @param {Array} sustainPeriods
 	 */
 	renderSustainPeriods(time, sustainPeriods) {
-		let firstSecondShown = Math.floor(
-			time - this.renderDimensions.getSecondsDisplayedAfter() - 4
-		)
+		let firstSecondShown = Math.floor(time - 4)
 		let lastSecondShown = Math.ceil(
 			time + this.renderDimensions.getSecondsDisplayedBefore() + 1
 		)

@@ -1,6 +1,5 @@
 import {
-	createCompleteGainNode,
-	createContinuousGainNode
+	createCompleteGainNode
 } from "./GainNodeController.js"
 
 class AudioNote {
@@ -29,20 +28,6 @@ class AudioNote {
 	endSourceAt(time) {
 		this.source.stop(time)
 	}
-}
-
-export const createContinuousAudioNote = (context, buffer, volume) => {
-	let audioNote = new AudioNote(context, buffer)
-
-	audioNote.gainNodeController = createContinuousGainNode(
-		context,
-		context.currentTime,
-		volume
-	)
-
-	audioNote.connectSource(context, audioNote.gainNodeController.gainNode)
-	audioNote.play(context.currentTime)
-	return audioNote
 }
 
 export const createCompleteAudioNote = (

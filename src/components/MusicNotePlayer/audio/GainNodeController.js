@@ -1,5 +1,3 @@
-import { getSetting } from "../settings/Settings.js"
-
 const TIME_CONST = 0.05
 class GainNodeController {
 	constructor(context) {
@@ -49,9 +47,9 @@ class GainNodeController {
 		this.gainNode.gain.setTargetAtTime(0, end + release + 0.005, TIME_CONST)
 	}
 	endAt(endTime, isSustained) {
-		const release = isSustained
-			? parseFloat(getSetting("adsrReleasePedal"))
-			: parseFloat(getSetting("adsrReleaseKey"))
+		let adsrValues = getAdsrValues()
+
+		const release = isSustained ? adsrValues.releasePedal : adsrValues.releaseKey
 		endTime = Math.max(endTime, this.endOfDecayTime)
 		this.setReleaseGainNode(endTime, release)
 		return endTime
@@ -59,11 +57,11 @@ class GainNodeController {
 }
 
 function getAdsrValues() {
-	let attack = parseFloat(getSetting("adsrAttack"))
-	let decay = parseFloat(getSetting("adsrDecay"))
-	let sustain = parseFloat(getSetting("adsrSustain")) / 100
-	let releasePedal = parseFloat(getSetting("adsrReleasePedal"))
-	let releaseKey = parseFloat(getSetting("adsrReleaseKey"))
+	let attack = 0
+	let decay = 0
+	let sustain = 1
+	let releasePedal = 0.2
+	let releaseKey = 0.2
 	return { attack, decay, sustain, releasePedal, releaseKey }
 }
 function getAdsrAdjustedForDuration(duration) {
@@ -86,13 +84,6 @@ function getAdsrAdjustedForDuration(duration) {
 	return adsrValues
 }
 
-export const createContinuousGainNode = (context, start, gainValue) => {
-	const gainNodeGen = new GainNodeController(context)
-
-	gainNodeGen.setAttackAndDecay(start, gainValue, getAdsrValues())
-	return gainNodeGen
-}
-
 export const createCompleteGainNode = (
 	context,
 	gainValue,
@@ -111,10 +102,11 @@ export const createCompleteGainNode = (
 	gainNodeGen.setAttackAndDecay(ctxTimes.start, gainValue, adsrValues)
 
 	let end = ctxTimes.end
-	let release = parseFloat(getSetting("adsrReleaseKey"))
-	if (isSustained && getSetting("sustainEnabled")) {
+	let release = adsrValues.releaseKey
+	// Play sustain
+	if (isSustained) {
 		end = ctxTimes.sustainOff
-		release = parseFloat(getSetting("adsrReleasePedal"))
+		release = adsrValues.releasePedal
 	}
 
 	return gainNodeGen

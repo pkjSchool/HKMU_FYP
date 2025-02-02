@@ -22,14 +22,15 @@
   width: 100%;
   overflow: hidden;
   background: #FFF;
+  cursor: pointer;
 }
 
 .musicProgressBar::-webkit-slider-thumb {
   -webkit-appearance: none;
   appearance: none;
-  width: 10px;
+  width: 5px;
   height: 10px;
   background: #dc3545;
-  cursor: pointer;
+  cursor: ew-resize;
   box-shadow: calc(-50vw) 0 0 50vw #ffc107;
 }

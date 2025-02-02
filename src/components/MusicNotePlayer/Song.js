@@ -1,4 +1,3 @@
-import { CONST } from "./data/CONST.js"
 export class Song {
 	constructor(midiData, fileName, name) {
 		this.fileName = fileName

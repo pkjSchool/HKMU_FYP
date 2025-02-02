@@ -14,8 +14,7 @@ export class MeasureLinesRender {
 		ctx.lineWidth = 0.5
 		let currentSecond = Math.floor(time)
 		ctx.beginPath()
-		let firstSecondShown =
-			currentSecond - this.renderDimensions.getSecondsDisplayedAfter() - 1
+		let firstSecondShown = currentSecond - 1
 		let lastSecondShown =
 			currentSecond + this.renderDimensions.getSecondsDisplayedBefore() + 1
 		for (let i = firstSecondShown; i < lastSecondShown; i++) {

@@ -1,8 +1,15 @@
 import { hasBuffer, setBuffer } from "./audio/Buffers.js"
-import { replaceAllString, iOS } from "./Util.js"
 import { Base64Binary } from "./Base64Binary.js"
 
 export class SoundfontLoader {
+	static replaceAllString(text, replaceThis, withThat) {
+		return text.replace(new RegExp(replaceThis, "g"), withThat)
+	}
+
+	static iOS() {
+		return false
+	}
+
 	/**
 	 *
 	 * @param {String} instrument
@@ -13,13 +20,12 @@ export class SoundfontLoader {
 			soundfontName = "FluidR3_GM"
 			baseUrl = ""
 		}
-		let fileType = iOS ? "mp3" : "ogg"
+		let fileType = SoundfontLoader.iOS ? "mp3" : "ogg"
 		return fetch(
 			baseUrl + soundfontName + "/" + instrument + "-" + fileType + ".js"
 		)
 			.then(response => {
 				if (response.ok) {
-					// getLoader().setLoadMessage("Loaded " + instrument + " from " + soundfontName + " soundfont.")
 					return response.text()
 				}
 				throw Error(response.statusText)
@@ -28,7 +34,7 @@ export class SoundfontLoader {
 				let scr = document.createElement("script")
 				scr.language = "javascript"
 				scr.type = "text/javascript"
-				let newData = replaceAllString(data, "Soundfont", soundfontName)
+				let newData = SoundfontLoader.replaceAllString(data, "Soundfont", soundfontName)
 				scr.text = newData
 				document.body.appendChild(scr)
 			})
@@ -36,13 +42,13 @@ export class SoundfontLoader {
 				console.error("Error fetching soundfont: \n", error)
 			})
 	}
-	static async loadInstruments(instruments) {
-		return await Promise.all(
-			instruments
-				.slice(0)
-				.map(instrument => SoundfontLoader.loadInstrument(instrument))
-		)
-	}
+	// static async loadInstruments(instruments) {
+	// 	return await Promise.all(
+	// 		instruments
+	// 			.slice(0)
+	// 			.map(instrument => SoundfontLoader.loadInstrument(instrument))
+	// 	)
+	// }
 	static async getBuffers(ctx) {
 		let sortedBuffers = null
 		await SoundfontLoader.createBuffers(ctx).then(

@@ -1,4 +1,3 @@
-import { getSetting } from "../settings/Settings.js"
 import { isBlack } from "../Util.js"
 /**
  * Class that renders the background of the main canvas
@@ -10,16 +9,6 @@ export class BackgroundRender {
 		this.renderDimensions.registerResizeCallback(this.render.bind(this))
 		this.render()
 	}
-	renderIfColorsChanged() {
-		if (
-			this.col1 != getSetting("bgCol1") ||
-			this.col2 != getSetting("bgCol2") ||
-			this.col3 != getSetting("bgCol3") ||
-			this.pianoPosition != getSetting("pianoPosition")
-		) {
-			this.render()
-		}
-	}
 	render() {
 		let c = this.ctx
 		c.clearRect(
@@ -29,15 +18,11 @@ export class BackgroundRender {
 			this.renderDimensions.windowHeight
 		)
 
-		let reversed = getSetting("reverseNoteDirection")
-		let bgHeight = reversed
-			? this.renderDimensions.windowHeight -
-			  this.renderDimensions.getAbsolutePianoPosition()
-			: this.renderDimensions.getAbsolutePianoPosition()
-		let bgY = reversed ? this.renderDimensions.getAbsolutePianoPosition() : 0
-		const col1 = getSetting("bgCol1")
-		const col2 = getSetting("bgCol2")
-		const col3 = getSetting("bgCol3")
+		let bgHeight = this.renderDimensions.getAbsolutePianoPosition()
+		let bgY = 0
+		const col1 = "rgba(40,40,40,0.8)"
+		const col2 = "rgba(25,25,25,1)"
+		const col3 = "rgba(10,10,10,0.5)"
 		c.strokeStyle = col1
 		c.fillStyle = col2
 		let whiteKey = 0
@@ -61,9 +46,5 @@ export class BackgroundRender {
 				whiteKey++
 			}
 		}
-		this.col1 = col1
-		this.col2 = col2
-		this.col3 = col3
-		this.pianoPosition = getSetting("pianoPosition")
 	}
 }

@@ -94,52 +94,9 @@ function drawRoundRect(ctx, x, y, width, height, radius, isRounded) {
 	ctx.closePath()
 }
 
-function replaceAllString(text, replaceThis, withThat) {
-	return text.replace(new RegExp(replaceThis, "g"), withThat)
-}
-
-function groupArrayBy(arr, keyFunc) {
-	let keys = {}
-	arr.forEach(el => (keys[keyFunc(el)] = []))
-	Object.keys(keys).forEach(key => {
-		arr.forEach(el => (keyFunc(el) == key ? keys[keyFunc(el)].push(el) : null))
-	})
-	return keys
-}
-function loadJson(url, callback) {
-	let request = new XMLHttpRequest()
-	request.overrideMimeType("application/json")
-	request.open("GET", url, true)
-	request.onreadystatechange = function () {
-		if (request.readyState == 4 && request.status == "200") {
-			callback(request.responseText)
-		}
-	}
-	request.send(null)
-}
-
-function iOS() {
-	return (
-		[
-			"iPad Simulator",
-			"iPhone Simulator",
-			"iPod Simulator",
-			"iPad",
-			"iPhone",
-			"iPod"
-		].includes(navigator.platform) ||
-		// iPad on iOS 13 detection
-		(navigator.userAgent.includes("Mac") && "ontouchend" in document)
-	)
-}
-
 export {
 	formatTime,
 	isBlack,
 	sum,
-	drawRoundRect,
-	replaceAllString,
-	groupArrayBy,
-	loadJson,
-	iOS
+	drawRoundRect
 }

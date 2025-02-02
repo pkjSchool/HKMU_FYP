@@ -2,16 +2,6 @@ import { MidiLoader } from "../MidiLoader.js"
 import { Song } from "../Song.js"
 import { AudioPlayer } from "../audio/AudioPlayer.js"
 import { getSetting } from "../settings/Settings.js"
-import {
-	getTracks,
-	getTrackVolume,
-	isAnyTrackPlayalong,
-	isTrackRequiredToPlay,
-	setupTracks
-} from "./Tracks.js"
-
-const LOOK_AHEAD_TIME = 0
-const LOOK_AHEAD_TIME_WHEN_PLAYALONG = 0
 
 class Player {
 	constructor() {
@@ -24,11 +14,7 @@ class Player {
 		this.playing = false
 		this.scrolling = 0
 		this.loadedSongs = new Set()
-		this.muted = false
 		this.volume = 100
-		this.mutedAtVolume = 100
-		this.inputInstrument = "acoustic_grand_piano"
-		this.lastMicNote = -1
 
 		this.newSongCallbacks = []
 		this.inputActiveNotes = {}
@@ -50,6 +36,7 @@ class Player {
 			end: this.song ? this.song.getEnd() : 0,
 			loading: this.audioPlayer.loading,
 			song: this.song,
+			trackColors: this.trackColors,
 			inputActiveNotes: this.inputActiveNotes,
 			inputPlayedNotes: this.inputPlayedNotes,
 			bpm: this.getBPM(time)
@@ -74,57 +61,56 @@ class Player {
 		this.runTimeUpdatedListener()
 		this.resetNoteSequence()
 	}
-	increaseSpeed(val) {
-		this.playbackSpeed = Math.max(
-			0,
-			Math.round((this.playbackSpeed + val) * 100) / 100
-		)
-	}
-	getChannel(track) {
-		if (this.song.activeTracks[track].notes.length) {
-			return this.channels[this.song.activeTracks[track].notes[0].channel]
-		}
-	}
-	getCurrentTrackInstrument(trackIndex) {
-		let i = 0
-		let noteSeq = this.song.getNoteSequence()
-		let nextNote = noteSeq[i]
-		while (nextNote.track != trackIndex && i < noteSeq.length - 1) {
-			i++
-			nextNote = noteSeq[i]
-		}
-		if (nextNote.track == trackIndex) {
-			return nextNote.instrument
-		}
-	}
+	// increaseSpeed(val) {
+	// 	this.playbackSpeed = Math.max(
+	// 		0,
+	// 		Math.round((this.playbackSpeed + val) * 100) / 100
+	// 	)
+	// }
+	// getChannel(track) {
+	// 	if (this.song.activeTracks[track].notes.length) {
+	// 		return this.channels[this.song.activeTracks[track].notes[0].channel]
+	// 	}
+	// }
+	// getCurrentTrackInstrument(trackIndex) {
+	// 	let i = 0
+	// 	let noteSeq = this.song.getNoteSequence()
+	// 	let nextNote = noteSeq[i]
+	// 	while (nextNote.track != trackIndex && i < noteSeq.length - 1) {
+	// 		i++
+	// 		nextNote = noteSeq[i]
+	// 	}
+	// 	if (nextNote.track == trackIndex) {
+	// 		return nextNote.instrument
+	// 	}
+	// }
 
-	midiNoteToVexFlowKey(midiNote) {
-		const notes = ['c', 'c#', 'd', 'd#', 'e', 'f', 'f#', 'g', 'g#', 'a', 'a#', 'b'];
-		const octave = Math.floor(midiNote / 12) - 1;
-		const note = notes[midiNote % 12];
-		return `${note}/${octave}`;
-	}
+	// midiNoteToVexFlowKey(midiNote) {
+	// 	const notes = ['c', 'c#', 'd', 'd#', 'e', 'f', 'f#', 'g', 'g#', 'a', 'a#', 'b'];
+	// 	const octave = Math.floor(midiNote / 12) - 1;
+	// 	const note = notes[midiNote % 12];
+	// 	return `${note}/${octave}`;
+	// }
 
-	midiDurationToVexFlowDuration(ticks, ticksPerBeat) {
-		const quarterNoteTicks = ticksPerBeat;
-		const durations = {
-			1: 'w', // whole note
-			2: 'h', // half note
-			4: 'q', // quarter note
-			8: '8', // eighth note
-			16: '16', // sixteenth note
-			32: '32', // thirty-second note
-			64: '64' // sixty-fourth note
-		};
+	// midiDurationToVexFlowDuration(ticks, ticksPerBeat) {
+	// 	const quarterNoteTicks = ticksPerBeat;
+	// 	const durations = {
+	// 		1: 'w', // whole note
+	// 		2: 'h', // half note
+	// 		4: 'q', // quarter note
+	// 		8: '8', // eighth note
+	// 		16: '16', // sixteenth note
+	// 		32: '32', // thirty-second note
+	// 		64: '64' // sixty-fourth note
+	// 	};
 	
-		const durationRatio = ticks / quarterNoteTicks;
-		return durations[durationRatio] || 'q'; // 默認為四分音符
-	}
+	// 	const durationRatio = ticks / quarterNoteTicks;
+	// 	return durations[durationRatio] || 'q'; // 默認為四分音符
+	// }
 
 	async loadSong(theSong, fileName, name) {
 		this.audioPlayer.stopAllSources()
-		// getLoader().startLoad()
-		// getLoader().setLoadMessage("Loading " + fileName + ".")
+		console.info("Loading " + fileName + ".")
 		if (this.audioPlayer.isRunning()) {
 			this.audioPlayer.suspend()
 		}
@@ -132,25 +118,21 @@ class Player {
 		this.loading = true
 
 
-		// getLoader().setLoadMessage("Parsing Midi File.")
+		console.info("Parsing Midi File.")
 		try {
 			let midiFile = await MidiLoader.loadFile(theSong)
 			this.setSong(new Song(midiFile, fileName, name))
-			// getLoader().setLoadMessage("Loading Instruments")
+			console.info("Loading Instruments")
 
 			// await this.audioPlayer.loadInstrumentsForSong(this.song)
-			await this.audioPlayer.loadInstrumentsForSong(this.song)
 
 			this.runTimeUpdatedListener()
 
-			// getLoader().setLoadMessage("Creating Buffers")
-			return this.audioPlayer.loadBuffers()
+			console.info("Creating Buffers")
 			// return this.audioPlayer.loadBuffers()
-			// .then(v => getLoader().stopLoad())
 		} catch (error) {
 			console.log(error)
-			// Notification.create("Couldn't read Midi-File - " + error, 2000)
-			// getLoader().stopLoad()
+			console.warn("Couldn't read Midi-File - " + error)
 		}
 	}
 
@@ -165,7 +147,13 @@ class Player {
 		if (this.loadedSongs.has(song)) {
 			this.loadedSongs.add(song)
 		}
-		setupTracks(song.activeTracks)
+		this.trackColors = {}
+
+		const colorsList = getSetting("trackColors")
+		const colorsLen = colorsList.length
+		for (let trackId in song.activeTracks) {
+			this.trackColors[trackId] = colorsList[trackId % colorsLen]
+		}
 		this.newSongCallbacks.forEach(callback => callback())
 	}
 	startPlay() {
@@ -176,61 +164,61 @@ class Player {
 		this.lastTime = this.audioPlayer.getContextTime()
 		this.resume()
 	}
-	handleScroll(stacksize) {
-		if (this.scrolling != 0) {
-			if (!this.song) {
-				this.scrolling = 0
-				return
-			}
-			this.lastTime = this.audioPlayer.getContextTime()
-			let newScrollOffset = this.scrollOffset + 0.01 * this.scrolling
-			//get hypothetical time with new scrollOffset.
-			let oldTime = this.getTimeWithScrollOffset(this.scrollOffset)
-			let newTime = this.getTimeWithScrollOffset(newScrollOffset)
+	// handleScroll(stacksize) {
+	// 	if (this.scrolling != 0) {
+	// 		if (!this.song) {
+	// 			this.scrolling = 0
+	// 			return
+	// 		}
+	// 		this.lastTime = this.audioPlayer.getContextTime()
+	// 		let newScrollOffset = this.scrollOffset + 0.01 * this.scrolling
+	// 		//get hypothetical time with new scrollOffset.
+	// 		let oldTime = this.getTimeWithScrollOffset(this.scrollOffset)
+	// 		let newTime = this.getTimeWithScrollOffset(newScrollOffset)
 
-			//limit scroll past end
-			if (this.song && newTime > 1 + this.song.getEnd() / 1000) {
-				this.scrolling = 0
-				newScrollOffset =
-					this.getTimeWithoutScrollOffset() - (1 + this.song.getEnd() / 1000)
-				this.scrollOffset + (1 + this.song.getEnd() / 1000 - this.getTime()) ||
-					this.scrollOffset
-			}
+	// 		//limit scroll past end
+	// 		if (this.song && newTime > 1 + this.song.getEnd() / 1000) {
+	// 			this.scrolling = 0
+	// 			newScrollOffset =
+	// 				this.getTimeWithoutScrollOffset() - (1 + this.song.getEnd() / 1000)
+	// 			this.scrollOffset + (1 + this.song.getEnd() / 1000 - this.getTime()) ||
+	// 				this.scrollOffset
+	// 		}
 
-			//limit scroll past beginning
-			if (newTime < oldTime && newTime < this.startDelay) {
-				this.scrolling = 0
-				newScrollOffset = this.getTimeWithoutScrollOffset() - this.startDelay
-			}
+	// 		//limit scroll past beginning
+	// 		if (newTime < oldTime && newTime < this.startDelay) {
+	// 			this.scrolling = 0
+	// 			newScrollOffset = this.getTimeWithoutScrollOffset() - this.startDelay
+	// 		}
 
-			this.scrollOffset = newScrollOffset
+	// 		this.scrollOffset = newScrollOffset
 
-			//dampen scroll amount somehow...
-			this.scrolling =
-				(Math.abs(this.scrolling) -
-					Math.max(
-						Math.abs(this.scrolling * 0.003),
-						this.playbackSpeed * 0.001
-					)) *
-					(Math.abs(this.scrolling) / this.scrolling) || 0
+	// 		//dampen scroll amount somehow...
+	// 		this.scrolling =
+	// 			(Math.abs(this.scrolling) -
+	// 				Math.max(
+	// 					Math.abs(this.scrolling * 0.003),
+	// 					this.playbackSpeed * 0.001
+	// 				)) *
+	// 				(Math.abs(this.scrolling) / this.scrolling) || 0
 
-			//set to zero if only minimal scrollingspeed left
-			if (Math.abs(this.scrolling) <= this.playbackSpeed * 0.005) {
-				this.scrolling = 0
-				this.resetNoteSequence()
-			}
-			//limit recursion
-			if (!stacksize) stacksize = 0
-			if (stacksize > 50) {
-				window.setTimeout(() => {
-					this.handleScroll()
-				}, 25)
-				return
-			}
-			this.handleScroll(++stacksize)
-			return
-		}
-	}
+	// 		//set to zero if only minimal scrollingspeed left
+	// 		if (Math.abs(this.scrolling) <= this.playbackSpeed * 0.005) {
+	// 			this.scrolling = 0
+	// 			this.resetNoteSequence()
+	// 		}
+	// 		//limit recursion
+	// 		if (!stacksize) stacksize = 0
+	// 		if (stacksize > 50) {
+	// 			window.setTimeout(() => {
+	// 				this.handleScroll()
+	// 			}, 25)
+	// 			return
+	// 		}
+	// 		this.handleScroll(++stacksize)
+	// 		return
+	// 	}
+	// }
 	getBPM(time) {
 		let val = 0
 		if (this.song) {
@@ -248,9 +236,6 @@ class Player {
 
 		let delta = (currentContextTime - this.lastTime) * this.playbackSpeed
 
-		this.clearOldPlayedInputNotes()
-
-		//cap max updaterate.
 		if (delta < 0.0069) {
 			this.requestNextTick()
 			return
@@ -268,16 +253,15 @@ class Player {
 
 		let currentTime = this.getTime()
 
-		// if (this.isSongEnded(currentTime - 5)) {
 		if (this.isSongEnded(currentTime)) {
 			this.pause()
 			this.requestNextTick()
 			this.runFinishListener()
 			return
 		}
-		if (getSetting("enableMetronome")) {
-			this.playMetronomeBeats(currentTime)
-		}
+
+		this.playMetronomeBeats(currentTime)
+
 		while (this.isNextNoteReached(currentTime)) {
 			let toRemove = 0
 			forLoop: for (let i = 0; i < this.noteSequence.length; i++) {
@@ -293,8 +277,7 @@ class Player {
 
 			if (
 				this.noteSequence[0] &&
-				(!isTrackRequiredToPlay(this.noteSequence[0].track) ||
-					this.isInputKeyPressed(this.noteSequence[0].noteNumber))
+				(true || this.isInputKeyPressed(this.noteSequence[0].noteNumber))
 			) {
 				this.playNote(this.noteSequence.shift())
 			} else {
@@ -334,10 +317,6 @@ class Player {
 		})
 	}
 
-	clearOldPlayedInputNotes() {
-		//TODO - Clear those that arent displayed anymore.. And/Or save them somewhere for playback.
-	}
-
 	requestNextTick() {
 		window.requestAnimationFrame(this.playTick.bind(this))
 	}
@@ -357,9 +336,7 @@ class Player {
 	}
 
 	isNextNoteReached(currentTime) {
-		let lookahead = isAnyTrackPlayalong()
-			? LOOK_AHEAD_TIME_WHEN_PLAYALONG
-			: LOOK_AHEAD_TIME
+		let lookahead = 0
 		return (
 			this.noteSequence.length &&
 			this.noteSequence[0].timestamp / 1000 <
@@ -372,11 +349,13 @@ class Player {
 		this.runTimeUpdatedListener()
 		this.scrollOffset = 0
 		this.playing = false
+		this.paused = true
 		this.pause()
 	}
 	resume() {
 		if (!this.song || !this.paused) return
 		console.log("Resuming Song")
+		this.playing = true
 		this.paused = false
 		this.resetNoteSequence()
 		this.audioPlayer.resume()
@@ -393,6 +372,7 @@ class Player {
 	pause() {
 		console.log("Pausing Song")
 		this.pauseTime = this.getTime()
+		this.playing = false
 		this.paused = true
 	}
 
@@ -402,30 +382,16 @@ class Player {
 		}
 		let currentTime = this.getTime()
 
-		// if (getMidiHandler().isOutputActive()) {
-			// getMidiHandler().playNote(
-			// 	note.noteNumber + 21,
-			// 	note.velocity,
-			// 	note.noteOffVelocity,
-			// 	(note.timestamp - currentTime * 1000) / this.playbackSpeed,
-			// 	(note.offTime - currentTime * 1000) / this.playbackSpeed
-			// )
-		// } else {
-			this.audioPlayer.playCompleteNote(
-				currentTime,
-				note,
-				this.playbackSpeed,
-				this.getNoteVolume(note),
-				isAnyTrackPlayalong()
-			)
-		// }
+		this.audioPlayer.playCompleteNote(
+			currentTime,
+			note,
+			this.playbackSpeed,
+			this.getNoteVolume(note),
+			false
+		)
 	}
 	getNoteVolume(note) {
-		return (
-			(this.volume / 100) *
-			(getTrackVolume(note.track) / 100) *
-			(note.channelVolume / 127)
-		)
+		return ((this.volume / 100) * (note.channelVolume / 127))
 	}
 
 	addInputNoteOn(noteNumber) {
