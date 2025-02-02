@@ -19,6 +19,7 @@ class Player {
 		this.newSongCallbacks = []
 		this.inputActiveNotes = {}
 		this.inputPlayedNotes = []
+		this.inputSortedNotes = {}
 
 		this.playbackSpeed = 1
 
@@ -39,6 +40,7 @@ class Player {
 			trackColors: this.trackColors,
 			inputActiveNotes: this.inputActiveNotes,
 			inputPlayedNotes: this.inputPlayedNotes,
+			inputSortedNotes: this.inputSortedNotes,
 			bpm: this.getBPM(time)
 		}
 	}
@@ -423,6 +425,13 @@ class Player {
 		this.inputActiveNotes[noteNumber].offTime = currentTime * 1000
 		this.inputPlayedNotes.push(this.inputActiveNotes[noteNumber])
 
+		if(!this.inputSortedNotes[noteNumber]) {this.inputSortedNotes[noteNumber] = []}
+		this.inputSortedNotes[noteNumber].push({
+			"noteNumber": this.inputActiveNotes[noteNumber].noteNumber,
+			"offTime": this.inputActiveNotes[noteNumber].offTime,
+			"timestamp": this.inputActiveNotes[noteNumber].timestamp
+		  })
+
 		delete this.inputActiveNotes[noteNumber]
 	}
 	getPlayingNotes() {
@@ -469,6 +478,7 @@ class Player {
 	clearInputRecords() {
 		this.inputActiveNotes = {}
 		this.inputPlayedNotes = []
+		this.inputSortedNotes = {}
 	}
 }
 const thePlayer = new Player()
@@ -484,17 +494,23 @@ export const getPlayerState = () => {
 	return thePlayer.getState()
 }
 
+export const isPlaying = () => {
+	return thePlayer.playing
+}
+
 export const getPlayingNotes = () => {
 	return thePlayer.getPlayingNotes()
 }
 
 export const resetNoteMeasurement = () => {
 	const playerStatus = thePlayer.getState()
-	for(let tracksIdx in playerStatus.song.activeTracks){
-		for(let notesIdx in playerStatus.song.activeTracks[tracksIdx].notes){
-			playerStatus.song.activeTracks[tracksIdx].notes[notesIdx].isEntered = false
-			playerStatus.song.activeTracks[tracksIdx].notes[notesIdx].noteEnterStart = null
-			playerStatus.song.activeTracks[tracksIdx].notes[notesIdx].noteEnterEnd = null
+	if(playerStatus.song) {
+		for(let tracksIdx in playerStatus.song.activeTracks){
+			for(let notesIdx in playerStatus.song.activeTracks[tracksIdx].notes){
+				playerStatus.song.activeTracks[tracksIdx].notes[notesIdx].isEntered = false
+				playerStatus.song.activeTracks[tracksIdx].notes[notesIdx].noteEnterStart = null
+				playerStatus.song.activeTracks[tracksIdx].notes[notesIdx].noteEnterEnd = null
+			}
 		}
 	}
 

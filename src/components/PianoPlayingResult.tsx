@@ -50,6 +50,11 @@ const PianoPlayingResult = (props:any) => {
         return result?result[label]:null
     }
 
+    const divisionHandle = (number1:number, number2:number) => {
+        if (number1 == 0 && number2 == 0) return (0).toFixed(2)
+        return (number1 / number2 * 100).toFixed(2)
+    }
+
     return (
         <div style={boxWrapper}>
             <div style={boxOverlay}></div>
@@ -69,19 +74,26 @@ const PianoPlayingResult = (props:any) => {
 
                     <div className="row mt-3" style={itemRow}>
                         <div className="col-6" style={itemWrapper}>
-                            <div  style={itemLabel}>Music Long</div>
-                            <div  style={itemText}>{getResultData("musicTime")}</div>
+                            <div style={itemLabel}>Music Long</div>
+                            <div style={itemText}>{getResultData("musicTime")}</div>
                         </div>
                         <div className="col-6" style={itemWrapper}>
-                            <div  style={itemLabel}>Play Time</div>
-                            <div  style={itemText}>{getResultData("playTime")}</div>
+                            <div style={itemLabel}>Play Time</div>
+                            <div style={itemText}>{getResultData("playTime")}</div>
                         </div>
                     </div>
 
                     <div className="row mt-3" style={itemRow}>
                         <div className="col-6" style={itemWrapper}>
-                            <div  style={itemLabel}>Accuracy</div>
-                            <div  style={itemText}>{getResultData("accuracy")}%</div>
+                            <div style={itemLabel}>Note Entered</div>
+                            <div style={itemText}>{divisionHandle(getResultData("noteEntered"), getResultData("totalNote"))}%</div>
+                            <div style={itemText}>{getResultData("noteEntered")} / {getResultData("totalNote")}</div>
+                        </div>
+                        <div className="col-6" style={itemWrapper}>
+                            <div style={itemLabel}>Accurate Input</div>
+                            <div style={itemText}>{divisionHandle(getResultData("inputOnRange"), getResultData("noteEntered"))}%</div>
+                            <div style={itemText}>{getResultData("inputOnRange")} / {getResultData("noteEntered")}</div>
+                            
                         </div>
                     </div>
 

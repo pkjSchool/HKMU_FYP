@@ -15,7 +15,8 @@ const CollapsibleNavBar = forwardRef((props:any, ref) => {
   const progressBarReadonly = false;
 
   useImperativeHandle(ref, () => ({
-    onPlayerTimeUpdated
+    onPlayerTimeUpdated,
+    handleUpdatePlayingTimestemp
   }));
 
   const [isCollapsed, setIsCollapsed] = useState(false);
@@ -26,6 +27,8 @@ const CollapsibleNavBar = forwardRef((props:any, ref) => {
   const [valSongCurSecond, setValSongCurSecond] = useState<number>(0);
   const [valBpm, setValBpm] = useState<number>(0);
   const [valPrePlay, setValPrePlay] = useState<number>(2);
+  const [playingTimestemp, setPlayingTimestemp] = useState<number>(0);
+  
 
   const handleMouseEnter = (index: number) => {
     setHoveredButton(index);
@@ -33,6 +36,11 @@ const CollapsibleNavBar = forwardRef((props:any, ref) => {
 
   const handleMouseLeave = () => {
     setHoveredButton(-1);
+  }
+
+  
+  const handleUpdatePlayingTimestemp = (time:number) => {
+    setPlayingTimestemp(time)
   }
 
   const handleVolumeButtonOnClick = () => {
@@ -173,7 +181,7 @@ const CollapsibleNavBar = forwardRef((props:any, ref) => {
         <input type="range" className="musicProgressBar" name="valPrograss" min={0 - valPrePlay} max={ valSongEndSecond } step="0.01" value={valProgress} disabled={progressBarReadonly} onChange={(e) => { progressChanged(parseFloat(e.target.value)) }} />
       </div>
       <div style={statusBarStyles}>
-        <div>{formatTime(valSongCurSecond)} / {formatTime(valSongEndSecond)} | {valBpm} BPM</div>
+        <div>{formatTime(valSongCurSecond)} / {formatTime(valSongEndSecond)} | {valBpm} BPM | {formatTime(playingTimestemp)}</div>
       </div>
       <button style={styleFunctions.floatingButton(isCollapsed)} onClick={toggleNavBar}>
         {isCollapsed ? "Expand" : "Collapse"}

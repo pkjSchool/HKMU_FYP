@@ -55,7 +55,7 @@ class Settings {
 			},
 			"minNoteHeight": {
 				id: "minNoteHeight",
-				value: 10,
+				value: 2,
 			},
 			"showSustainOnOffs": {
 				id: "showSustainOnOffs",
