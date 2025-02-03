@@ -9,7 +9,7 @@ export class MeasureLinesRender {
 	render(time, measureLines) {
 		let ctx = this.ctx
 
-		ctx.strokeStyle = "rgba(255,255,255,0.3)"
+		ctx.strokeStyle = "rgba(255,255,255,1)"
 
 		ctx.lineWidth = 0.5
 		let currentSecond = Math.floor(time)

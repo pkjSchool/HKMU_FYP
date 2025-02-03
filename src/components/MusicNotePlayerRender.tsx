@@ -1,6 +1,6 @@
 import React from 'react'
 import { Render } from "./MusicNotePlayer/Rendering/Render.js"
-import { getPlayer, getPlayerState } from "./MusicNotePlayer/player/Player.js"
+import { Player, getPlayer } from "./MusicNotePlayer/player/Player.js"
 
 class MusicNotePlayerRender extends React.Component<any, any> {
   foregroundCanvasRef: React.RefObject<HTMLCanvasElement>;
@@ -9,6 +9,7 @@ class MusicNotePlayerRender extends React.Component<any, any> {
   wrapperRef: React.RefObject<HTMLDivElement>;
   animeId: number;
   cnvrender: Render;
+  player: Player;
   noteNumberOffset: number;
 
   constructor(props: any) {
@@ -31,15 +32,15 @@ class MusicNotePlayerRender extends React.Component<any, any> {
   }
 
   play = () => {
-    getPlayer().startPlay()
+    this.player.startPlay()
   };
 
   pause = () => {
-    getPlayer().pause()
+    this.player.pause()
   };
 
   stop = () => {
-    getPlayer().stop()
+    this.player.stop()
   };
 
   changeMenuHeight = (h:number) => {
@@ -48,11 +49,11 @@ class MusicNotePlayerRender extends React.Component<any, any> {
   };
 
   onNotePress = (note:number) => {
-    getPlayer().addInputNoteOn(note + this.noteNumberOffset)
+    this.player.addInputNoteOn(note + this.noteNumberOffset)
   }
 
   onNoteRelease = (note:number) => {
-    getPlayer().addInputNoteOff(note + this.noteNumberOffset)
+    this.player.addInputNoteOff(note + this.noteNumberOffset)
   }
 
   componentDidMount() {
@@ -65,12 +66,13 @@ class MusicNotePlayerRender extends React.Component<any, any> {
 
       this.animeId = 0;
 
-      this.cnvrender = new Render(cnvBG, cnvMain, cnvForeground, wrapperEle)
-      const player = getPlayer()
-      player.loadSong(this.props.music, "fileName.midi", "name")
+      this.player = getPlayer()
+      this.cnvrender = new Render(cnvBG, cnvMain, cnvForeground, wrapperEle, this.player)
+
+      this.player.loadSong(this.props.music, "fileName.midi", "name")
 
       const renderer = () => {
-        this.cnvrender.render(getPlayerState())
+        this.cnvrender.render(this.player.getPlayerState())
         this.animeId = window.requestAnimationFrame(renderer)
       }
 

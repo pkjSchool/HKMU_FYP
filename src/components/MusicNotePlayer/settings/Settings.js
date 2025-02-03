@@ -1,19 +1,6 @@
-class Settings {
+export class Settings {
 	constructor() {
 		this.settingsById = {
-			"trackColors": {
-				id: "trackColors",
-				value: [
-					{ white: "#1ee5df", black: "#1ee5df" },
-					// { white: "#ffa000", black: "#ff8f00" }, //orange
-					// { white: "#1e88e5", black: "#1976d2" }, //blue
-					// { white: "#43a047", black: "#388e3c" }, //green
-					// { white: "#ffeb3b", black: "#fdd835" }, //yellow
-					// { white: "#9c27b0", black: "#8e24aa" }, //pink
-					// { white: "#f44336", black: "#e53935" }, //red
-					// { white: "#673ab7", black: "#5e35b1" } //purple
-				],
-			},
 			"showMarkersSong": {
 				id: "showMarkersSong",
 				value: true,
@@ -81,46 +68,6 @@ class Settings {
 				id: "sustainedNotesOpacity",
 				label: "Sustained Notes Opacity (%)",
 				value: 50,
-			},
-			"showParticlesTop": {
-				id: "showParticlesTop",
-				label: "Enable top particles",
-				value: true,
-			},
-			"showParticlesBottom": {
-				id: "showParticlesBottom",
-				label: "Enable bottom particles ",
-				value: true,
-			},
-			"particleStroke": {
-				id: "particleStroke",
-				label: "Stroke particles",
-				value: true,
-			},
-			"particleBlur": {
-				id: "particleBlur",
-				label: "Particle blur amount (px)",
-				value: 3,
-			},
-			"particleAmount": {
-				id: "particleAmount",
-				label: "Particle Amount (per frame)",
-				value: 3,
-			},
-			"particleSize": {
-				id: "particleSize",
-				label: "Particle Size",
-				value: 6,
-			},
-			"particleLife": {
-				id: "particleLife",
-				label: "Particle Duration",
-				value: 20,
-			},
-			"particleSpeed": {
-				id: "particleSpeed",
-				label: "Particle Speed",
-				value: 4,
 			}
 		}
 	}

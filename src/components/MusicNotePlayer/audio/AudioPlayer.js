@@ -42,9 +42,8 @@ export class AudioPlayer {
 
 		const source = this.context.createBufferSource();
 		source.buffer = buffer;
-  
 		const gainNode = this.context.createGain();
-		let gainValue = Math.min(10.0, Math.max(-1.0, 2 * (note.velocity / 127) * volume))
+		let gainValue = 2 * (note.velocity / 127) * volume
 
 		if(false){
 			gainNode.gain.value = gainValue;

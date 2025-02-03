@@ -18,13 +18,13 @@ export class BackgroundRender {
 			this.renderDimensions.windowHeight
 		)
 
-		let bgHeight = this.renderDimensions.getAbsolutePianoPosition()
-		let bgY = 0
-		const col1 = "rgba(40,40,40,0.8)"
-		const col2 = "rgba(25,25,25,1)"
-		const col3 = "rgba(10,10,10,0.5)"
-		c.strokeStyle = col1
-		c.fillStyle = col2
+		const bgHeight = this.renderDimensions.getAbsolutePianoPosition()
+		const bgY = 0
+
+		const col1 = "rgba(60,60,60,1)"
+		const col2 = "rgba(80,80,80,1)"
+		const col3 = "rgba(0,0,0,1)"
+
 		let whiteKey = 0
 		for (let i = 0; i < 88; i++) {
 			if (!isBlack(i)) {
@@ -35,14 +35,14 @@ export class BackgroundRender {
 				let dim = this.renderDimensions.getKeyDimensions(i)
 				c.fillRect(dim.x, bgY, dim.w, bgHeight)
 
-				if (1 + (whiteKey % 7) == 3) {
-					c.lineWidth = 2
+				// if (1 + (whiteKey % 7) == 3) {
+					c.lineWidth = 1
 					c.beginPath()
 					c.moveTo(dim.x, bgY)
 					c.lineTo(dim.x, bgY + bgHeight)
 					c.stroke()
 					c.closePath()
-				}
+				// }
 				whiteKey++
 			}
 		}

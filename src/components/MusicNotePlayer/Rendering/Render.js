@@ -1,15 +1,13 @@
 import { NoteRender } from "./NoteRender.js"
 // import { SustainRender } from "./SustainRenderer.js"
-// import { MarkerRenderer } from "./MarkerRenderer.js"
 import { RenderDimensions } from "./RenderDimensions.js"
 import { BackgroundRender } from "./BackgroundRender.js"
 import { MeasureLinesRender } from "./MeasureLinesRender.js"
 import { getSetting } from "../settings/Settings.js"
 import { isBlack } from "../Util.js"
-import { getPlayerState } from "../player/Player.js"
 
 export class Render {
-	constructor(cnvBG, cnvMain, cnvForeground, wrapperEle) {
+	constructor(cnvBG, cnvMain, cnvForeground, wrapperEle, player) {
 		this.cnvBG = cnvBG
 		this.cnv = cnvMain
 		this.cnvForeground = cnvForeground
@@ -26,7 +24,6 @@ export class Render {
 			this.renderDimensions
 		)
 		// this.sustainRender = new SustainRender(this.ctx, this.renderDimensions)
-		// this.markerRender = new MarkerRenderer(this.ctx, this.renderDimensions)
 
 		this.measureLinesRender = new MeasureLinesRender(
 			this.ctx,
@@ -41,17 +38,12 @@ export class Render {
 		this.mouseX = 0
 		this.mouseY = 0
 
-		this.playerState = getPlayerState()
+		this.playerState = player.getPlayerState()
 
 	}
 
 	setCtxBlur() {
-		let blurPx = parseInt(getSetting("particleBlur"))
-		if (blurPx == 0) {
-			this.ctxForeground.filter = "none"
-		} else {
-			this.ctxForeground.filter = "blur(" + blurPx + "px)"
-		}
+		this.ctxForeground.filter = "blur(3px)"
 	}
 
 	/**
@@ -98,8 +90,6 @@ export class Render {
 			// 	playerState.song.sustainsBySecond,
 			// 	playerState.song.sustainPeriods
 			// )
-
-			// this.markerRender.render(time, playerState.song.markers)
 		}
 	}
 
@@ -185,7 +175,6 @@ export class Render {
 		let inputRenderInfos = []
 		for (let key in playerState.inputPlayedNotes) {
 			let playedInputNote = playerState.inputPlayedNotes[key]
-			// if(key==0){ console.log(playerState.ctxTime * 1000 - playedInputNote.timestamp) }
 
 			let time = this.getRenderTime(playerState)
 

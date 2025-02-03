@@ -1,6 +1,5 @@
 import { getSetting } from "../settings/Settings.js"
 import { drawRoundRect } from "../Util.js"
-// import { NoteParticleRender } from "./NoteParticleRender.js"
 
 /**
  * Class to render the notes on screen.
@@ -12,14 +11,8 @@ export class NoteRender {
 		this.ctxForeground = ctxForeground
 
 		this.lastActiveNotes = {}
-		// this.noteParticleRender = new NoteParticleRender(
-		// 	this.ctxForeground,
-		// 	this.renderDimensions
-		// )
 	}
 	render(time, renderInfoByTrackMap, inputActiveNotes, inputPlayedNotes) {
-		// this.noteParticleRender.render()
-
 		//sustained note "tails"
 		if (getSetting("showSustainedNotes")) {
 			this.drawSustainedNotes(renderInfoByTrackMap, time)
@@ -41,9 +34,6 @@ export class NoteRender {
 			)
 		})
 
-		//Piano Input
-		// this.drawRecords(inputActiveNotes, inputPlayedNotes)
-
 		let currentActiveNotes = {}
 		let currentActiveObj = {}
 
@@ -54,8 +44,6 @@ export class NoteRender {
 				currentActiveNotes,
 				currentActiveObj
 			)
-
-			// this.createNoteParticles(activeNotesByTrackMap[trackIndex])
 		})
 
 		this.lastActiveNotes = currentActiveNotes
@@ -178,8 +166,6 @@ export class NoteRender {
 		this.ctx.lineWidth = getSetting("strokeNotesWidth")
 
 		this.drawIncomingNotes(incomingWhiteNotes, incomingBlackNotes)
-
-		this.drawPlayedNotes(playedWhiteNotes, playedBlackNotes)
 	}
 
 	rectAbovePiano() {
@@ -190,67 +176,9 @@ export class NoteRender {
 			this.renderDimensions.getAbsolutePianoPosition()
 		)
 	}
-	rectBelowPiano() {
-		this.ctx.rect(
-			0,
-			this.renderDimensions.getAbsolutePianoPosition() +
-				this.renderDimensions.whiteKeyHeight,
-			this.renderDimensions.windowWidth,
-			this.renderDimensions.windowHeight -
-				(this.renderDimensions.getAbsolutePianoPosition() +
-					this.renderDimensions.whiteKeyHeight)
-		)
-	}
 
-	drawPlayedNotes(playedWhiteNotes, playedBlackNotes) {
-		this.ctx.save()
-		this.ctx.beginPath()
-		this.rectBelowPiano()
-
-		this.ctx.clip()
-		this.ctx.closePath()
-		// this.ctx.fillStyle = playedWhiteNotes.length
-		// 	? playedWhiteNotes[0].fillStyle
-		// 	: ""
-
-		playedWhiteNotes.forEach(renderInfo => {
-
-			if(renderInfo.noteInputAccurate == true) {
-				this.ctx.fillStyle = getSetting("accurateInputNoteColor")
-			} else if(renderInfo.noteEntered == true){
-				this.ctx.fillStyle = getSetting("enteredInputNoteColor")
-			} else {
-				this.ctx.fillStyle = playedWhiteNotes[0].fillStyle
-			}
-
-			this.drawNoteAfter(renderInfo)
-			this.ctx.fill()
-			this.strokeActiveAndOthers(renderInfo)
-		})
-
-		// this.ctx.fillStyle = playedBlackNotes.length
-		// 	? playedBlackNotes[0].fillStyle
-		// 	: ""
-		playedBlackNotes.forEach(renderInfo => {
-
-			if(renderInfo.noteInputAccurate == true) {
-				this.ctx.fillStyle = getSetting("accurateInputNoteColor")
-			} else if(renderInfo.noteEntered == true){
-				this.ctx.fillStyle = getSetting("enteredInputNoteColor")
-			} else {
-				this.ctx.fillStyle = playedBlackNotes[0].fillStyle
-			}
-
-			this.drawNoteAfter(renderInfo)
-			this.ctx.fill()
-			this.strokeActiveAndOthers(renderInfo)
-		})
-
-		this.ctx.restore()
-	}
-
-	strokeActiveAndOthers(renderInfo) {
-		if (renderInfo.isOn) {
+	strokeActiveAndOthers(renderInfo, isInput = false) {
+		if (renderInfo.isOn && !isInput) {
 			this.ctx.strokeStyle = getSetting("strokeActiveNotesColor")
 			this.ctx.lineWidth = getSetting("strokeActiveNotesWidth")
 			this.ctx.stroke()
@@ -267,10 +195,7 @@ export class NoteRender {
 		this.rectAbovePiano()
 		this.ctx.clip()
 		this.ctx.closePath()
-		// this.ctx.fillStyle = incomingWhiteNotes.length
-		// 	? incomingWhiteNotes[0].fillStyle
-		// 	: ""
-		// console.log(incomingWhiteNotes[0])
+
 		incomingWhiteNotes.forEach(renderInfo => {
 			
 			if(renderInfo.noteInputAccurate == true) {
@@ -283,12 +208,9 @@ export class NoteRender {
 
 			this.drawNoteBefore(renderInfo)
 			this.ctx.fill()
-			this.strokeActiveAndOthers(renderInfo)
+			this.strokeActiveAndOthers(renderInfo, false)
 		})
 
-		// this.ctx.fillStyle = incomingBlackNotes.length
-		// 	? incomingBlackNotes[0].fillStyle
-		// 	: ""
 		incomingBlackNotes.forEach(renderInfo => {
 
 			if(renderInfo.noteInputAccurate == true) {
@@ -301,7 +223,7 @@ export class NoteRender {
 
 			this.drawNoteBefore(renderInfo)
 			this.ctx.fill()
-			this.strokeActiveAndOthers(renderInfo)
+			this.strokeActiveAndOthers(renderInfo, false)
 		})
 		this.ctx.restore()
 	}
@@ -337,18 +259,20 @@ export class NoteRender {
 		this.ctx.globalAlpha = 1
 		this.ctx.strokeStyle = getSetting("strokeNotesColor")
 		this.ctx.lineWidth = getSetting("strokeNotesWidth")
-		this.ctx.fillStyle = getSetting("inputNoteColor")
-		let whiteActive = inputActiveNotes.filter(noteInfo => !noteInfo.isBlack)
+
 		inputActiveNotes.forEach(noteInfo => {
-			// this.createNoteParticle(noteInfo)
+			this.ctx.fillStyle = noteInfo.fillStyle
+
 			this.drawNoteAfter(noteInfo)
 			this.ctx.fill()
+			this.strokeActiveAndOthers(noteInfo, true)
 		})
 		inputPlayedNotes.forEach(noteInfo => {
-			// console.log(noteInfo)
-			// noteInfo.y += this.renderDimensions.whiteKeyHeight
+			this.ctx.fillStyle = noteInfo.fillStyle
+
 			this.drawNoteAfter(noteInfo)
 			this.ctx.fill()
+			this.strokeActiveAndOthers(noteInfo, true)
 		})
 	}
 
@@ -357,11 +281,6 @@ export class NoteRender {
 	}
 
 	drawNoteBefore(renderInfos) {
-		//Done by .clip() now. Keep in case clipping isn't performant
-		// let h = Math.min(
-		// 	renderInfos.h,
-		// 	this.renderDimensions.getAbsolutePianoPosition() - renderInfos.y
-		// )
 		this.doNotePath(renderInfos /*, { h }*/)
 	}
 
@@ -417,27 +336,6 @@ export class NoteRender {
 		}
 	}
 
-	// createNoteParticles(activeNotes, colWhite, colBlack) {
-	// 	if (getSetting("showParticlesTop") || getSetting("showParticlesBottom")) {
-	// 		activeNotes.white.forEach(noteRenderInfo =>
-	// 			this.createNoteParticle(noteRenderInfo)
-	// 		)
-	// 		activeNotes.black.forEach(noteRenderInfo =>
-	// 			this.createNoteParticle(noteRenderInfo)
-	// 		)
-	// 	}
-	// }
-	// createNoteParticle(noteRenderInfo) {
-	// 	this.noteParticleRender.createParticles(
-	// 		noteRenderInfo.x,
-	// 		this.renderDimensions.getAbsolutePianoPosition(),
-	// 		noteRenderInfo.w,
-	// 		this.renderDimensions.whiteKeyHeight,
-	// 		noteRenderInfo.fillStyle,
-	// 		noteRenderInfo.velocity
-	// 	)
-	// }
-
 	getAlphaFromY(y) {
 		//TODO broken.
 		return Math.min(
@@ -449,11 +347,7 @@ export class NoteRender {
 			)
 		)
 	}
-	/**
-	 * Sets Menu (Navbar) Height.  Required to calculate fadeIn alpha value
-	 *
-	 * @param {Number} menuHeight
-	 */
+
 	setMenuHeight(menuHeight) {
 		this.menuHeight = menuHeight
 	}
