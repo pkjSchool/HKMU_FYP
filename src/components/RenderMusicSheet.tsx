@@ -4,15 +4,16 @@ import { Midi } from 'tonejs-midi-fix';
 import { Beam, Formatter, Stave, StaveNote, Renderer, Voice, TickContext } from 'vexflow';
 
 import { MusicScore } from '../models/MusicNotaion';
-import { midiData2MusicScore } from '../util/midi2MusicScore';
-import { Form } from 'react-router-dom';
+import { midiData2MusicNotation } from '../util/midi2MusicNotation';
+import { Note } from '../models/MusicNotaion';
 
 interface RenderMusicSheetProps {
     midiData: Midi | null;
     fileName: string | null;
+    activeNotes: number[];
 }
 
-const RenderMusicSheet: React.FC<RenderMusicSheetProps> = ({ midiData, fileName }) => {
+const RenderMusicSheet = ({ midiData, fileName, activeNotes }: RenderMusicSheetProps) => {
     const containerRef = useRef<HTMLDivElement | null>(null);
     const [storedSheet, setStoredSheet] = useState<string | null>(null);
     const [CurrentFileName, setCurrentFileName] = useState<string | null>(null);
@@ -33,15 +34,18 @@ const RenderMusicSheet: React.FC<RenderMusicSheetProps> = ({ midiData, fileName 
 
     // Render the music sheet
     useEffect(() => {
+        let musicScore: MusicScore | null = null;
+
+        //convert midi data to music notation
         if (midiData) {
-            const musicScore = midiData2MusicScore(midiData);
+            musicScore = midiData2MusicNotation(midiData);
             console.log(musicScore);
         }
 
-        // if (storedSheet && containerRef.current && !containerRef.current.hasChildNodes()) {
-        //     containerRef.current.innerHTML = storedSheet;
-        //     return;
-        // }
+        if (storedSheet && containerRef.current && !containerRef.current.hasChildNodes()) {
+            containerRef.current.innerHTML = storedSheet;
+            return;
+        }
 
         if (CurrentFileName !== fileName || (!containerRef.current?.hasChildNodes() && CurrentFileName !== fileName)) {
 
@@ -50,91 +54,32 @@ const RenderMusicSheet: React.FC<RenderMusicSheetProps> = ({ midiData, fileName 
             }
 
             if (containerRef.current) {
+                
                 const renderer = new Renderer(containerRef.current, Renderer.Backends.SVG);
 
                 // Configure the rendering context.
-                renderer.resize(1200, 200);
+                renderer.resize(5000, 200);
                 const context = renderer.getContext();
 
 
-                // Create stave
-                const staveMeasure1 = new Stave(10, 40, 300);
+                if (musicScore) {
+                    // get the stave notes list
+                    const StaveNotesList = createStaveNote(musicScore);
 
-                // Add a clef and time signature.
-                staveMeasure1.addClef("treble").addTimeSignature("4/4");
+                    // create stave
+                    let stavePositionX = 10;
+                    StaveNotesList.forEach((notes, index) => {
+                        const stave = new Stave(stavePositionX, 40, 300);
+                        if (index === 0) {
+                            stave.addClef("treble").addTimeSignature(musicScore.timeSignature[0] + "/" + musicScore.timeSignature[1]);
+                        }
+                        stave.setContext(context).draw();
 
-                // Connect to the rendering context
-                staveMeasure1.setContext(context).draw();
+                        Formatter.FormatAndDraw(context, stave, notes);
 
-                const notes1Measure1 = [
-                    new StaveNote({
-                        keys: ["c/4"],
-                        duration: "q",
-                    }),
-
-                    new StaveNote({
-                        keys: ["c/4"],
-                        duration: "q",
-                    }),
-                    new StaveNote({
-                        keys: ["g/4"],
-                        duration: "q",
-                    }),
-
-                    new StaveNote({
-                        keys: ["g/4"],
-                        duration: "q",
-                    }),
-                ];
-                const notes2Measure1 = [
-                    new StaveNote({
-                        keys: ["e/3", "c/3"],
-                        duration: "h",
-                    }),
-                    new StaveNote({
-                        keys: ["c/3", "c/4"],
-                        duration: "h",
-                    }),
-                ];
-                
-                const voice1 = new Voice({ num_beats: 4, beat_value: 4 }).addTickables(notes1Measure1);
-
-                const voice2 = new Voice({ num_beats: 4, beat_value: 4 }).addTickables(notes2Measure1);
-
-                const formatter = new Formatter().joinVoices([voice1]).format([voice1], 250);
-                formatter.joinVoices([voice2]).format([voice2]);
-
-                voice1.draw(context, staveMeasure1);
-                voice2.draw(context, staveMeasure1);
-
-                // Measure 2 - second measure is placed adjacent to first measure.
-                const staveMeasure2 = new Stave(staveMeasure1.getWidth() + staveMeasure1.getX(), 40, 400);
-
-                const notesMeasure2_part1 = [new StaveNote({ keys: ["c/4"], duration: "8" }), new StaveNote({ keys: ["d/4"], duration: "8" }), new StaveNote({ keys: ["b/4"], duration: "8" }), new StaveNote({ keys: ["c/4", "e/4", "g/4"], duration: "8" })];
-
-                const notesMeasure2_part2 = [new StaveNote({ keys: ["c/4"], duration: "8" }), new StaveNote({ keys: ["d/4"], duration: "8" }), new StaveNote({ keys: ["b/4"], duration: "8" }), new StaveNote({ keys: ["c/4", "e/4", "g/4"], duration: "8" })];
-
-                // Create the beams for 8th notes in second measure.
-                const beam1 = new Beam(notesMeasure2_part1);
-                const beam2 = new Beam(notesMeasure2_part2);
-
-                const notesMeasure2 = notesMeasure2_part1.concat(notesMeasure2_part2);
-
-                staveMeasure2.setContext(context).draw();
-                Formatter.FormatAndDraw(context, staveMeasure2, notesMeasure2);
-
-                // measure 3
-                const staveMeasure3 = new Stave(staveMeasure2.getWidth() + staveMeasure2.getX(), 40, 250);
-                const notesMeasure3 = [new StaveNote({ keys: ["a/4"], duration: "q" }), new StaveNote({ keys: ["b/4"], duration: "q" }), new StaveNote({ keys: ["c/4"], duration: "qr" }), new StaveNote({ keys: ["c/3", "e/3", "g/3"], duration: "q" })];
-
-                staveMeasure3.setContext(context).draw();
-                Formatter.FormatAndDraw(context, staveMeasure3, notesMeasure3);
-
-                // Render beams
-                beam1.setContext(context).draw();
-                beam2.setContext(context).draw();
-
-                // localStorage.setItem('renderedMusicSheet', svgContent);
+                        stavePositionX = stave.getWidth() + stave.getX();
+                    });
+                }
             }
         }
     }, [fileName]);
@@ -146,18 +91,86 @@ const RenderMusicSheet: React.FC<RenderMusicSheetProps> = ({ midiData, fileName 
     );
 };
 
-const createNote = (musicScore: MusicScore) => {
-    const notesArray = [];
+// alogrithm to create notes
+// for each measure
+//    1. get the group of notes for the measure
+//    2. create StaveNote for each group of note
+//       - base on the duration, quarter note will be the duration first
+//       - if there are no notes in the quarter duration, then the next duration will be half note, and whole note
+// 3. return the list of StaveNote for each measure
 
-    musicScore.Measures.forEach((measure) => {
-        measure.groupOfNotes.forEach((group) => {
-            if (group.Notes.length > 1) {
-                new StaveNote({ keys: group.Notes.map((note) => note.noteName), duration: group.Notes[0].durationNotation });
+const createStaveNote = (musicScore: MusicScore) => {
+
+    // create StaveNote for each note
+    const musicNotaionList: StaveNote[][] = []
+
+    musicScore.Measures.forEach((group) => {
+        const groupOfNotes = group.groupOfNotes;
+        const MeasureNotes: StaveNote[] = [];
+        groupOfNotes.forEach((notes) => {
+            const note = notes.Notes;
+
+            const keys = Object.keys(note);
+
+            if (keys.includes("q")) {
+                var notelist: Note[] = []
+                Object.values(note).forEach((note) => {
+                    note.forEach((n) => {
+                        notelist.push(n)
+                    })
+                });
+
+                MeasureNotes.push(new StaveNote({
+                    keys: notelist.map((n) => n.noteName),
+                    duration: "q",
+                })
+                );
+            } else if (keys.includes("h")) {
+                var notelist: Note[] = []
+                Object.values(note).forEach((note) => {
+                    note.forEach((n) => {
+                        notelist.push(n)
+                    })
+                });
+
+                MeasureNotes.push(new StaveNote({
+                    keys: notelist.map((n) => n.noteName),
+                    duration: "h",
+                })
+                );
+            } else if (keys.includes("hd")) {
+                var notelist: Note[] = []
+                Object.values(note).forEach((note) => {
+                    note.forEach((n) => {
+                        notelist.push(n)
+                    })
+                });
+
+                MeasureNotes.push(new StaveNote({
+                    keys: notelist.map((n) => n.noteName),
+                    duration: "hd",
+                })
+                );
+            } else if (keys.includes("w")) {
+                var notelist: Note[] = []
+                Object.values(note).forEach((note) => {
+                    note.forEach((n) => {
+                        notelist.push(n)
+                    })
+                });
+
+                MeasureNotes.push(new StaveNote({
+                    keys: notelist.map((n) => n.noteName),
+                    duration: "w",
+                })
+                );
             }
         });
+
+        musicNotaionList.push(MeasureNotes);
     });
 
-
+    return musicNotaionList;
 };
 
 const styles: { [key: string]: CSSProperties } = {
@@ -166,7 +179,10 @@ const styles: { [key: string]: CSSProperties } = {
         display: 'flex',
         height: '200',
         width: '100%',
-        marginTop: '5px'
+        marginTop: '5px',
+        overflowX: 'auto',
+        overflowY: 'hidden',
+        whiteSpace: 'nowrap'
     },
 };
 

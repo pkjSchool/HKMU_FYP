@@ -17,9 +17,9 @@ class MusicScore {
 class Measure {
     muasureStartTime: number;
     muasureEndTime: number;
-    groupOfNotes: { noteStartTime: number, Notes: Note[] }[];
+    groupOfNotes: { noteStartTime: number, Notes: {[key:string] : Note[]} }[];
 
-    constructor(muasureStartTime: number, muasureEndTime: number, groupOfNotes: { noteStartTime: number, Notes: Note[] }[]) {
+    constructor(muasureStartTime: number, muasureEndTime: number, groupOfNotes: { noteStartTime: number, Notes: {[key:string] : Note[]} }[]) {
         this.muasureStartTime = muasureStartTime;
         this.muasureEndTime = muasureEndTime;
         this.groupOfNotes = groupOfNotes;

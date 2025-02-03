@@ -55,9 +55,11 @@ function App() {
       <MIDIController onNoteOn={onNoteOn} onNoteOff={onNoteOff} />
       <TopNavBar setMusicFile={setMusicFile} />
       
-      <MusicSheetRender midiData={midiData} fileName={fileName} />
+      <MusicSheetRender midiData={midiData} fileName={fileName} activeNotes={activeNotes} />
       <PianoRender
         activeNote={activeNotes}
+        onNoteOn={onNoteOn}
+        onNoteOff={onNoteOff}
       />
     </div>
   );
