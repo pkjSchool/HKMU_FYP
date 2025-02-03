@@ -1,89 +1,62 @@
-import { getDefaultSettings } from "./DefaultSettings.js"
-import { SettingUI } from "../ui/SettingUI.js"
-// import {
-// 	getGlobalSavedSettings,
-// 	saveCurrentSettings
-// } from "./LocalStorageHandler.js"
-
-// const fixedSettings = {
-//     'enableMetronome': true
-// }
-
-class Settings {
-	constructor(ui) {
-		this.settings = getDefaultSettings()
-		// let savedSettings = getGlobalSavedSettings()
-
-		this.settingsById = {}
-		Object.keys(this.settings).forEach(tabId =>
-			Object.keys(this.settings[tabId]).forEach(categoryId =>
-				this.settings[tabId][categoryId].forEach(setting => {
-					this.settingsById[setting.id] = setting
-
-					// if (savedSettings.hasOwnProperty(setting.id)) {
-					// 	setting.value = savedSettings[setting.id]
-					// }
-				})
-			)
-		)
-		this.settingsUi = new SettingUI()
-	}
-	setSettingValue(settingId, value) {
-		this.settingsById[settingId].value = value
+export class Settings {
+	constructor() {
+		this.settingsById = {
+			"showMarkersSong": {
+				id: "showMarkersSong",
+				value: true,
+			},
+			"inputNoteColor": {
+				id: "inputNoteColor",
+				value: "rgba(158,197,254,0.2)",
+			},
+			"enteredInputNoteColor": {
+				id: "enteredNoteColor",
+				value: "rgba(255,193,7,1)",
+			},
+			"accurateInputNoteColor": {
+				id: "enteredNoteColor",
+				value: "rgba(0,135,0,1)",
+			},
+			"pianoPosition": {
+				id: "pianoPosition",
+				value: 0,
+			},
+			"noteToHeightConst": {
+				id: "noteToHeightConst",
+				value: 3,
+			},
+			"strokeActiveNotesColor": {
+				id: "strokeActiveNotesColor",
+				value: "rgba(240,240,240,0.5)",
+			},
+			"strokeActiveNotesWidth": {
+				id: "strokeActiveNotesWidth",
+				value: "4",
+			},
+			"strokeNotesColor": {
+				id: "strokeNotesColor",
+				value: "rgba(0,0,0,1)",
+			},
+			"strokeNotesWidth": {
+				id: "strokeNotesWidth",
+				value: "1",
+			},
+			"noteBorderRadius": {
+				id: "noteBorderRadius",
+				value: 15,
+			},
+			"minNoteHeight": {
+				id: "minNoteHeight",
+				value: 2,
+			}
+		}
 	}
 }
 
 const globalSettings = new Settings()
 export const getSetting = settingId => {
-	if (globalSettings == null) {
-		globalSettings = new Settings()
-	}
-	return globalSettings.settingsById[settingId]
-		? globalSettings.settingsById[settingId].value
-		: null
-
-	// return (fixedSettings[settingId])?fixedSettings[settingId]:false
+	return globalSettings.settingsById[settingId].value
 }
 export const setSetting = (settingId, value) => {
 	globalSettings.settingsById[settingId].value = value
-	if (settingCallbacks.hasOwnProperty(settingId)) {
-		settingCallbacks[settingId].forEach(callback => callback())
-	}
-	// saveCurrentSettings()
-}
-export const getSettingsDiv = () => {
-	return globalSettings.settingsUi.getSettingsDiv(globalSettings.settings)
-}
-var settingCallbacks = {}
-export const setSettingCallback = (settingId, callback) => {
-	if (!settingCallbacks.hasOwnProperty(settingId)) {
-		settingCallbacks[settingId] = []
-	}
-	settingCallbacks[settingId].push(callback)
-}
-export const getSettingObject = () => {
-	let obj = {}
-	for (let key in globalSettings.settingsById) {
-		obj[key] = globalSettings.settingsById[key].value
-	}
-	return obj
-}
-
-export const resetSettingsToDefault = () => {
-	let defaultSettings = getDefaultSettings()
-	Object.keys(defaultSettings).forEach(tabId =>
-		Object.keys(defaultSettings[tabId]).forEach(categoryId =>
-			defaultSettings[tabId][categoryId].forEach(setting => {
-				globalSettings.settingsById[setting.id].value = setting.value
-			})
-		)
-	)
-
-	let parent = globalSettings.settingsUi.getSettingsDiv(globalSettings.settings)
-		.parentElement
-	parent.removeChild(
-		globalSettings.settingsUi.getSettingsDiv(globalSettings.settings)
-	)
-	globalSettings.settingsUi.mainDiv = null
-	parent.appendChild(getSettingsDiv())
 }

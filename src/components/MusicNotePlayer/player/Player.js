@@ -1,52 +1,41 @@
 import { MidiLoader } from "../MidiLoader.js"
 import { Song } from "../Song.js"
 import { AudioPlayer } from "../audio/AudioPlayer.js"
-import { getLoader } from "../ui/Loader.js"
-import { getSetting } from "../settings/Settings.js"
-import { getMidiHandler } from "../MidiInputHandler.js"
-import {
-	getTracks,
-	getTrackVolume,
-	isAnyTrackPlayalong,
-	isTrackRequiredToPlay,
-	setupTracks
-} from "./Tracks.js"
-import { Notification } from "../ui/Notification.js"
 
-// const LOOK_AHEAD_TIME = 0.2
-// const LOOK_AHEAD_TIME_WHEN_PLAYALONG = 0.02
+const COLORS_LIST = [
+	{ white: "#1ee5df", black: "#1ee5df" },
+	// { white: "#ffa000", black: "#ff8f00" }, //orange
+	// { white: "#1e88e5", black: "#1976d2" }, //blue
+	// { white: "#43a047", black: "#388e3c" }, //green
+	// { white: "#ffeb3b", black: "#fdd835" }, //yellow
+	// { white: "#9c27b0", black: "#8e24aa" }, //pink
+	// { white: "#f44336", black: "#e53935" }, //reds
+	// { white: "#673ab7", black: "#5e35b1" } //purple
+]
 
-const LOOK_AHEAD_TIME = 0
-const LOOK_AHEAD_TIME_WHEN_PLAYALONG = 0
-
-class Player {
+export class Player {
 	constructor() {
 		this.audioPlayer = new AudioPlayer()
 
-		getMidiHandler().setNoteOnCallback(this.addInputNoteOn.bind(this))
-		getMidiHandler().setNoteOffCallback(this.addInputNoteOff.bind(this))
-
-		this.startDelay = -2.5
+		this.startDelay = -2
 		this.lastTime = this.audioPlayer.getContextTime()
 		this.progress = 0
 		this.paused = true
 		this.playing = false
 		this.scrolling = 0
 		this.loadedSongs = new Set()
-		this.muted = false
 		this.volume = 100
-		this.mutedAtVolume = 100
-		this.soundfontName = "FluidR3_GM"
-		this.inputInstrument = "acoustic_grand_piano"
-		this.lastMicNote = -1
+		this.ACCURATE_OFFSET = 100
 
-		this.newSongCallbacks = []
 		this.inputActiveNotes = {}
 		this.inputPlayedNotes = []
+		this.inputSortedNotes = {}
 
 		this.playbackSpeed = 1
 
+		this.newSongCallbacks = []
 		this.finishListeners = []
+		this.timeUpdatedListeners = []
 
 		console.log("Player created.")
 		this.playTick()
@@ -59,13 +48,12 @@ class Player {
 			end: this.song ? this.song.getEnd() : 0,
 			loading: this.audioPlayer.loading,
 			song: this.song,
+			trackColors: this.trackColors,
 			inputActiveNotes: this.inputActiveNotes,
 			inputPlayedNotes: this.inputPlayedNotes,
+			inputSortedNotes: this.inputSortedNotes,
 			bpm: this.getBPM(time)
 		}
-	}
-	addNewSongCallback(callback) {
-		this.newSongCallbacks.push(callback)
 	}
 
 	getTimeWithScrollOffset(scrollOffset) {
@@ -80,59 +68,12 @@ class Player {
 	setTime(seconds) {
 		this.audioPlayer.stopAllSources()
 		this.progress += seconds - this.getTime()
+		this.runTimeUpdatedListener()
 		this.resetNoteSequence()
 	}
-	increaseSpeed(val) {
-		this.playbackSpeed = Math.max(
-			0,
-			Math.round((this.playbackSpeed + val) * 100) / 100
-		)
-	}
-	getChannel(track) {
-		if (this.song.activeTracks[track].notes.length) {
-			return this.channels[this.song.activeTracks[track].notes[0].channel]
-		}
-	}
-	getCurrentTrackInstrument(trackIndex) {
-		let i = 0
-		let noteSeq = this.song.getNoteSequence()
-		let nextNote = noteSeq[i]
-		while (nextNote.track != trackIndex && i < noteSeq.length - 1) {
-			i++
-			nextNote = noteSeq[i]
-		}
-		if (nextNote.track == trackIndex) {
-			return nextNote.instrument
-		}
-	}
-
-	midiNoteToVexFlowKey(midiNote) {
-		const notes = ['c', 'c#', 'd', 'd#', 'e', 'f', 'f#', 'g', 'g#', 'a', 'a#', 'b'];
-		const octave = Math.floor(midiNote / 12) - 1;
-		const note = notes[midiNote % 12];
-		return `${note}/${octave}`;
-	}
-
-	midiDurationToVexFlowDuration(ticks, ticksPerBeat) {
-		const quarterNoteTicks = ticksPerBeat;
-		const durations = {
-			1: 'w', // whole note
-			2: 'h', // half note
-			4: 'q', // quarter note
-			8: '8', // eighth note
-			16: '16', // sixteenth note
-			32: '32', // thirty-second note
-			64: '64' // sixty-fourth note
-		};
-	
-		const durationRatio = ticks / quarterNoteTicks;
-		return durations[durationRatio] || 'q'; // 默認為四分音符
-	}
-
 	async loadSong(theSong, fileName, name) {
 		this.audioPlayer.stopAllSources()
-		getLoader().startLoad()
-		getLoader().setLoadMessage("Loading " + fileName + ".")
+		console.info("Loading " + fileName + ".")
 		if (this.audioPlayer.isRunning()) {
 			this.audioPlayer.suspend()
 		}
@@ -140,36 +81,34 @@ class Player {
 		this.loading = true
 
 
-		getLoader().setLoadMessage("Parsing Midi File.")
+		console.info("Parsing Midi File.")
 		try {
 			let midiFile = await MidiLoader.loadFile(theSong)
 			this.setSong(new Song(midiFile, fileName, name))
-			getLoader().setLoadMessage("Loading Instruments")
-
-			await this.audioPlayer.loadInstrumentsForSong(this.song)
-
-			getLoader().setLoadMessage("Creating Buffers")
-			return this.audioPlayer.loadBuffers().then(v => getLoader().stopLoad())
+			this.runTimeUpdatedListener()
+			console.info("Creating Buffers")
+			this.audioPlayer.loadBuffers()
 		} catch (error) {
 			console.log(error)
-			Notification.create("Couldn't read Midi-File - " + error, 2000)
-			getLoader().stopLoad()
+			console.warn("Couldn't read Midi-File - " + error)
 		}
 	}
 
 	setSong(song) {
-		this.pause()
-		this.playing = false
-		this.paused = true
+		this.stop()
+		// this.pause()
 		this.wasPaused = true
-		this.progress = 0
-		this.scrollOffset = 0
 		this.song = song
 		if (this.loadedSongs.has(song)) {
 			this.loadedSongs.add(song)
 		}
-		setupTracks(song.activeTracks)
-		this.newSongCallbacks.forEach(callback => callback())
+		this.trackColors = {}
+
+		const colorsLen = COLORS_LIST.length
+		for (let trackId in song.activeTracks) {
+			this.trackColors[trackId] = COLORS_LIST[trackId % colorsLen]
+		}
+		this.runNewSongCallback()
 	}
 	startPlay() {
 		console.log("Starting Song")
@@ -178,61 +117,6 @@ class Player {
 		this.resetNoteSequence()
 		this.lastTime = this.audioPlayer.getContextTime()
 		this.resume()
-	}
-	handleScroll(stacksize) {
-		if (this.scrolling != 0) {
-			if (!this.song) {
-				this.scrolling = 0
-				return
-			}
-			this.lastTime = this.audioPlayer.getContextTime()
-			let newScrollOffset = this.scrollOffset + 0.01 * this.scrolling
-			//get hypothetical time with new scrollOffset.
-			let oldTime = this.getTimeWithScrollOffset(this.scrollOffset)
-			let newTime = this.getTimeWithScrollOffset(newScrollOffset)
-
-			//limit scroll past end
-			if (this.song && newTime > 1 + this.song.getEnd() / 1000) {
-				this.scrolling = 0
-				newScrollOffset =
-					this.getTimeWithoutScrollOffset() - (1 + this.song.getEnd() / 1000)
-				this.scrollOffset + (1 + this.song.getEnd() / 1000 - this.getTime()) ||
-					this.scrollOffset
-			}
-
-			//limit scroll past beginning
-			if (newTime < oldTime && newTime < this.startDelay) {
-				this.scrolling = 0
-				newScrollOffset = this.getTimeWithoutScrollOffset() - this.startDelay
-			}
-
-			this.scrollOffset = newScrollOffset
-
-			//dampen scroll amount somehow...
-			this.scrolling =
-				(Math.abs(this.scrolling) -
-					Math.max(
-						Math.abs(this.scrolling * 0.003),
-						this.playbackSpeed * 0.001
-					)) *
-					(Math.abs(this.scrolling) / this.scrolling) || 0
-
-			//set to zero if only minimal scrollingspeed left
-			if (Math.abs(this.scrolling) <= this.playbackSpeed * 0.005) {
-				this.scrolling = 0
-				this.resetNoteSequence()
-			}
-			//limit recursion
-			if (!stacksize) stacksize = 0
-			if (stacksize > 50) {
-				window.setTimeout(() => {
-					this.handleScroll()
-				}, 25)
-				return
-			}
-			this.handleScroll(++stacksize)
-			return
-		}
 	}
 	getBPM(time) {
 		let val = 0
@@ -251,9 +135,6 @@ class Player {
 
 		let delta = (currentContextTime - this.lastTime) * this.playbackSpeed
 
-		this.clearOldPlayedInputNotes()
-
-		//cap max updaterate.
 		if (delta < 0.0069) {
 			this.requestNextTick()
 			return
@@ -263,6 +144,7 @@ class Player {
 		this.lastTime = currentContextTime
 		if (!this.paused && this.scrolling == 0) {
 			this.progress += Math.min(0.1, delta)
+			this.runTimeUpdatedListener()
 		} else {
 			this.requestNextTick()
 			return
@@ -270,16 +152,15 @@ class Player {
 
 		let currentTime = this.getTime()
 
-		// if (this.isSongEnded(currentTime - 5)) {
 		if (this.isSongEnded(currentTime)) {
 			this.pause()
 			this.requestNextTick()
 			this.runFinishListener()
 			return
 		}
-		if (getSetting("enableMetronome")) {
-			this.playMetronomeBeats(currentTime)
-		}
+
+		this.playMetronomeBeats(currentTime)
+
 		while (this.isNextNoteReached(currentTime)) {
 			let toRemove = 0
 			forLoop: for (let i = 0; i < this.noteSequence.length; i++) {
@@ -295,12 +176,12 @@ class Player {
 
 			if (
 				this.noteSequence[0] &&
-				(!isTrackRequiredToPlay(this.noteSequence[0].track) ||
-					this.isInputKeyPressed(this.noteSequence[0].noteNumber))
+				(true || this.isInputKeyPressed(this.noteSequence[0].noteNumber))
 			) {
 				this.playNote(this.noteSequence.shift())
 			} else {
 				this.progress = oldProgress
+				this.runTimeUpdatedListener()
 				break
 			}
 		}
@@ -310,7 +191,7 @@ class Player {
 
 	playMetronomeBeats(currentTime) {
 		this.playedBeats = this.playedBeats || {}
-		let beatsBySecond = getCurrentSong().temporalData.beatsBySecond
+		let beatsBySecond = this.getCurrentSong().temporalData.beatsBySecond
 		let secondsToCheck = [Math.floor(currentTime), Math.floor(currentTime) + 1]
 		secondsToCheck.forEach(second => {
 			if (beatsBySecond[second]) {
@@ -320,8 +201,8 @@ class Player {
 						beatTimestamp / 1000 < currentTime + 0.5
 					) {
 						let newMeasure =
-							getCurrentSong().measureLines[Math.floor(beatTimestamp / 1000)] &&
-							getCurrentSong().measureLines[
+							this.getCurrentSong().measureLines[Math.floor(beatTimestamp / 1000)] &&
+							this.getCurrentSong().measureLines[
 								Math.floor(beatTimestamp / 1000)
 							].includes(beatTimestamp)
 						this.playedBeats[beatTimestamp] = true
@@ -333,10 +214,6 @@ class Player {
 				})
 			}
 		})
-	}
-
-	clearOldPlayedInputNotes() {
-		//TODO - Clear those that arent displayed anymore.. And/Or save them somewhere for playback.
 	}
 
 	requestNextTick() {
@@ -358,9 +235,7 @@ class Player {
 	}
 
 	isNextNoteReached(currentTime) {
-		let lookahead = isAnyTrackPlayalong()
-			? LOOK_AHEAD_TIME_WHEN_PLAYALONG
-			: LOOK_AHEAD_TIME
+		let lookahead = 0
 		return (
 			this.noteSequence.length &&
 			this.noteSequence[0].timestamp / 1000 <
@@ -369,14 +244,15 @@ class Player {
 	}
 
 	stop() {
+		this.pause()
 		this.progress = 0
 		this.scrollOffset = 0
-		this.playing = false
-		this.pause()
+		this.runTimeUpdatedListener()
 	}
 	resume() {
 		if (!this.song || !this.paused) return
 		console.log("Resuming Song")
+		this.playing = true
 		this.paused = false
 		this.resetNoteSequence()
 		this.audioPlayer.resume()
@@ -391,9 +267,13 @@ class Player {
 	}
 
 	pause() {
+		if (this.paused) return
 		console.log("Pausing Song")
 		this.pauseTime = this.getTime()
+		this.playing = false
 		this.paused = true
+		this.audioPlayer.suspend()
+		this.audioPlayer.stopAllSources()
 	}
 
 	playNote(note) {
@@ -402,51 +282,32 @@ class Player {
 		}
 		let currentTime = this.getTime()
 
-		if (getMidiHandler().isOutputActive()) {
-			getMidiHandler().playNote(
-				note.noteNumber + 21,
-				note.velocity,
-				note.noteOffVelocity,
-				(note.timestamp - currentTime * 1000) / this.playbackSpeed,
-				(note.offTime - currentTime * 1000) / this.playbackSpeed
-			)
-		} else {
-			this.audioPlayer.playCompleteNote(
-				currentTime,
-				note,
-				this.playbackSpeed,
-				this.getNoteVolume(note),
-				isAnyTrackPlayalong()
-			)
-		}
+		this.audioPlayer.playCompleteNote(
+			currentTime,
+			note,
+			this.playbackSpeed,
+			this.getNoteVolume(note),
+			false
+		)
 	}
 	getNoteVolume(note) {
-		return (
-			(this.volume / 100) *
-			(getTrackVolume(note.track) / 100) *
-			(note.channelVolume / 127)
-		)
+		return ((this.volume / 100) * (note.channelVolume / 127))
 	}
 
 	addInputNoteOn(noteNumber) {
 		if (this.inputActiveNotes.hasOwnProperty(noteNumber)) {
 			console.log("NOTE ALREADY PLAING")
-			// this.audioPlayer.noteOffContinuous(
-			// 	this.inputActiveNotes[noteNumber].audioNote
-			// )
 			delete this.inputActiveNotes[noteNumber]
 		}
-		// let audioNote = this.audioPlayer.createContinuousNote(
-		// 	noteNumber,
-		// 	this.volume,
-		// 	this.inputInstrument
-		// )
+
+		let currentTime = this.getState().time
+
 		let audioNote = null
 		let activeNoteObj = {
 			audioNote: audioNote,
 			wasUsed: false,
 			noteNumber: noteNumber,
-			timestamp: this.audioPlayer.getContextTime() * 1000
+			timestamp: currentTime * 1000
 		}
 
 		this.inputActiveNotes[noteNumber] = activeNoteObj
@@ -456,17 +317,52 @@ class Player {
 			console.log("NOTE NOT PLAYING")
 			return
 		}
-		// this.audioPlayer.noteOffContinuous(
-		// 	this.inputActiveNotes[noteNumber].audioNote
-		// )
-		this.inputActiveNotes[noteNumber].offTime =
-			this.audioPlayer.getContextTime() * 1000
-		this.inputPlayedNotes.push(this.inputActiveNotes[noteNumber])
+
+		let currentTime = this.getState().time
+
+		this.inputActiveNotes[noteNumber].offTime = currentTime * 1000
+
+		let offNote = this.inputActiveNotes[noteNumber]
+		this.inputPlayedNotes.push(offNote)
+
+		if(!this.inputSortedNotes[noteNumber]) {this.inputSortedNotes[noteNumber] = []}
+		this.inputSortedNotes[noteNumber].push({
+			"noteNumber": offNote.noteNumber,
+			"offTime": offNote.offTime,
+			"timestamp": offNote.timestamp
+		})
+
+		for(let track of this.song.activeTracks) {
+
+			let time = this.getState().time
+			let firstSecondShown = Math.floor(time - 4)
+			let lastSecondShown = Math.ceil(time + 1000)
+
+			for (let i = firstSecondShown; i < lastSecondShown; i++) {
+				if (track.notesBySeconds[i]) {
+					track.notesBySeconds[i]
+						.map(note => { 
+
+							if(offNote.noteNumber == note.noteNumber && !note.isInputAccurate) {
+								if(
+									(offNote.timestamp <= (note.timestamp + this.ACCURATE_OFFSET) && offNote.timestamp >= (note.timestamp - this.ACCURATE_OFFSET)) &&
+									(offNote.offTime <= (note.offTime + this.ACCURATE_OFFSET) && offNote.offTime >= (note.offTime - this.ACCURATE_OFFSET))
+								) {
+									note.isInputAccurate = true
+									note.noteEnterStart = offNote.timestamp
+									note.noteEnterEnd = offNote.offTime
+								}
+							}
+
+						})
+				}
+			}
+		}
 
 		delete this.inputActiveNotes[noteNumber]
 	}
 	getPlayingNotes() {
-		let currentTime = this.getTime()
+		let currentTime = currentTime
 		let playingNotes = []
 	
 		if (!this.noteSequence) {
@@ -480,6 +376,7 @@ class Player {
 	
 		return this.noteSequence
 	}
+	
 	addFinishListener(event) {
 		this.finishListeners.push(event)
 	}
@@ -491,29 +388,82 @@ class Player {
 			this.finishListeners[i]()
 		}
 	}
-}
-const thePlayer = new Player()
-export const getPlayer = () => {
-	return thePlayer
-}
 
-export const getCurrentSong = () => {
-	return thePlayer.song
-}
-
-export const getPlayerState = () => {
-	return thePlayer.getState()
-}
-
-export const getPlayingNotes = () => {
-	return thePlayer.getPlayingNotes()
-}
-
-export const resetNoteMeasurement = () => {
-	const playerStatus =  thePlayer.getState()
-	for(let tracksIdx in playerStatus.song.activeTracks){
-		for(let notesIdx in playerStatus.song.activeTracks[tracksIdx].notes){
-			playerStatus.song.activeTracks[tracksIdx].notes[notesIdx].isEntered = false
+	addNewSongCallback(callback) {
+		this.newSongCallbacks.push(callback)
+	}
+	clearNewSongCallback() {
+		this.newSongCallbacks = []
+	}
+	runNewSongCallback() {
+		for(let i in this.newSongCallbacks) {
+			this.newSongCallbacks[i]()
 		}
 	}
+
+	addTimeUpdatedListener(event) {
+		this.timeUpdatedListeners.push(event)
+	}
+	clearTimeUpdatedListener() {
+		this.timeUpdatedListeners = []
+	}
+	runTimeUpdatedListener() {
+		if(this.song) {
+			let time = this.getTime()
+			for(let i in this.timeUpdatedListeners) {
+				this.timeUpdatedListeners[i](time, this.song.getEnd(), this.getBPM(time))
+			}
+		}
+	}
+
+	clearInputRecords() {
+		this.inputActiveNotes = {}
+		this.inputPlayedNotes = []
+		this.inputSortedNotes = {}
+	}
+
+
+
+
+
+
+
+	getPlayer = () => {
+		return this
+	}
+	
+	getCurrentSong = () => {
+		return this.song
+	}
+	
+	getPlayerState = () => {
+		return this.getState()
+	}
+	
+	isPlaying = () => {
+		return this.playing
+	}
+	
+	resetNoteMeasurement = () => {
+		const playerStatus = this.getState()
+		if(playerStatus.song) {
+			for(let tracksIdx in playerStatus.song.activeTracks){
+				for(let notesIdx in playerStatus.song.activeTracks[tracksIdx].notes){
+					playerStatus.song.activeTracks[tracksIdx].notes[notesIdx].isEntered = false
+					playerStatus.song.activeTracks[tracksIdx].notes[notesIdx].isInputAccurate = false
+					playerStatus.song.activeTracks[tracksIdx].notes[notesIdx].noteEnterStart = null
+					playerStatus.song.activeTracks[tracksIdx].notes[notesIdx].noteEnterEnd = null
+				}
+			}
+		}
+	
+		this.clearInputRecords()
+	}
+
+}
+
+const thePlayer = new Player()
+
+export const getPlayer = () => {
+	return thePlayer
 }

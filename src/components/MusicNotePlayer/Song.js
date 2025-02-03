@@ -1,4 +1,3 @@
-import { CONST } from "./data/CONST.js"
 export class Song {
 	constructor(midiData, fileName, name) {
 		this.fileName = fileName
@@ -162,7 +161,8 @@ export class Song {
 						let program = programs[channel]
 						// let instrument =
 						// 	CONST.INSTRUMENTS.BY_ID[isFinite(program) ? program : channel]
-                        let instrument = CONST.INSTRUMENTS.BY_ID[0]
+                        // let instrument = CONST.INSTRUMENTS.BY_ID[0]
+						let instrument = { id: "acoustic_grand_piano" }
 						instruments[instrument.id] = true
 						event.instrument = instrument.id
 					} else {

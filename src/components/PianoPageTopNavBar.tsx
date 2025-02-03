@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, forwardRef, useImperativeHandle } from "react";
 import { NavLink } from "react-router-dom";
 
 import "../css/VolumeSlider.css";
@@ -7,15 +7,28 @@ import { FaRegFolderOpen, FaPlay, FaPause, FaStop } from "react-icons/fa";
 import { MdAudiotrack, MdOutlineExitToApp } from "react-icons/md";
 import { CiVolume, CiVolumeHigh } from "react-icons/ci";
 import { IoIosSettings } from "react-icons/io";
+import { formatTime } from "../util/utils";
 
 
+const CollapsibleNavBar = forwardRef((props:any, ref) => {
+  const {playCallback, pausingCallback, stopCallback, progressCallback, menuCollapsedCallback} = props;
+  const progressBarReadonly = false;
 
-const CollapsibleNavBar = (props:any) => {
-  const {playCallback, pausingCallback, stopCallback, menuCollapsedCallback} = props;
+  useImperativeHandle(ref, () => ({
+    onPlayerTimeUpdated,
+    handleUpdatePlayingTimestemp
+  }));
 
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [hoveredButton, setHoveredButton] = useState<number>(-1);
   const [volume, setVolume] = useState<number>(100);
+  const [valProgress, setValProgress] = useState<number>(0);
+  const [valSongEndSecond, setValSongEndSecond] = useState<number>(0);
+  const [valSongCurSecond, setValSongCurSecond] = useState<number>(0);
+  const [valBpm, setValBpm] = useState<number>(0);
+  const [valPrePlay, setValPrePlay] = useState<number>(2);
+  const [playingTimestemp, setPlayingTimestemp] = useState<number>(0);
+  
 
   const handleMouseEnter = (index: number) => {
     setHoveredButton(index);
@@ -23,6 +36,11 @@ const CollapsibleNavBar = (props:any) => {
 
   const handleMouseLeave = () => {
     setHoveredButton(-1);
+  }
+
+  
+  const handleUpdatePlayingTimestemp = (time:number) => {
+    setPlayingTimestemp(time)
   }
 
   const handleVolumeButtonOnClick = () => {
@@ -44,6 +62,21 @@ const CollapsibleNavBar = (props:any) => {
 
   const clickStop = () => {
     stopCallback();
+  }
+
+  const progressChanged = (progress:number) => {
+    clickPause()
+    setValProgress(progress);
+    progressCallback(progress);
+    // (progress / 100) * (getPlayer().song.getEnd() / 1000)
+  }
+
+  const onPlayerTimeUpdated = (time:number, end:number, bpm:number) => {
+    // setValProgress((time / (end / 1000 / 100)));
+    setValProgress(time);
+    setValSongCurSecond(time)
+    setValSongEndSecond(end / 1000)
+    setValBpm(bpm)
   }
 
   useEffect(() => {
@@ -144,13 +177,19 @@ const CollapsibleNavBar = (props:any) => {
           </div>
         </div>
       </div>
+      <div style={progressBarStyles}>
+        <input type="range" className="musicProgressBar" name="valPrograss" min={0 - valPrePlay} max={ valSongEndSecond } step="0.01" value={valProgress} disabled={progressBarReadonly} onChange={(e) => { progressChanged(parseFloat(e.target.value)) }} />
+      </div>
+      <div style={statusBarStyles}>
+        <div>{formatTime(valSongCurSecond)} / {formatTime(valSongEndSecond)} | {valBpm} BPM | {formatTime(playingTimestemp)}</div>
+      </div>
       <button style={styleFunctions.floatingButton(isCollapsed)} onClick={toggleNavBar}>
         {isCollapsed ? "Expand" : "Collapse"}
       </button>
     </div>
 
   );
-};
+});
 
 import { CSSProperties } from "react";
 interface Styles {
@@ -230,7 +269,7 @@ const styleFunctions: StyleFunctions = {
   floatingButton: (isCollapsed: boolean) => ({
     position: "absolute",
     // top: isCollapsed ? "10px" : "130px",
-    top: "170px",
+    top: "210px",
     left: "50%",
     transform: "translateX(-50%)",
     transition: "top 0.3s ease",
@@ -257,6 +296,16 @@ const buttonStyles: { [key: string]: (hoveredButton: number, hoverIndex: number)
     boxShadow: "0px 4px 6px rgba(0, 0, 0, 0.2)",
 
   }),
+}
+
+const progressBarStyles: Object = {
+  backgroundColor: "#757575",
+  padding: "10px 20px",
+}
+
+const statusBarStyles: Object = {
+  background: "Black", color:"white",
+  padding: "0 20px"
 }
 
 export default CollapsibleNavBar;
