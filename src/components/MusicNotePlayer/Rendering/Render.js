@@ -1,8 +1,6 @@
 import { NoteRender } from "./NoteRender.js"
-// import { SustainRender } from "./SustainRenderer.js"
 import { RenderDimensions } from "./RenderDimensions.js"
 import { BackgroundRender } from "./BackgroundRender.js"
-import { MeasureLinesRender } from "./MeasureLinesRender.js"
 import { getSetting } from "../settings/Settings.js"
 import { isBlack } from "../Util.js"
 
@@ -18,12 +16,6 @@ export class Render {
 		this.setupCanvases()
 
 		this.noteRender = new NoteRender(
-			this.ctx,
-			this.renderDimensions
-		)
-		// this.sustainRender = new SustainRender(this.ctx, this.renderDimensions)
-
-		this.measureLinesRender = new MeasureLinesRender(
 			this.ctx,
 			this.renderDimensions
 		)
@@ -62,7 +54,7 @@ export class Render {
 				? playerState.song.getMeasureLines()
 				: []
 
-			this.measureLinesRender.render(time, measureLines)
+			this.drawGroupLine(time, measureLines)
 
 			let currentActiveNotes = this.noteRender.render(
 				time,
@@ -72,13 +64,33 @@ export class Render {
 			)
 
 			this.recordEnteredNotes(playerState, currentActiveNotes)
-
-			// this.sustainRender.render(
-			// 	time,
-			// 	playerState.song.sustainsBySecond,
-			// 	playerState.song.sustainPeriods
-			// )
 		}
+	}
+
+	drawGroupLine(time, measureLines) {
+		let ctx = this.ctx
+
+		ctx.strokeStyle = "rgba(255,255,255,1)"
+
+		ctx.lineWidth = 0.5
+		let currentSecond = Math.floor(time)
+		ctx.beginPath()
+		let firstSecondShown = currentSecond - 1
+		let lastSecondShown =
+			currentSecond + this.renderDimensions.getSecondsDisplayedBefore() + 1
+		for (let i = firstSecondShown; i < lastSecondShown; i++) {
+			if (!measureLines[i]) {
+				continue
+			}
+			measureLines[i].forEach(tempoLine => {
+				let ht = this.renderDimensions.getYForTime(tempoLine - time * 1000)
+
+				ctx.moveTo(0, ht)
+				ctx.lineTo(this.renderDimensions.windowWidth, ht)
+			})
+		}
+		ctx.closePath()
+		ctx.stroke()
 	}
 
 	getRenderTime(playerState) {
