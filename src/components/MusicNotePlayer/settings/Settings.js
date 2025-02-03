@@ -48,26 +48,6 @@ export class Settings {
 			"minNoteHeight": {
 				id: "minNoteHeight",
 				value: 2,
-			},
-			"showSustainOnOffs": {
-				id: "showSustainOnOffs",
-				label: "Draw Sustain On/Off Events",
-				value: false,
-			},
-			"showSustainPeriods": {
-				id: "showSustainPeriods",
-				label: "Draw Sustain Periods",
-				value: false,
-			},
-			"showSustainedNotes": {
-				id: "showSustainedNotes",
-				label: "Draw Sustained Notes",
-				value: false,
-			},
-			"sustainedNotesOpacity": {
-				id: "sustainedNotesOpacity",
-				label: "Sustained Notes Opacity (%)",
-				value: 50,
 			}
 		}
 	}

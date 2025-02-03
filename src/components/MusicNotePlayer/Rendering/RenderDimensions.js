@@ -121,23 +121,7 @@ export class RenderDimensions {
 		}
 
 		//adjust height/y for notes that have passed the piano / have been played
-		let showSustainedNotes = getSetting("showSustainedNotes")
-		let endTime = showSustainedNotes
-			? Math.max(isNaN(sustainOffTime) ? 0 : sustainOffTime, noteEndTime)
-			: noteEndTime
-
-		if (showSustainedNotes) {
-			if (!isNaN(sustainOffTime) && sustainOffTime < currentTime) {
-				sustainY += this.whiteKeyHeight
-			}
-			if (
-				!isNaN(sustainOffTime) &&
-				sustainOffTime > currentTime &&
-				noteEndTime < currentTime
-			) {
-				sustainH += this.whiteKeyHeight
-			}
-		}
+		let endTime = noteEndTime
 
 		if (endTime < currentTime) {
 			let endRatio = 0

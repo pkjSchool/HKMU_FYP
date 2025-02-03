@@ -12,11 +12,6 @@ export class NoteRender {
 		this.lastActiveNotes = {}
 	}
 	render(time, renderInfoByTrackMap, inputActiveNotes, inputPlayedNotes) {
-		//sustained note "tails"
-		if (getSetting("showSustainedNotes")) {
-			this.drawSustainedNotes(renderInfoByTrackMap, time)
-		}
-
 		let activeNotesByTrackMap = this.getActiveNotesByTrackMap(
 			renderInfoByTrackMap
 		)
@@ -58,43 +53,6 @@ export class NoteRender {
 		})
 
 		return pressActiveNotes
-	}
-
-	drawSustainedNotes(renderInfoByTrackMap, time) {
-		Object.keys(renderInfoByTrackMap).forEach(trackIndex => {
-			let notesRenderInfoBlack = renderInfoByTrackMap[trackIndex].black
-			let notesRenderInfoWhite = renderInfoByTrackMap[trackIndex].white
-
-			this.ctx.globalAlpha = getSetting("sustainedNotesOpacity") / 100
-			this.ctx.strokeStyle = "rgba(0,0,0,1)"
-			this.ctx.lineWidth = 1
-			if (notesRenderInfoWhite.length > 0) {
-				this.ctx.fillStyle = notesRenderInfoWhite[0].fillStyle
-			}
-			notesRenderInfoWhite.forEach(renderInfo =>
-				this.drawSustainedNote(renderInfo)
-			)
-			if (notesRenderInfoBlack.length > 0) {
-				this.ctx.fillStyle = notesRenderInfoBlack[0].fillStyle
-			}
-			notesRenderInfoBlack.forEach(renderInfo =>
-				this.drawSustainedNote(renderInfo)
-			)
-		})
-	}
-
-	drawSustainedNote(renderInfos) {
-		let ctx = this.ctx
-
-		let x = renderInfos.x
-		let w = renderInfos.w / 2
-
-		if (renderInfos.sustainH && renderInfos.sustainY) {
-			ctx.beginPath()
-			ctx.rect(x + w / 2, renderInfos.sustainY, w, renderInfos.sustainH)
-			ctx.closePath()
-			ctx.fill()
-		}
 	}
 
 	getActiveNotesByTrackMap(renderInfoByTrackMap) {
