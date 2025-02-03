@@ -215,8 +215,10 @@ export class NoteRender {
 
 		playedWhiteNotes.forEach(renderInfo => {
 
-			if(renderInfo.noteEntered == true){
-				this.ctx.fillStyle = getSetting("enteredNoteColor")
+			if(renderInfo.noteInputAccurate == true) {
+				this.ctx.fillStyle = getSetting("accurateInputNoteColor")
+			} else if(renderInfo.noteEntered == true){
+				this.ctx.fillStyle = getSetting("enteredInputNoteColor")
 			} else {
 				this.ctx.fillStyle = playedWhiteNotes[0].fillStyle
 			}
@@ -231,8 +233,10 @@ export class NoteRender {
 		// 	: ""
 		playedBlackNotes.forEach(renderInfo => {
 
-			if(renderInfo.noteEntered == true){
-				this.ctx.fillStyle = getSetting("enteredNoteColor")
+			if(renderInfo.noteInputAccurate == true) {
+				this.ctx.fillStyle = getSetting("accurateInputNoteColor")
+			} else if(renderInfo.noteEntered == true){
+				this.ctx.fillStyle = getSetting("enteredInputNoteColor")
 			} else {
 				this.ctx.fillStyle = playedBlackNotes[0].fillStyle
 			}
@@ -269,8 +273,10 @@ export class NoteRender {
 		// console.log(incomingWhiteNotes[0])
 		incomingWhiteNotes.forEach(renderInfo => {
 			
-			if(renderInfo.noteEntered == true){
-				this.ctx.fillStyle = getSetting("enteredNoteColor")
+			if(renderInfo.noteInputAccurate == true) {
+				this.ctx.fillStyle = getSetting("accurateInputNoteColor")
+			} else if(renderInfo.noteEntered == true){
+				this.ctx.fillStyle = getSetting("enteredInputNoteColor")
 			} else {
 				this.ctx.fillStyle = incomingWhiteNotes[0].fillStyle
 			}
@@ -285,8 +291,10 @@ export class NoteRender {
 		// 	: ""
 		incomingBlackNotes.forEach(renderInfo => {
 
-			if(renderInfo.noteEntered == true){
-				this.ctx.fillStyle = getSetting("enteredNoteColor")
+			if(renderInfo.noteInputAccurate == true) {
+				this.ctx.fillStyle = getSetting("accurateInputNoteColor")
+			} else if(renderInfo.noteEntered == true){
+				this.ctx.fillStyle = getSetting("enteredInputNoteColor")
 			} else {
 				this.ctx.fillStyle = incomingBlackNotes[0].fillStyle
 			}

@@ -88,7 +88,7 @@ function App() {
   }
 
   const handleInitial = () => {
-    // resetNoteMeasurement()
+    resetNoteMeasurement()
     changeStartTime()
     resetPlayingTime()
     setIsFinished(false)
@@ -97,7 +97,7 @@ function App() {
   }
 
   const handleReset = () => {
-    // resetNoteMeasurement()
+    resetNoteMeasurement()
     changeStartTime()
     resetPlayingTime()
     setIsFinished(false)
@@ -129,18 +129,19 @@ function App() {
       for(let note of track.notes){
         totalNote++;
         if(note.isEntered){ noteEntered++; }
+        if(note.isInputAccurate){ inputOnRange++; }
 
-        if(recordNotes[note.noteNumber]) {
-          for(let recordItem of recordNotes[note.noteNumber]) {
-            if(
-              (recordItem.timestamp <= (note.timestamp + ACCURATE_OFFSET) && recordItem.timestamp >= (note.timestamp - ACCURATE_OFFSET)) &&
-              (recordItem.offTime <= (note.offTime + ACCURATE_OFFSET) && recordItem.offTime >= (note.offTime - ACCURATE_OFFSET))
-            ) {
-              console.log(note.noteNumber)
-              inputOnRange++
-            }
-          }
-        }
+        // if(recordNotes[note.noteNumber]) {
+        //   for(let recordItem of recordNotes[note.noteNumber]) {
+        //     if(
+        //       (recordItem.timestamp <= (note.timestamp + ACCURATE_OFFSET) && recordItem.timestamp >= (note.timestamp - ACCURATE_OFFSET)) &&
+        //       (recordItem.offTime <= (note.offTime + ACCURATE_OFFSET) && recordItem.offTime >= (note.offTime - ACCURATE_OFFSET))
+        //     ) {
+        //       console.log(note.noteNumber)
+        //       inputOnRange++
+        //     }
+        //   }
+        // }
       }
     }
 
@@ -166,21 +167,20 @@ function App() {
   }
 
   useEffect(()=> {
-    handleInitial()
 
-    getPlayer().addFinishListener(()=>{
-      handleFinish()
-    })
-
+    getPlayer().addFinishListener(()=>{ handleFinish() })
     getPlayer().addTimeUpdatedListener(onPlayerTimeUpdated)
+    getPlayer().addNewSongCallback(()=>{ handleInitial() })
 
     const updatePlayingTime = setInterval(() => {
       if(!getIsFinished() && isPlaying()) increasePlayingTime(0.1)
     }, 100);
 
     return () => {
+      getPlayer().pause()
       getPlayer().clearFinishListener()
       getPlayer().clearTimeUpdatedListener()
+      getPlayer().clearNewSongCallback()
 
       clearInterval(updatePlayingTime)
     }

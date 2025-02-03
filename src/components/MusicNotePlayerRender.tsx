@@ -67,7 +67,7 @@ class MusicNotePlayerRender extends React.Component<any, any> {
 
       this.cnvrender = new Render(cnvBG, cnvMain, cnvForeground, wrapperEle)
       const player = getPlayer()
-      player.loadSong(this.props.music, "fileNameSpecific", "name")
+      player.loadSong(this.props.music, "fileName.midi", "name")
 
       const renderer = () => {
         this.cnvrender.render(getPlayerState())

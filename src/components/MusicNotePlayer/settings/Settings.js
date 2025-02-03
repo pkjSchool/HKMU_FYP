@@ -4,13 +4,14 @@ class Settings {
 			"trackColors": {
 				id: "trackColors",
 				value: [
-					{ white: "#ffa000", black: "#ff8f00" }, //orange
-					{ white: "#1e88e5", black: "#1976d2" }, //blue
-					{ white: "#43a047", black: "#388e3c" }, //green
-					{ white: "#ffeb3b", black: "#fdd835" }, //yellow
-					{ white: "#9c27b0", black: "#8e24aa" }, //pink
-					{ white: "#f44336", black: "#e53935" }, //red
-					{ white: "#673ab7", black: "#5e35b1" } //purple
+					{ white: "#1ee5df", black: "#1ee5df" },
+					// { white: "#ffa000", black: "#ff8f00" }, //orange
+					// { white: "#1e88e5", black: "#1976d2" }, //blue
+					// { white: "#43a047", black: "#388e3c" }, //green
+					// { white: "#ffeb3b", black: "#fdd835" }, //yellow
+					// { white: "#9c27b0", black: "#8e24aa" }, //pink
+					// { white: "#f44336", black: "#e53935" }, //red
+					// { white: "#673ab7", black: "#5e35b1" } //purple
 				],
 			},
 			"showMarkersSong": {
@@ -19,11 +20,15 @@ class Settings {
 			},
 			"inputNoteColor": {
 				id: "inputNoteColor",
-				value: "rgba(40,155,155,0.8)",
+				value: "rgba(158,197,254,0.2)",
 			},
-			"enteredNoteColor": {
+			"enteredInputNoteColor": {
 				id: "enteredNoteColor",
-				value: "rgba(0,255,0,1)",
+				value: "rgba(255,193,7,1)",
+			},
+			"accurateInputNoteColor": {
+				id: "enteredNoteColor",
+				value: "rgba(0,135,0,1)",
 			},
 			"pianoPosition": {
 				id: "pianoPosition",

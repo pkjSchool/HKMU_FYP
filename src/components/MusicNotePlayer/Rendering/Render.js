@@ -151,8 +151,6 @@ export class Render {
 									.map(note => { 
 										if (currentActiveNotes[note.id]) {
 											note.isEntered = true
-											// note.noteEnterStart = time
-											// note.noteEnterEnd
 										}
 									})
 							}
@@ -250,6 +248,7 @@ export class Render {
 			velocity: note.velocity,
 			noteId: note.id,
 			noteEntered: note.isEntered,
+			noteInputAccurate: note.isInputAccurate,
 			noteEnterStart: note.noteEnterStart,
 			noteEnterEnd: note.noteEnterEnd
 		}
