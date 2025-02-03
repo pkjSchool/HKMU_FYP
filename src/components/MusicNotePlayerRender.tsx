@@ -3,7 +3,6 @@ import { Render } from "./MusicNotePlayer/Rendering/Render.js"
 import { Player, getPlayer } from "./MusicNotePlayer/player/Player.js"
 
 class MusicNotePlayerRender extends React.Component<any, any> {
-  foregroundCanvasRef: React.RefObject<HTMLCanvasElement>;
   bgCanvasRef: React.RefObject<HTMLCanvasElement>;
   mainCanvasRef: React.RefObject<HTMLCanvasElement>;
   wrapperRef: React.RefObject<HTMLDivElement>;
@@ -22,7 +21,6 @@ class MusicNotePlayerRender extends React.Component<any, any> {
     this.animeId = 0;
     this.noteNumberOffset = -21;
 
-    this.foregroundCanvasRef = React.createRef();
     this.bgCanvasRef = React.createRef();
     this.mainCanvasRef = React.createRef();
     this.wrapperRef = React.createRef();
@@ -57,17 +55,15 @@ class MusicNotePlayerRender extends React.Component<any, any> {
   }
 
   componentDidMount() {
-
       const wrapperEle = this.wrapperRef.current
 
-      const cnvForeground = this.foregroundCanvasRef.current
       const cnvBG = this.bgCanvasRef.current
       const cnvMain = this.mainCanvasRef.current
 
       this.animeId = 0;
 
       this.player = getPlayer()
-      this.cnvrender = new Render(cnvBG, cnvMain, cnvForeground, wrapperEle, this.player)
+      this.cnvrender = new Render(cnvBG, cnvMain, wrapperEle, this.player)
 
       this.player.loadSong(this.props.music, "fileName.midi", "name")
 
@@ -87,7 +83,6 @@ class MusicNotePlayerRender extends React.Component<any, any> {
       <div ref={this.wrapperRef} style={{position: "relative",height: "100%", width: "100%",zIndex: 0}}>
         <canvas ref={this.bgCanvasRef} style={{backgroundColor: "black",position: "absolute",top: "0px",left: "0px",zIndex: -5, pointerEvents: "none"}}/>
         <canvas ref={this.mainCanvasRef} style={{position: "absolute",top: "0px",left: "0px",zIndex: -5, pointerEvents: "none"}}/>
-        <canvas ref={this.foregroundCanvasRef} style={{position: "absolute",top: "0px",left: "0px",zIndex: -5, pointerEvents: "none"}}/>
       </div>
     );
   }

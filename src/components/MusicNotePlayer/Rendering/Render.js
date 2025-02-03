@@ -7,10 +7,9 @@ import { getSetting } from "../settings/Settings.js"
 import { isBlack } from "../Util.js"
 
 export class Render {
-	constructor(cnvBG, cnvMain, cnvForeground, wrapperEle, player) {
+	constructor(cnvBG, cnvMain, wrapperEle, player) {
 		this.cnvBG = cnvBG
 		this.cnv = cnvMain
-		this.cnvForeground = cnvForeground
 		this.wrapperEle = wrapperEle
 
 		this.renderDimensions = new RenderDimensions(this.wrapperEle)
@@ -20,7 +19,6 @@ export class Render {
 
 		this.noteRender = new NoteRender(
 			this.ctx,
-			this.ctxForeground,
 			this.renderDimensions
 		)
 		// this.sustainRender = new SustainRender(this.ctx, this.renderDimensions)
@@ -42,22 +40,12 @@ export class Render {
 
 	}
 
-	setCtxBlur() {
-		this.ctxForeground.filter = "blur(3px)"
-	}
-
 	/**
 	 * Main rendering function
 	 */
 	render(playerState) {
 		this.playerState = playerState
 		this.ctx.clearRect(
-			0,
-			0,
-			this.renderDimensions.windowWidth,
-			this.renderDimensions.windowHeight
-		)
-		this.ctxForeground.clearRect(
 			0,
 			0,
 			this.renderDimensions.windowWidth,
@@ -265,26 +253,14 @@ export class Render {
 			this.renderDimensions.windowHeight
 		)
 
-		this.setCanvasSize(
-			this.getForegroundCanvas(),
-			this.renderDimensions.windowWidth,
-			this.renderDimensions.windowHeight
-		)
-
-        this.ctxForeground = this.cnvForeground.getContext('2d');
         this.ctxBG = this.cnvBG.getContext('2d');
         this.ctx = this.cnv.getContext('2d');
-
-		this.setCtxBlur()
 	}
 	getBgCanvas() {
 		return this.cnvBG
 	}
 	getMainCanvas() {
 		return this.cnv
-	}
-	getForegroundCanvas() {
-		return this.cnvForeground
 	}
 
 	isNoteDrawn(note, tracks) {

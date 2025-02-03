@@ -5,10 +5,9 @@ import { drawRoundRect } from "../Util.js"
  * Class to render the notes on screen.
  */
 export class NoteRender {
-	constructor(ctx, ctxForeground, renderDimensions) {
+	constructor(ctx, renderDimensions) {
 		this.ctx = ctx
 		this.renderDimensions = renderDimensions
-		this.ctxForeground = ctxForeground
 
 		this.lastActiveNotes = {}
 	}
