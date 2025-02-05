@@ -2,6 +2,9 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import { useState } from "react";
 import { useParams } from "react-router-dom";
 import Quiz from "../components/Quiz";
+import { useNavigate } from "react-router-dom";
+import VideoBeforeQuiz from "../components/VideoBeforeQuiz.tsx";
+import quiz_video from "../assets/quiz_video/test.mp4";
 import question1 from "../assets/quiz_img/quiz_1/quiz1_1piano.png";
 import question2_ans1 from "../assets/quiz_img/quiz_1/quiz1_2.jpg";
 import question2_ans2 from "../assets/quiz_img/quiz_1/quiz1_2_1.png"; 
@@ -62,8 +65,34 @@ const questionsCh1_1 = [
 
 ];
 
+
 function Ch1_1() {
-  return <Quiz title="Lesson 1: Piano Basics" questions={questionsCh1_1} />;
+  const [showVideo, setShowVideo] = useState(true);
+  const navigate = useNavigate();
+
+  const handleVideoEnd = () => {
+    setShowVideo(false);
+  };
+
+  const handleExitQuiz = () => {
+    console.log("Quiz exited!");
+    navigate("/");
+  };
+
+  return (
+    <>
+      {showVideo ? (
+        <VideoBeforeQuiz
+          videoSrc={quiz_video}
+          onVideoEnd={handleVideoEnd}
+          autoPlay={true}
+          controls={true}
+        />
+      ) : (
+        <Quiz title="Lesson 1: Piano Basics" questions={questionsCh1_1} onExit={handleExitQuiz} />
+      )}
+    </>
+  );
 }
 
 export default Ch1_1;
