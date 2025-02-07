@@ -12,7 +12,7 @@ import "../css/VolumeSlider.css";
 
 
 const CollapsibleNavBar = forwardRef((props: any, ref) => {
-  const { playCallback, pausingCallback, stopCallback, progressCallback, menuCollapsedCallback, setMusicFile, volume, setVolume } = props;
+  const { playCallback, pausingCallback, stopCallback, progressCallback, menuCollapsedCallback, setMusicFile, volume, setVolume }= props;
   const progressBarReadonly = false;
 
   useImperativeHandle(ref, () => ({
@@ -22,7 +22,6 @@ const CollapsibleNavBar = forwardRef((props: any, ref) => {
 
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [hoveredButton, setHoveredButton] = useState<number>(-1);
-  const [volume, setVolume] = useState<number>(100);
   const [valProgress, setValProgress] = useState<number>(0);
   const [valSongEndSecond, setValSongEndSecond] = useState<number>(0);
   const [valSongCurSecond, setValSongCurSecond] = useState<number>(0);

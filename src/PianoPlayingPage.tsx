@@ -184,7 +184,7 @@ function App() {
     console.log(result)
 
     setPlayResult(result)
-  }}
+  }
 
   useEffect(()=> {
     const notePlayerRefCtx = notePlayerRef.current
@@ -239,8 +239,9 @@ function App() {
   return (
     <div style={{ background: '#282c34', height: '100vh', width: '100vw' }}>
       {resultComp}
-      <MIDIController ref={MIDIControllerRef} onNoteOn={onNoteOn} onNoteOff={onNoteOff} />
+      <MIDIController ref={MIDIControllerRef} onNoteOn={onNoteOn} onNoteOff={onNoteOff} audioVolume={volume} />
       <TopNavBar  ref={topNavBarRef} playCallback={handlePlay} pausingCallback={handlePause} stopCallback={handleStop} menuCollapsedCallback={handleMenuCollapsed} progressCallback={handleProgressChanged}/>
+      <MusicSheetRender midiData={midiData} fileName={fileName} activeNotes={activeNotes} />
       <MusicNotePlayerRender ref={notePlayerRef} music={MUSIC} />
       <PianoRender
         activeNote={activeNotes}
