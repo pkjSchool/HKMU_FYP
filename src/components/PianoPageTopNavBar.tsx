@@ -1,22 +1,35 @@
-import { useState } from "react";
-
-import "../css/VolumeSlider.css";
+import { useState, useEffect, forwardRef, useImperativeHandle } from "react";
+import { NavLink } from "react-router-dom";
 
 import { FaRegFolderOpen, FaPlay, FaPause, FaStop } from "react-icons/fa";
 import { MdAudiotrack, MdOutlineExitToApp } from "react-icons/md";
 import { CiVolume, CiVolumeHigh } from "react-icons/ci";
 import { IoIosSettings } from "react-icons/io";
+import { formatTime } from "../util/utils";
+
+import "../css/VolumeSlider.css";
 
 
-interface TopNavBarProps {
-  setMusicFile: React.Dispatch<React.SetStateAction<File | null>>;
-  volume: number;
-  setVolume:  React.Dispatch<React.SetStateAction<number>>;
-}
 
-const CollapsibleNavBar = ({ setMusicFile, volume, setVolume }: TopNavBarProps) => {
+const CollapsibleNavBar = forwardRef((props: any, ref) => {
+  const { playCallback, pausingCallback, stopCallback, progressCallback, menuCollapsedCallback, setMusicFile, volume, setVolume } = props;
+  const progressBarReadonly = false;
+
+  useImperativeHandle(ref, () => ({
+    onPlayerTimeUpdated,
+    handleUpdatePlayingTimestemp
+  }));
+
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [hoveredButton, setHoveredButton] = useState<number>(-1);
+  const [volume, setVolume] = useState<number>(100);
+  const [valProgress, setValProgress] = useState<number>(0);
+  const [valSongEndSecond, setValSongEndSecond] = useState<number>(0);
+  const [valSongCurSecond, setValSongCurSecond] = useState<number>(0);
+  const [valBpm, setValBpm] = useState<number>(0);
+  const [valPrePlay, setValPrePlay] = useState<number>(2);
+  const [playingTimestemp, setPlayingTimestemp] = useState<number>(0);
+
 
   const handleMouseEnter = (index: number) => {
     setHoveredButton(index);
@@ -26,38 +39,79 @@ const CollapsibleNavBar = ({ setMusicFile, volume, setVolume }: TopNavBarProps) 
     setHoveredButton(-1);
   }
 
+
+  const handleUpdatePlayingTimestemp = (time: number) => {
+    setPlayingTimestemp(time)
+  }
+
   const handleVolumeButtonOnClick = () => {
-      setVolume((prev) => (prev === 0 ? 1 : 0));
+    setVolume((prev) => (prev === 0 ? 1 : 0));
   }
 
   const toggleNavBar = () => {
     setIsCollapsed((prev) => !prev);
+    menuCollapsedCallback(!isCollapsed);
   };
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
     const uploadedFile = event.target.files?.[0] || null;
     setMusicFile(uploadedFile);
-  };  
+  };
 
+  const clickPlay = () => {
+    playCallback();
+  }
+
+  const clickPause = () => {
+    pausingCallback();
+  }
+
+  const clickStop = () => {
+    stopCallback();
+  }
+
+  const progressChanged = (progress: number) => {
+    clickPause()
+    setValProgress(progress);
+    progressCallback(progress);
+    // (progress / 100) * (getPlayer().song.getEnd() / 1000)
+  }
+
+  const onPlayerTimeUpdated = (time: number, end: number, bpm: number) => {
+    // setValProgress((time / (end / 1000 / 100)));
+    setValProgress(time);
+    setValSongCurSecond(time)
+    setValSongEndSecond(end / 1000)
+    setValBpm(bpm)
+  }
+
+  useEffect(() => {
+    menuCollapsedCallback(isCollapsed);
+  }, []);
 
   return (
     <div style={{
-      position: "relative",
+      position: "absolute",
+      top: isCollapsed ? "-130px" : "0px",
+      left: "0px",
       width: "100%",
+      height: "130px",
+      zIndex: 100,
+      transition: "top 0.3s ease",
     }}>
 
-      <div className="topnavbar-warrper" style={{ ...styles.navbar, height: isCollapsed ? "0px" : "130px" }}>
+      <div className="topnavbar-warrper" style={{ ...styles.navbar, height: "100%" }}>
         <div className="container" style={styles.container}>
           <div className="topContainer-1" style={styles.topContainer}>
             <div className="btn-group-1" style={styles.btnGroup}>
-              <label style={{...buttonStyles.TopNavBarBtn(hoveredButton, 1), height:"45.69px", justifyContent:"center", alignItems:"center"}} 
-                onMouseEnter={() => handleMouseEnter(1)} 
+              <label style={{ ...buttonStyles.TopNavBarBtn(hoveredButton, 1), height: "45.69px", justifyContent: "center", alignItems: "center" }}
+                onMouseEnter={() => handleMouseEnter(1)}
                 onMouseLeave={handleMouseLeave}>
 
                 <div className="glyph">
                   <FaRegFolderOpen size={25} />
                 </div>
-                <input type="file" accept=".midi, .mid" style={{display: "none"}} onChange={(e) => handleFileChange(e)}/>
+                <input type="file" accept=".midi, .mid" style={{ display: "none" }} onChange={(e) => handleFileChange(e)} />
                 <span className="text" style={styles.text}>
                   Open
                 </span>
@@ -75,17 +129,17 @@ const CollapsibleNavBar = ({ setMusicFile, volume, setVolume }: TopNavBarProps) 
 
           <div className="topContainer-2" style={styles.topContainer}>
             <div className="btn-group-2" style={{ ...styles.btnGroup, flexDirection: "row" }}>
-              <button style={buttonStyles.TopNavBarBtn(hoveredButton, 3)} onMouseEnter={() => handleMouseEnter(3)} onMouseLeave={handleMouseLeave}>
+              <button style={buttonStyles.TopNavBarBtn(hoveredButton, 3)} onMouseEnter={() => handleMouseEnter(3)} onMouseLeave={handleMouseLeave} onClick={() => { clickPlay() }}>
                 <div className="glyph">
                   <FaPlay size={40} color="white" />
                 </div>
               </button>
-              <button style={buttonStyles.TopNavBarBtn(hoveredButton, 4)} onMouseEnter={() => handleMouseEnter(4)} onMouseLeave={handleMouseLeave}>
+              <button style={buttonStyles.TopNavBarBtn(hoveredButton, 4)} onMouseEnter={() => handleMouseEnter(4)} onMouseLeave={handleMouseLeave} onClick={() => { clickPause() }}>
                 <div className="glyph">
                   <FaPause size={40} color="white" />
                 </div>
               </button>
-              <button style={buttonStyles.TopNavBarBtn(hoveredButton, 5)} onMouseEnter={() => handleMouseEnter(5)} onMouseLeave={handleMouseLeave}>
+              <button style={buttonStyles.TopNavBarBtn(hoveredButton, 5)} onMouseEnter={() => handleMouseEnter(5)} onMouseLeave={handleMouseLeave} onClick={() => { clickStop() }}>
                 <div className="glyph">
                   <FaStop size={40} color="white" />
                 </div>
@@ -103,29 +157,28 @@ const CollapsibleNavBar = ({ setMusicFile, volume, setVolume }: TopNavBarProps) 
                     </span>
                     <button className="volume-btn" style={buttonStyles.TopNavBarBtn(hoveredButton, 6)}
                       onMouseEnter={() => handleMouseEnter(6)}
-                      onMouseLeave={handleMouseLeave}>
-
+                      onMouseLeave={handleMouseLeave}
+                      onClick={handleVolumeButtonOnClick}>
                       {volume === 0 ? (
-                        <CiVolume size={25} color="white" onClick={handleVolumeButtonOnClick} />
+                        <CiVolume size={25} color="white" style={{ pointerEvents: "none" }} />
                       ) : (
-                        <CiVolumeHigh size={25} color="white" onClick={handleVolumeButtonOnClick} />
+                        <CiVolumeHigh size={25} color="white" style={{ pointerEvents: "none" }} />
                       )}
                     </button>
                   </label>
-                  <input type="range" className="volume-slider" min={0} max={1} step={0.01} value={volume} style={styles.volumeSlider} onChange={(e) => {setVolume(parseFloat(e.target.value))}}/>
+                  <input type="range" className="volume-slider" min={0} max={1} step={0.01} value={volume} style={styles.volumeSlider} onChange={(e) => { setVolume(parseFloat(e.target.value)) }} />
                 </div>
               </div>
               <div className="right-group" style={{ ...styles.innerGroup }}>
                 <div>
-
-                  <a href="/" style={{ color: "white" }}>
+                  <NavLink to="/" style={{ color: "white" }}>
                     <button className="left-btn" style={buttonStyles.TopNavBarBtn(hoveredButton, 7)} onMouseEnter={() => handleMouseEnter(7)} onMouseLeave={handleMouseLeave}>
                       <div className="glyph">
                         <MdOutlineExitToApp size={25} />
                       </div>
 
                     </button>
-                  </a>
+                  </NavLink>
                   <button className="settings-btn" style={buttonStyles.TopNavBarBtn(hoveredButton, 8)} onMouseEnter={() => handleMouseEnter(8)} onMouseLeave={handleMouseLeave}>
                     <div className="glyph">
                       <IoIosSettings size={25} />
@@ -137,13 +190,19 @@ const CollapsibleNavBar = ({ setMusicFile, volume, setVolume }: TopNavBarProps) 
           </div>
         </div>
       </div>
+      <div style={progressBarStyles}>
+        <input type="range" className="musicProgressBar" name="valPrograss" min={0 - valPrePlay} max={valSongEndSecond} step="0.01" value={valProgress} disabled={progressBarReadonly} onChange={(e) => { progressChanged(parseFloat(e.target.value)) }} />
+      </div>
+      <div style={statusBarStyles}>
+        <div>{formatTime(valSongCurSecond)} / {formatTime(valSongEndSecond)} | {valBpm} BPM | {formatTime(playingTimestemp)}</div>
+      </div>
       <button style={styleFunctions.floatingButton(isCollapsed)} onClick={toggleNavBar}>
         {isCollapsed ? "Expand" : "Collapse"}
       </button>
     </div>
 
   );
-};
+});
 
 import { CSSProperties } from "react";
 interface Styles {
@@ -159,7 +218,7 @@ const styles: Styles = {
     position: "relative",
     width: "100%",
     backgroundColor: "#5f5f5f",
-    transition: "height 0.3s ease",
+    // transition: "height 0.3s ease",
     overflow: "hidden",
   },
   container: {
@@ -222,7 +281,8 @@ const styleFunctions: StyleFunctions = {
   }),
   floatingButton: (isCollapsed: boolean) => ({
     position: "absolute",
-    top: isCollapsed ? "10px" : "130px",
+    // top: isCollapsed ? "10px" : "130px",
+    top: "210px",
     left: "50%",
     transform: "translateX(-50%)",
     transition: "top 0.3s ease",
@@ -249,6 +309,16 @@ const buttonStyles: { [key: string]: (hoveredButton: number, hoverIndex: number)
     boxShadow: "0px 4px 6px rgba(0, 0, 0, 0.2)",
 
   }),
+}
+
+const progressBarStyles: Object = {
+  backgroundColor: "#757575",
+  padding: "10px 20px",
+}
+
+const statusBarStyles: Object = {
+  background: "Black", color: "white",
+  padding: "0 20px"
 }
 
 export default CollapsibleNavBar;

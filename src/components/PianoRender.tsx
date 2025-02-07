@@ -52,9 +52,11 @@ const Piano = ({activeNote, onNoteOn, onNoteOff}: PianoRenderProps) => {
                 backgroundColor: isActive ? "lightblue" : "white",
                 zIndex: 1,
               }}
-              onMouseDown={() => onNoteOn(noteNumber)}
-              onMouseUp={() => onNoteOff(noteNumber)}
-              onMouseLeave={() => onNoteOff(noteNumber)}
+              onMouseDown={() => {onNoteOn(noteNumber)}}
+              // onMouseOver={() => {onNoteOn(noteNumber)}}
+              onMouseLeave={() => {onNoteOff(noteNumber)}}
+              onMouseUp={() => {onNoteOff(noteNumber)}}
+              onTouchEnd={() => {onNoteOff(noteNumber)}}
               draggable={false}
             />
           );
@@ -73,9 +75,11 @@ const Piano = ({activeNote, onNoteOn, onNoteOff}: PianoRenderProps) => {
                 left: `${(currentWhiteKeyIndex - 1) * whiteKeyWidthPercentage + whiteKeyWidthPercentage * 0.7}%`,
                 zIndex: 2,
               }}
-              onMouseDown={() => onNoteOn(noteNumber)}
-              onMouseUp={() => onNoteOff(noteNumber)}
-              onMouseLeave={() => onNoteOff(noteNumber)}
+              onMouseDown={(event) => {console.log(event); onNoteOn(noteNumber)}}
+              // onMouseOver={() => {onNoteOn(noteNumber)}}
+              onMouseLeave={() => {onNoteOff(noteNumber)}}
+              onMouseUp={() => {onNoteOff(noteNumber)}}
+              onTouchEnd={() => {onNoteOff(noteNumber)}}
               draggable={false}
             />
           );
@@ -105,6 +109,8 @@ const Piano = ({activeNote, onNoteOn, onNoteOff}: PianoRenderProps) => {
         width: "100%",
         height: `${renderDimensions.whiteKeyHeight}px`,
         display: "flex",
+        zIndex: 10,
+        userSelect: "none"
       }}
       draggable={false}
     >
