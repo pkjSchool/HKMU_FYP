@@ -1,10 +1,14 @@
 import { useState, useEffect, useRef } from 'react';
+import { Midi } from 'tonejs-midi-fix';
+
 import MIDIController from './components/MidiController.js';
 import TopNavBar from './components/PianoPageTopNavBar.js';
 import PianoRender from './components/PianoRender.js';
 import MusicNotePlayerRender from './components/MusicNotePlayerRender';
 import PianoPlayingResult from './components/PianoPlayingResult';
 import { formatTime } from "./util/utils";
+import MusicSheetRender from './components/RenderMusicSheet.js';
+import AudioPlayer from './components/AudioPlayer.js';
 
 const MUSIC = "data:audio/midi;base64,TVRoZAAAAAYAAQACA8BNVHJrAAAACwD/UQMHoSAA/y8ATVRyawAAAIYAwQ0AkUd/g2CRRX8AgUcAg2CBRQAAkUN/g2CRQX8AgUMAg2CBQQAAkUB/g2CRPn8AgUAAg2CBPgAAkTx/g2CRO38AgTwAg2CBOwAAkTl/g2CRN38AgTkAg2CBNwAAkTV/g2CRNH8AgTUAg2CBNAAAkTJ/g2CBMgAAkTB/g2CBMADDQP8vAA=="
 const ACCURATE_OFFSET = 150
@@ -23,6 +27,20 @@ function App() {
   const MIDIControllerRef = useRef<{ playNote: (note: number, velocity: number) => void; stopNote: (note: number) => void } | null>(null);
   const topNavBarRef = useRef<{ handleUpdatePlayingTimestemp: (t: number) => void; onPlayerTimeUpdated: (time:number, end:number, bpm:number) => void } | null>(null);
 
+  const [volume, setVolume] = useState<number>(1);
+  const [musicFile, setMusicFile] = useState<File | null>(null);
+  const [midiData, setMidiData] = useState<Midi | null>(null);
+  const [fileName, setFileName] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (musicFile) {
+      parseMidi(musicFile);
+    }
+  }, [musicFile]);
+
+  /**
+    add the note to the active notes array 
+  */
   const onNoteOn = (note: number) => {
     const noteArrIdx = activeNotes.indexOf(note)
     if(noteArrIdx < 0){
@@ -37,6 +55,9 @@ function App() {
     }
   };
 
+  /**
+    Remove the note from the active notes array 
+  */
   const onNoteOff = (note: number) => {
     const noteArrIdx = activeNotes.indexOf(note)
     if(noteArrIdx >= 0){
@@ -197,13 +218,36 @@ function App() {
     resultComp = <PianoPlayingResult result={playResult} againCallback={againCallback} />;
   }
 
+
+  /**
+    Parse the midi file and set the midi data
+  */
+  const parseMidi = async (file: File) => {
+    try {
+
+      const midiArrayBuffer = await file.arrayBuffer();
+      const fileName = file.name;
+      const midiData = new Midi(midiArrayBuffer);
+      setMidiData(midiData);
+      setFileName(fileName);
+
+    } catch (e) {
+      console.error("Error parsing MIDI file", e);
+    }
+  };
+
   return (
-    <div style={{ position: "relative", height: '100%', width: '100%', overflow: 'hidden' }}>
+    <div style={{ background: '#282c34', height: '100vh', width: '100vw' }}>
       {resultComp}
-      <MIDIController ref={MIDIControllerRef} onNoteOn={onNoteOn} onNoteOff={onNoteOff} />
-      <TopNavBar ref={topNavBarRef} playCallback={handlePlay} pausingCallback={handlePause} stopCallback={handleStop} menuCollapsedCallback={handleMenuCollapsed} progressCallback={handleProgressChanged} />
+      <MIDIController ref={MIDIControllerRef} onNoteOn={onNoteOn} onNoteOff={onNoteOff} audioVolume={volume} />
+      <TopNavBar  ref={topNavBarRef} playCallback={handlePlay} pausingCallback={handlePause} stopCallback={handleStop} menuCollapsedCallback={handleMenuCollapsed} progressCallback={handleProgressChanged}/>
+      <MusicSheetRender midiData={midiData} fileName={fileName} activeNotes={activeNotes} />
       <MusicNotePlayerRender ref={notePlayerRef} music={MUSIC} />
-      <PianoRender activeNote={activeNotes} onNoteOn={onNoteOn} onNoteOff={onNoteOff} />
+      <PianoRender
+        activeNote={activeNotes}
+        onNoteOn={onNoteOn} 
+        onNoteOff={onNoteOff}
+      />
     </div>
   );
 }

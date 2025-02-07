@@ -8,6 +8,7 @@ function isBlack(noteNumber: number) : number {
 		: 0
 }
 
+
 const formatTime = (time:number) => {
     let second = time
     if (second < 0) {second = 0}

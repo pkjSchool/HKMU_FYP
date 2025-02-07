@@ -1,17 +1,18 @@
 import { useState, useEffect, forwardRef, useImperativeHandle } from "react";
 import { NavLink } from "react-router-dom";
 
-import "../css/VolumeSlider.css";
-
 import { FaRegFolderOpen, FaPlay, FaPause, FaStop } from "react-icons/fa";
 import { MdAudiotrack, MdOutlineExitToApp } from "react-icons/md";
 import { CiVolume, CiVolumeHigh } from "react-icons/ci";
 import { IoIosSettings } from "react-icons/io";
 import { formatTime } from "../util/utils";
 
+import "../css/VolumeSlider.css";
 
-const CollapsibleNavBar = forwardRef((props:any, ref) => {
-  const {playCallback, pausingCallback, stopCallback, progressCallback, menuCollapsedCallback} = props;
+
+
+const CollapsibleNavBar = forwardRef((props: any, ref) => {
+  const { playCallback, pausingCallback, stopCallback, progressCallback, menuCollapsedCallback, setMusicFile, volume, setVolume }= props;
   const progressBarReadonly = false;
 
   useImperativeHandle(ref, () => ({
@@ -21,14 +22,13 @@ const CollapsibleNavBar = forwardRef((props:any, ref) => {
 
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [hoveredButton, setHoveredButton] = useState<number>(-1);
-  const [volume, setVolume] = useState<number>(100);
   const [valProgress, setValProgress] = useState<number>(0);
   const [valSongEndSecond, setValSongEndSecond] = useState<number>(0);
   const [valSongCurSecond, setValSongCurSecond] = useState<number>(0);
   const [valBpm, setValBpm] = useState<number>(0);
   const [valPrePlay, setValPrePlay] = useState<number>(2);
   const [playingTimestemp, setPlayingTimestemp] = useState<number>(0);
-  
+
 
   const handleMouseEnter = (index: number) => {
     setHoveredButton(index);
@@ -38,18 +38,23 @@ const CollapsibleNavBar = forwardRef((props:any, ref) => {
     setHoveredButton(-1);
   }
 
-  
-  const handleUpdatePlayingTimestemp = (time:number) => {
+
+  const handleUpdatePlayingTimestemp = (time: number) => {
     setPlayingTimestemp(time)
   }
 
   const handleVolumeButtonOnClick = () => {
-    setVolume((prev) => prev === 0 ? 100 : 0);
+    setVolume((prev) => (prev === 0 ? 1 : 0));
   }
 
   const toggleNavBar = () => {
     setIsCollapsed((prev) => !prev);
     menuCollapsedCallback(!isCollapsed);
+  };
+
+  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
+    const uploadedFile = event.target.files?.[0] || null;
+    setMusicFile(uploadedFile);
   };
 
   const clickPlay = () => {
@@ -64,14 +69,14 @@ const CollapsibleNavBar = forwardRef((props:any, ref) => {
     stopCallback();
   }
 
-  const progressChanged = (progress:number) => {
+  const progressChanged = (progress: number) => {
     clickPause()
     setValProgress(progress);
     progressCallback(progress);
     // (progress / 100) * (getPlayer().song.getEnd() / 1000)
   }
 
-  const onPlayerTimeUpdated = (time:number, end:number, bpm:number) => {
+  const onPlayerTimeUpdated = (time: number, end: number, bpm: number) => {
     // setValProgress((time / (end / 1000 / 100)));
     setValProgress(time);
     setValSongCurSecond(time)
@@ -98,20 +103,24 @@ const CollapsibleNavBar = forwardRef((props:any, ref) => {
         <div className="container" style={styles.container}>
           <div className="topContainer-1" style={styles.topContainer}>
             <div className="btn-group-1" style={styles.btnGroup}>
-              <button style={buttonStyles.TopNavBarBtn(hoveredButton, 1)} onMouseEnter={() => handleMouseEnter(1)} onMouseLeave={handleMouseLeave}>
+              <label style={{ ...buttonStyles.TopNavBarBtn(hoveredButton, 1), height: "45.69px", justifyContent: "center", alignItems: "center" }}
+                onMouseEnter={() => handleMouseEnter(1)}
+                onMouseLeave={handleMouseLeave}>
+
                 <div className="glyph">
                   <FaRegFolderOpen size={25} />
                 </div>
+                <input type="file" accept=".midi, .mid" style={{ display: "none" }} onChange={(e) => handleFileChange(e)} />
                 <span className="text" style={styles.text}>
                   Open
                 </span>
-              </button>
+              </label >
               <button style={buttonStyles.TopNavBarBtn(hoveredButton, 2)} onMouseEnter={() => handleMouseEnter(2)} onMouseLeave={handleMouseLeave}>
                 <div className="glyph">
                   <MdAudiotrack size={25} />
                 </div>
                 <span className="text" style={styles.text}>
-                  Songs
+                  Music
                 </span>
               </button>
             </div>
@@ -145,15 +154,18 @@ const CollapsibleNavBar = forwardRef((props:any, ref) => {
                     <span style={{ color: "white" }}>
                       Volume
                     </span>
-                    <button className="volume-btn" style={buttonStyles.TopNavBarBtn(hoveredButton, 6)} onMouseEnter={() => handleMouseEnter(6)} onMouseLeave={handleMouseLeave} onClick={handleVolumeButtonOnClick}>
+                    <button className="volume-btn" style={buttonStyles.TopNavBarBtn(hoveredButton, 6)}
+                      onMouseEnter={() => handleMouseEnter(6)}
+                      onMouseLeave={handleMouseLeave}
+                      onClick={handleVolumeButtonOnClick}>
                       {volume === 0 ? (
-                        <CiVolume size={25} color="white" style={{pointerEvents: "none"}} />
+                        <CiVolume size={25} color="white" style={{ pointerEvents: "none" }} />
                       ) : (
-                        <CiVolumeHigh size={25} color="white" style={{pointerEvents: "none"}} />
+                        <CiVolumeHigh size={25} color="white" style={{ pointerEvents: "none" }} />
                       )}
                     </button>
                   </label>
-                  <input type="range" className="volume-slider" min={0} max={100} step={1} defaultValue={100} value={volume} style={styles.volumeSlider} onChange={(e) => { setVolume(parseInt(e.target.value)) }} />
+                  <input type="range" className="volume-slider" min={0} max={1} step={0.01} value={volume} style={styles.volumeSlider} onChange={(e) => { setVolume(parseFloat(e.target.value)) }} />
                 </div>
               </div>
               <div className="right-group" style={{ ...styles.innerGroup }}>
@@ -178,7 +190,7 @@ const CollapsibleNavBar = forwardRef((props:any, ref) => {
         </div>
       </div>
       <div style={progressBarStyles}>
-        <input type="range" className="musicProgressBar" name="valPrograss" min={0 - valPrePlay} max={ valSongEndSecond } step="0.01" value={valProgress} disabled={progressBarReadonly} onChange={(e) => { progressChanged(parseFloat(e.target.value)) }} />
+        <input type="range" className="musicProgressBar" name="valPrograss" min={0 - valPrePlay} max={valSongEndSecond} step="0.01" value={valProgress} disabled={progressBarReadonly} onChange={(e) => { progressChanged(parseFloat(e.target.value)) }} />
       </div>
       <div style={statusBarStyles}>
         <div>{formatTime(valSongCurSecond)} / {formatTime(valSongEndSecond)} | {valBpm} BPM | {formatTime(playingTimestemp)}</div>
@@ -304,7 +316,7 @@ const progressBarStyles: Object = {
 }
 
 const statusBarStyles: Object = {
-  background: "Black", color:"white",
+  background: "Black", color: "white",
   padding: "0 20px"
 }
 
