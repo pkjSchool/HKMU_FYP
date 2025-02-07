@@ -1,13 +1,13 @@
 import {useEffect, useState} from "react";
-import { isBlack } from "../util/utils.tsx"; // Utility function for black keys
+import { isBlack } from "../util/utils.ts"; // Utility function for black keys
 
-interface PianoActiveNote {
+interface PianoRenderProps {
   activeNote: number[] | null;
   onNoteOn: (note: number) => void;
   onNoteOff: (note: number) => void;
 }
 
-const Piano = ({activeNote, onNoteOn, onNoteOff}: PianoActiveNote) => {
+const Piano = ({activeNote, onNoteOn, onNoteOff}: PianoRenderProps) => {
     const renderDimensions = {
         whiteKeyHeight: 120,
         blackKeyHeight: 80,
@@ -20,10 +20,10 @@ const Piano = ({activeNote, onNoteOn, onNoteOff}: PianoActiveNote) => {
     const [activeNotes, setActiveNotes] = useState<number[]>([]);
 
     const isNoteActive = (note: number) => {
-      if (activeNotes === null) {
+      if (activeNote === null) {
         return false;
       }else{
-        return activeNotes.includes(note);
+        return activeNote.includes(note);
       }
     };
 
@@ -57,6 +57,7 @@ const Piano = ({activeNote, onNoteOn, onNoteOff}: PianoActiveNote) => {
               onMouseLeave={() => {onNoteOff(noteNumber)}}
               onMouseUp={() => {onNoteOff(noteNumber)}}
               onTouchEnd={() => {onNoteOff(noteNumber)}}
+              draggable={false}
             />
           );
           currentWhiteKeyIndex++;
@@ -79,6 +80,7 @@ const Piano = ({activeNote, onNoteOn, onNoteOff}: PianoActiveNote) => {
               onMouseLeave={() => {onNoteOff(noteNumber)}}
               onMouseUp={() => {onNoteOff(noteNumber)}}
               onTouchEnd={() => {onNoteOff(noteNumber)}}
+              draggable={false}
             />
           );
         }
@@ -93,7 +95,6 @@ const Piano = ({activeNote, onNoteOn, onNoteOff}: PianoActiveNote) => {
     }, [activeNote]);
  
     useEffect(() => {
-        console.log(`LocalactiveNotes: ${activeNotes}`);
         const { whiteKeys, blackKeys } = renderKeys();
         setWhiteKeys(whiteKeys);
         setBlackKeys(blackKeys);
@@ -111,6 +112,7 @@ const Piano = ({activeNote, onNoteOn, onNoteOff}: PianoActiveNote) => {
         zIndex: 10,
         userSelect: "none"
       }}
+      draggable={false}
     >
       {/* White keys */}
       {whiteKeys}
@@ -124,6 +126,7 @@ const Piano = ({activeNote, onNoteOn, onNoteOff}: PianoActiveNote) => {
           width: "100%",
           height: `${renderDimensions.blackKeyHeight}px`,
         }}
+        draggable={false}
       >
         {blackKeys}
       </div>
