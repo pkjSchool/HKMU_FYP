@@ -17,6 +17,11 @@ const RenderMusicSheet = ({ midiData, fileName, activeNotes }: RenderMusicSheetP
     const containerRef = useRef<HTMLDivElement | null>(null);
     const [storedSheet, setStoredSheet] = useState<string | null>(null);
     const [CurrentFileName, setCurrentFileName] = useState<string | null>(null);
+    const [measuresIndex, setMeasuresIndex] = useState<number[]>([0, 5]);
+    const [staveList, setStaveList] = useState<Stave[]>([]);
+    const [StaveNotesList, setStaveNotesList] = useState<StaveNote[][]>([]);
+    const [musicScore, setMusicScore] = useState<MusicScore | null>(null);
+
 
     // Load stored music sheet on mount
     useEffect(() => {
@@ -32,61 +37,98 @@ const RenderMusicSheet = ({ midiData, fileName, activeNotes }: RenderMusicSheetP
         }
     }, [fileName]);
 
+    useEffect(() => {
+        console.log("staveList", staveList);
+    }, [staveList]);
+
     // Render the music sheet
     useEffect(() => {
-        let musicScore: MusicScore | null = null;
 
-        //convert midi data to music notation
-        if (midiData) {
-            musicScore = midiData2MusicNotation(midiData);
-            console.log(musicScore);
-        }
-
-        if (storedSheet && containerRef.current && !containerRef.current.hasChildNodes()) {
-            containerRef.current.innerHTML = storedSheet;
-            return;
-        }
-
-        if (CurrentFileName !== fileName || (!containerRef.current?.hasChildNodes() && CurrentFileName !== fileName)) {
-
-            if (containerRef.current?.hasChildNodes()) {
-                containerRef.current.innerHTML = '';
-            }
-
+        if (musicScore){
             if (containerRef.current) {
-                
+
+                containerRef.current.innerHTML = "";
+                                
                 const renderer = new Renderer(containerRef.current, Renderer.Backends.SVG);
 
                 // Configure the rendering context.
-                renderer.resize(5000, 200);
+                renderer.resize(1600, 200);
                 const context = renderer.getContext();
 
-
-                if (musicScore) {
-                    // get the stave notes list
-                    const StaveNotesList = createStaveNote(musicScore);
-
-                    // create stave
-                    let stavePositionX = 10;
-                    StaveNotesList.forEach((notes, index) => {
-                        const stave = new Stave(stavePositionX, 40, 300);
-                        if (index === 0) {
-                            stave.addClef("treble").addTimeSignature(musicScore.timeSignature[0] + "/" + musicScore.timeSignature[1]);
-                        }
-                        stave.setContext(context).draw();
-
-                        Formatter.FormatAndDraw(context, stave, notes);
-
-                        stavePositionX = stave.getWidth() + stave.getX();
-                    });
-                }
+                // draw the music sheet
+                const [startIndex, endIndex] = measuresIndex;
+                console.log("startIndex", startIndex, "endIndex", endIndex);
+                const staveLists = staveList.slice(startIndex, endIndex);
+                console.log(staveLists);
+                staveLists.forEach((stave, index) => {
+                    stave.setContext(context).draw();
+                    const notes = StaveNotesList[startIndex + index];
+                    Formatter.FormatAndDraw(context, stave, notes);
+                });
             }
         }
-    }, [fileName]);
+    }, [measuresIndex]);
+
+    useEffect(() => {
+        if (midiData) {
+            setMeasuresIndex([0, 5]);
+
+            const musicScore = midiData2MusicNotation(midiData);
+            setMusicScore(musicScore);
+            console.log(musicScore);
+
+            // get the stave notes list 
+            const StaveNotesList = createStaveNote(musicScore);
+            setStaveNotesList(StaveNotesList);
+
+            // create stave list
+            const staveList: Stave[] = [];
+            let stavePositionX = 10;
+            let staveWidth = 300;
+            let position = 0;
+
+            StaveNotesList.forEach((_, index) => {
+                const value = index%5;
+                position = (stavePositionX + staveWidth) * (value) - 10 * (value);
+                const stave = new Stave(position, 40, staveWidth);
+                if (index === 0) {
+                    stave.addClef("treble").addTimeSignature(musicScore.timeSignature[0] + "/" + musicScore.timeSignature[1]);
+                }
+                
+                console.log(position);
+                staveList.push(stave);
+            });
+            setStaveList(staveList);
+        }
+    }, [midiData]);
+    
+    // update the music sheet when the button is clicked
+    useEffect(()=>{
+    }, [measuresIndex]);
+
+    const onClickLeftButton = () => {
+        const [startIndex, endIndex] = measuresIndex;
+        if (startIndex === 0) return;
+        setMeasuresIndex([startIndex - 5, endIndex - 5]);
+    };
+
+    const onClickRightButton = () => {
+        const [startIndex, endIndex] = measuresIndex;
+        if (endIndex < staveList.length - 1) {
+            setMeasuresIndex([startIndex + 5, endIndex + 5]);
+        };
+    };
+    
 
     return (
         <div className="sheet-container" style={styles.sheetContainer}>
+            {fileName && 
+            <button style={styles.leftMusicSheetControlButton} onClick={onClickLeftButton}>
+                left
+            </button>}
             <div ref={containerRef}></div>
+            {fileName && 
+            <button style={styles.rightMusicSheetControlButton} onClick={onClickRightButton}>right</button>}
         </div>
     );
 };
@@ -182,8 +224,23 @@ const styles: { [key: string]: CSSProperties } = {
         marginTop: '5px',
         overflowX: 'auto',
         overflowY: 'hidden',
-        whiteSpace: 'nowrap'
+        whiteSpace: 'nowrap',
+        justifyContent: 'space-between',
     },
+    leftMusicSheetControlButton: {
+        display: 'flex',
+        alignContent: 'center',
+        justifyContent: 'center',
+        verticalAlign: 'middle',
+        width: '30px',
+    },
+    rightMusicSheetControlButton: {
+        display: 'flex',
+        alignContent: 'center',
+        justifyContent: 'center',
+        verticalAlign: 'middle',
+        width: '30px'
+    }
 };
 
 export default RenderMusicSheet;

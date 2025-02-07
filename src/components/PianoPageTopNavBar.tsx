@@ -10,12 +10,13 @@ import { IoIosSettings } from "react-icons/io";
 
 interface TopNavBarProps {
   setMusicFile: React.Dispatch<React.SetStateAction<File | null>>;
+  volume: number;
+  setVolume:  React.Dispatch<React.SetStateAction<number>>;
 }
 
-const CollapsibleNavBar: React.FC<TopNavBarProps> = ({ setMusicFile }) => {
+const CollapsibleNavBar = ({ setMusicFile, volume, setVolume }: TopNavBarProps) => {
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [hoveredButton, setHoveredButton] = useState<number>(-1);
-  const [volume, setVolume] = useState<number>(100);
 
   const handleMouseEnter = (index: number) => {
     setHoveredButton(index);
@@ -26,7 +27,7 @@ const CollapsibleNavBar: React.FC<TopNavBarProps> = ({ setMusicFile }) => {
   }
 
   const handleVolumeButtonOnClick = () => {
-    setVolume((prev) => prev === 0 ? 100 : 0);
+      setVolume((prev) => (prev === 0 ? 1 : 0));
   }
 
   const toggleNavBar = () => {
@@ -111,7 +112,7 @@ const CollapsibleNavBar: React.FC<TopNavBarProps> = ({ setMusicFile }) => {
                       )}
                     </button>
                   </label>
-                  <input type="range" className="volume-slider" min={0} max={100} step={1} value={volume} style={styles.volumeSlider} onChange={(e) => { setVolume(parseInt(e.target.value)) }} />
+                  <input type="range" className="volume-slider" min={0} max={1} step={0.01} value={volume} style={styles.volumeSlider} onChange={(e) => {setVolume(parseFloat(e.target.value))}}/>
                 </div>
               </div>
               <div className="right-group" style={{ ...styles.innerGroup }}>
