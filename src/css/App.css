@@ -5,15 +5,21 @@
 .main-content {
   /* justify-content: center;  */
   /* align-items: center; */
+  position: relative;
   width: 100vw;
   height: 100vh; 
   padding: 20px;
-  background-color: #f9f9f9;
+  /* background-color: #f9f9f9; */
   overflow-x: hidden;
   overflow-y: auto; 
   /* transition: margin-left 0.3s ease;  */
-  background-image: url('../assets/background.png'); 
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); 
+  /* background-image: url('../assets/background.png'); 
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);  */
+  background-image: linear-gradient(to top, transparent 0%,rgba(158, 189, 169 ,1) 50%), 
+  url('/src/assets/background.png'); 
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: 50% 65%;
 }
 
 .musicProgressBar {
@@ -33,4 +39,9 @@
   background: #dc3545;
   cursor: ew-resize;
   box-shadow: calc(-50vw) 0 0 50vw #ffc107;
+}
+
+.lesson-index-container {
+  position: relative;
+  padding-right: 320px;
 }

@@ -1,4 +1,3 @@
-import "bootstrap/dist/css/bootstrap.min.css";
 import { useState } from "react";
 import { useParams } from "react-router-dom";
 import Quiz from "../components/Quiz";

@@ -1,5 +1,3 @@
-import './css/App.css';
-
 function MorePage() {
   return (
     <div>

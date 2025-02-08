@@ -1,5 +1,4 @@
 import { FC } from 'react';
-import '../css/LessonMap.css';
 import { NavLink } from "react-router-dom";
 
 interface Lesson {
@@ -19,10 +18,15 @@ interface LessonMapProps {
 }
 
 const LessonMap: FC<LessonMapProps> = ({ chapters }) => {
+
+  const getConnectorDirectionClass = (idx:number) => {
+    return (idx%2==0)?"connector-left":"connector-right"
+  }
+
   return (
     <div className="lesson-map-container">
       {chapters.map((chapter, chapterIndex) => (
-        <div key={chapterIndex} className="chapter-container">
+        <div key={chapterIndex} className="chapter-container animate__animated animate__fadeIn">
           <h3 className="chapter-title">{chapter.title}</h3>
           <div className="lessons-container">
             {chapter.lessons.map((lesson, lessonIndex) => (
@@ -44,7 +48,11 @@ const LessonMap: FC<LessonMapProps> = ({ chapters }) => {
                   )}
                 </div>
                 {lessonIndex < chapter.lessons.length - 1 && (
-                  <div className="connector-line" />
+                  <div className={["connector-wrapper", getConnectorDirectionClass(lessonIndex)].join(" ")}>
+                    <div className="connector-line connector-line-1"></div>
+                    <div className="connector-line connector-line-2"></div>
+                    <div className="connector-line connector-line-3"></div>
+                  </div>
                 )}
               </div>
             ))}

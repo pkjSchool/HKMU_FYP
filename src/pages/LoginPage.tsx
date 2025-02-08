@@ -1,9 +1,8 @@
-import "./css/login.css";
 import React, {useEffect} from 'react';
-import TextBox from './input_control/TextBox';
+import TextBox from '../input_control/TextBox.js';
 import {Controller, FormProvider, useForm} from 'react-hook-form';
 import { useSelector, useDispatch } from "react-redux";
-import { setInfo } from "./store/loginInfo.js";
+import { setInfo } from "../store/loginInfo.js";
 
 interface IFormInput {
   username: string

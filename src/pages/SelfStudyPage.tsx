@@ -1,5 +1,4 @@
-import './css/App.css';
-import MusicNotePlayerRender from './components/MusicNotePlayerRender';
+import MusicNotePlayerRender from '../components/MusicNotePlayerRender';
 
 function SelfStudyPage() {
 

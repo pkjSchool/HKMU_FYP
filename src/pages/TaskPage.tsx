@@ -1,4 +1,3 @@
-import './css/App.css';
 import { TiTick } from "react-icons/ti";
 
 function TaskPage() {
