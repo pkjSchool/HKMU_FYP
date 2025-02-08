@@ -9,6 +9,11 @@ import { formatTime } from "../util/utils";
 
 import "../css/VolumeSlider.css";
 
+export type CollapsibleNavBarRef = {
+  onPlayerTimeUpdated: (time: number, end: number, bpm: number) => void;
+  handleUpdatePlayingTimestemp: (time: number) => void;
+}
+
 interface CollapsibleNavBarProps {
   playCallback: () => void,
   pausingCallback: () => void
@@ -22,8 +27,7 @@ interface CollapsibleNavBarProps {
   setIsCollapsed: React.Dispatch<React.SetStateAction<boolean>>,
 }
 
-const CollapsibleNavBar = forwardRef(({ playCallback, pausingCallback, stopCallback,
-  progressCallback, menuCollapsedCallback, setMusicFile, volume, setVolume, isCollapsed, setIsCollapsed }: CollapsibleNavBarProps, ref) => {
+const CollapsibleNavBar = (props: CollapsibleNavBarProps, ref: React.Ref<CollapsibleNavBarRef>) => {
 
   const progressBarReadonly = false;
 
@@ -60,31 +64,31 @@ const CollapsibleNavBar = forwardRef(({ playCallback, pausingCallback, stopCallb
   }
 
   const toggleNavBar = () => {
-    setIsCollapsed((prev) => !prev);
-    menuCollapsedCallback(!isCollapsed);
+    props.setIsCollapsed((prev) => !prev);
+    props.menuCollapsedCallback(!props.isCollapsed);
   };
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
     const uploadedFile = event.target.files?.[0] || null;
-    setMusicFile(uploadedFile);
+    props.setMusicFile(uploadedFile);
   };
 
   const clickPlay = () => {
-    playCallback();
+    props.playCallback();
   }
 
   const clickPause = () => {
-    pausingCallback();
+    props.pausingCallback();
   }
 
   const clickStop = () => {
-    stopCallback();
+    props.stopCallback();
   }
 
   const progressChanged = (progress: number) => {
     clickPause()
     setValProgress(progress);
-    progressCallback(progress);
+    props.progressCallback(progress);
     // (progress / 100) * (getPlayer().song.getEnd() / 1000)
   }
 
@@ -97,11 +101,11 @@ const CollapsibleNavBar = forwardRef(({ playCallback, pausingCallback, stopCallb
   }
 
   useEffect(() => {
-    menuCollapsedCallback(isCollapsed);
+    props.menuCollapsedCallback(props.isCollapsed);
   }, []);
 
   return (
-    <div style={styleFunctions.topNavBarContainer(isCollapsed)}>
+    <div style={styleFunctions.topNavBarContainer(props.isCollapsed)}>
       <div className="topnavbar-warrper" style={{ ...styles.navbar, height: "100%" }}>
         <div className="container" style={styles.container}>
           <div className="topContainer-1" style={styles.topContainer}>
@@ -161,14 +165,15 @@ const CollapsibleNavBar = forwardRef(({ playCallback, pausingCallback, stopCallb
                       onMouseEnter={() => handleMouseEnter(6)}
                       onMouseLeave={handleMouseLeave}
                       onClick={handleVolumeButtonOnClick}>
-                      {volume === 0 ? (
+                      {props.volume === 0 ? (
                         <CiVolume size={25} color="white" style={{ pointerEvents: "none" }} />
                       ) : (
                         <CiVolumeHigh size={25} color="white" style={{ pointerEvents: "none" }} />
                       )}
                     </button>
                   </label>
-                  <input type="range" className="volume-slider" min={0} max={1} step={0.01} value={volume} style={styles.volumeSlider} onChange={(e) => { setVolume(parseFloat(e.target.value)) }} />
+                  <input type="range" className="volume-slider" min={0} max={1} step={0.01} value={props.volume}
+                    style={styles.volumeSlider} onChange={(e) => { props.setVolume(parseFloat(e.target.value)) }} />
                 </div>
               </div>
               <div className="right-group" style={{ ...styles.innerGroup }}>
@@ -198,14 +203,14 @@ const CollapsibleNavBar = forwardRef(({ playCallback, pausingCallback, stopCallb
       <div style={statusBarStyles}>
         <div>{formatTime(valSongCurSecond)} / {formatTime(valSongEndSecond)} | {valBpm} BPM | {formatTime(playingTimestemp)}</div>
       </div>
-      <button style={{ ...styleFunctions.floatingButton(isCollapsed), opacity: isButtonHovered? 1 : 0.1}} onClick={toggleNavBar}
+      <button style={{ ...styleFunctions.floatingButton(props.isCollapsed), opacity: isButtonHovered ? 1 : 0.1 }} onClick={toggleNavBar}
         onMouseEnter={() => setIsButtonHovered(true)} onMouseLeave={() => setIsButtonHovered(false)}>
-        {isCollapsed ? "Expand" : "Collapse"}
+        {props.isCollapsed ? "Expand" : "Collapse"}
       </button>
     </div>
 
   );
-});
+};
 
 import { CSSProperties } from "react";
 interface Styles {
@@ -332,4 +337,4 @@ const statusBarStyles: Object = {
   padding: "0 20px"
 }
 
-export default CollapsibleNavBar;
+export default forwardRef(CollapsibleNavBar);

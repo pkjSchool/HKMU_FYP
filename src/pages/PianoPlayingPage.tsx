@@ -257,10 +257,10 @@ function App() {
         menuCollapsedCallback={handleMenuCollapsed} progressCallback={handleProgressChanged}
         setMusicFile={setMusicFile} volume={volume} setVolume={setVolume}
         isCollapsed={isCollapsed} setIsCollapsed={setIsCollapsed} />
-      <MusicSheetRender midiData={midiData} fileName={fileName} activeNotes={activeNotes} isCollapsed={isCollapsed} />
       <div style={{ position: 'absolute', top: '0px', height: '100%', width: '100%', zIndex: 0 }}>
         <MusicNotePlayerRender ref={notePlayerRef} music={MUSIC} />
       </div>
+      <MusicSheetRender midiData={midiData} fileName={fileName} activeNotes={activeNotes} isCollapsed={isCollapsed} />
       <PianoRender
         activeNote={activeNotes}
         onNoteOn={onNoteOn}

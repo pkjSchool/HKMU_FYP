@@ -1,6 +1,10 @@
 import { useEffect, useState, forwardRef, useImperativeHandle, useRef } from 'react';
 import { notePathMap } from '../Map.js';
 
+export type MidiControllerRef = {
+  playNote: (note: number, velocity: number) => void;
+  stopNote: (note: number) => void;
+}
 
 interface MIDIControllerProps {
   onNoteOn: (note: number) => void;
@@ -8,7 +12,7 @@ interface MIDIControllerProps {
   audioVolume: number;
 }
 
-const MIDIController = forwardRef(({ onNoteOn, onNoteOff, audioVolume }: MIDIControllerProps, ref) => {
+const MIDIController = (props: MIDIControllerProps, ref: React.Ref<MidiControllerRef>) => {
   const [midiAccess, setMidiAccess] = useState<WebMidi.MIDIAccess | null>(null);
   const [inputs, setInputs] = useState<WebMidi.MIDIInput[]>([]);
   const [audioBuffers, setAudioBuffers] = useState<{ [key: string]: AudioBuffer }>({});
@@ -54,8 +58,8 @@ const MIDIController = forwardRef(({ onNoteOn, onNoteOff, audioVolume }: MIDICon
   }, [inputs]);
 
   useEffect(() => {
-    setVolume(audioVolume);
-  }, [audioVolume]);
+    setVolume(props.audioVolume);
+  }, [props.audioVolume]);
 
   const preloadAudioBuffers = async () => {
     const buffers: { [key: string]: AudioBuffer } = {};
@@ -94,12 +98,12 @@ const MIDIController = forwardRef(({ onNoteOn, onNoteOff, audioVolume }: MIDICon
       console.log(`Note on: ${note}, Velocity: ${velocity}`);
       playNote(note, velocity);
       console.log('In handleMIDIMessage', note)
-      onNoteOn(note)
+      props.onNoteOn(note)
     } else if (command === 128 || (command === 144 && velocity === 0)) {
       // Note off
       console.log(`Note off: ${note}`);
       stopNote(note);
-      onNoteOff(note);
+      props.onNoteOff(note);
     }
   };
 
@@ -133,6 +137,6 @@ const MIDIController = forwardRef(({ onNoteOn, onNoteOff, audioVolume }: MIDICon
   };
 
   return null;
-});
+};
 
-export default MIDIController;
+export default forwardRef(MIDIController);
