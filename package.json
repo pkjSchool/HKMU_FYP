@@ -23,7 +23,7 @@
     "react-redux": "^9.2.0",
     "react-router-dom": "^6.26.2",
     "styled-components": "^6.1.14",
-    "tonejs-midi-fix": "file:../tonejs-midi-fix/tonejs-midi-fix-2.0.28.tgz",
+    "tonejs-midi-fix": "file:tonejs-midi-fix-2.0.28.tgz",
     "vexflow": "^4.2.5"
   },
   "devDependencies": {

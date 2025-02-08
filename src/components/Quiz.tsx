@@ -1,6 +1,7 @@
 import "bootstrap/dist/css/bootstrap.min.css";
 import { useState } from "react";
 import quizBackground from "../assets/quiz_background.jpg";
+import placeholderImage from "../assets/ERRORIMG.jpeg"; 
 
 interface AnswerOption {
   answerText?: string;
@@ -21,7 +22,7 @@ interface QuizProps {
   onExit?: () => void;
 }
 
-const Quiz: React.FC<QuizProps> = ({ title, questions,onExit  }) => {
+const Quiz: React.FC<QuizProps> = ({ title, questions, onExit }) => {
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [answered, setAnswered] = useState(false);
   const [selectedAnswer, setSelectedAnswer] = useState<number | null>(null);
@@ -47,6 +48,11 @@ const Quiz: React.FC<QuizProps> = ({ title, questions,onExit  }) => {
     }
   };
 
+  
+  const handleImageError = (e: React.SyntheticEvent<HTMLImageElement>) => {
+    e.currentTarget.src = placeholderImage; 
+  };
+
   return (
     <div
       className="d-flex justify-content-center align-items-center vh-100 bg-light"
@@ -67,7 +73,7 @@ const Quiz: React.FC<QuizProps> = ({ title, questions,onExit  }) => {
           <span className="fw-bold fs-4">{title}</span>
           <button
             className="btn btn-danger btn-sm"
-            onClick={onExit} 
+            onClick={onExit}
             style={{
               padding: "2px 8px",
             }}
@@ -91,6 +97,7 @@ const Quiz: React.FC<QuizProps> = ({ title, questions,onExit  }) => {
                     alt="Question"
                     className="img-fluid mb-3"
                     style={{ maxHeight: "300px", objectFit: "contain" }}
+                    onError={handleImageError} 
                   />
                 )}
                 <p className="card-text fs-5">
@@ -130,6 +137,7 @@ const Quiz: React.FC<QuizProps> = ({ title, questions,onExit  }) => {
                         maxWidth: "100%",
                         objectFit: "contain",
                       }}
+                      onError={handleImageError} 
                     />
                   ) : (
                     option.answerText

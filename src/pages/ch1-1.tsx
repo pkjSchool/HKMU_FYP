@@ -7,9 +7,9 @@ import VideoBeforeQuiz from "../components/VideoBeforeQuiz.tsx";
 import quiz_video from "../assets/quiz_video/test.mp4";
 import question1 from "../assets/quiz_img/quiz_1/quiz1_1piano.png";
 import question2_ans1 from "../assets/quiz_img/quiz_1/quiz1_2.jpg";
-import question2_ans2 from "../assets/quiz_img/quiz_1/quiz1_2_1.png"; 
-import question2_ans3 from "../assets/quiz_img/quiz_1/quiz1_2_2.png";  
-import question2_ans4 from "../assets/quiz_img/quiz_1/quiz1_2_3.png";  
+import question2_ans2 from "../assets/quiz_img/quiz_1/quiz1_2_1.png";
+import question2_ans3 from "../assets/quiz_img/quiz_1/quiz1_2_2.png";
+import question2_ans4 from "../assets/quiz_img/quiz_1/quiz1_2_3.png";
 import question3_ans1 from "../assets/quiz_img/quiz_1/quiz1_3.png";
 import question3_ans2 from "../assets/quiz_img/quiz_1/quiz1_3_1.png";
 import question3_ans3 from "../assets/quiz_img/quiz_1/quiz1_3_2.png";
@@ -27,13 +27,13 @@ const questionsCh1_1 = [
     ],
   },
   {
-    questionText:"which is the correct gesture to play the piano?",
-    answerOptions:[
-      {isImage:true,imageSrc:question2_ans1,isCorrect:false},
-      {isImage:true,imageSrc:question2_ans4,isCorrect:true},
-      {isImage:true,imageSrc:question2_ans3,isCorrect:false},
-      {isImage:true,imageSrc:question2_ans2,isCorrect:false}
-    ]
+    questionText: "which is the correct gesture to play the piano?",
+    answerOptions: [
+      { isImage: true, imageSrc: question2_ans1, isCorrect: false },
+      { isImage: true, imageSrc: question2_ans4, isCorrect: true },
+      { isImage: true, imageSrc: question2_ans3, isCorrect: false },
+      { isImage: true, imageSrc: question2_ans2, isCorrect: false },
+    ],
   },
   {
     questionText: "What is the name of the white keys on a piano?",
@@ -55,16 +55,14 @@ const questionsCh1_1 = [
   },
   {
     questionText: "Which musical note is the correct one?",
-    answerOptions:[
-      {isImage:true,imageSrc:question3_ans1,isCorrect:true},
-      {isImage:true,imageSrc:question3_ans2,isCorrect:false},
-      {isImage:true,imageSrc:question3_ans3,isCorrect:false},
-      {isImage:true,imageSrc:question3_ans4,isCorrect:false}
-    ]
+    answerOptions: [
+      { isImage: true, imageSrc: question3_ans1, isCorrect: true },
+      { isImage: true, imageSrc: question3_ans2, isCorrect: false },
+      { isImage: true, imageSrc: question3_ans3, isCorrect: false },
+      { isImage: true, imageSrc: question3_ans4, isCorrect: false },
+    ],
   },
-
 ];
-
 
 function Ch1_1() {
   const [showVideo, setShowVideo] = useState(true);
@@ -89,7 +87,11 @@ function Ch1_1() {
           controls={true}
         />
       ) : (
-        <Quiz title="Lesson 1: Piano Basics" questions={questionsCh1_1} onExit={handleExitQuiz} />
+        <Quiz
+          title="Lesson 1: Piano Basics"
+          questions={questionsCh1_1}
+          onExit={handleExitQuiz}
+        />
       )}
     </>
   );
