@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { forwardRef, useEffect, useRef, useState } from 'react';
 import { CSSProperties } from 'styled-components';
 import { Midi } from 'tonejs-midi-fix';
 import { Beam, Formatter, Stave, StaveNote, Renderer, Voice, TickContext } from 'vexflow';
@@ -11,9 +11,10 @@ interface RenderMusicSheetProps {
     midiData: Midi | null;
     fileName: string | null;
     activeNotes: number[];
+    isCollapsed: boolean;
 }
 
-const RenderMusicSheet = ({ midiData, fileName, activeNotes }: RenderMusicSheetProps) => {
+const RenderMusicSheet = forwardRef(({ midiData, fileName, activeNotes, isCollapsed }: RenderMusicSheetProps, ref) => {
     const containerRef = useRef<HTMLDivElement | null>(null);
     const [storedSheet, setStoredSheet] = useState<string | null>(null);
     const [CurrentFileName, setCurrentFileName] = useState<string | null>(null);
@@ -118,19 +119,18 @@ const RenderMusicSheet = ({ midiData, fileName, activeNotes }: RenderMusicSheetP
             setMeasuresIndex([startIndex + 5, endIndex + 5]);
         };
     };
-    
 
     return (
-        <div className="sheet-container" style={ fileName ? styles.sheetContainer : {visibility: 'hidden'}}>
-            {fileName && <button style={styles.leftMusicSheetControlButton} onClick={onClickLeftButton}>
+        <div className="sheet-container" style={ fileName ? {...styles.sheetContainer, top: isCollapsed? "-40px" : "70px"}: {visibility: 'hidden'}}>
+            {fileName && <button style={styles.leftMusicSheetControlButton as CSSProperties} onClick={onClickLeftButton}>
                 left
             </button>}
             <div ref={containerRef}></div>
             {fileName && 
-            <button style={styles.rightMusicSheetControlButton} onClick={onClickRightButton}>right</button>}
+            <button style={styles.rightMusicSheetControlButton as CSSProperties} onClick={onClickRightButton}>right</button>}
         </div>
     );
-};
+});
 
 // alogrithm to create notes
 // for each measure
@@ -214,17 +214,20 @@ const createStaveNote = (musicScore: MusicScore) => {
     return musicNotaionList;
 };
 
-const styles: { [key: string]: CSSProperties } = {
+const styles: { [key: string]: CSSProperties} = {
     sheetContainer: {
+        position: 'relative',
+        top: '64px',
         backgroundColor: "#fff",
         display: 'flex',
-        height: '200',
+        height: '450',
         width: '100%',
         marginTop: '5px',
         overflowX: 'auto',
         overflowY: 'hidden',
         whiteSpace: 'nowrap',
         justifyContent: 'space-between',
+        transition: "top 0.3s ease",
     },
     leftMusicSheetControlButton: {
         display: 'flex',
@@ -233,7 +236,7 @@ const styles: { [key: string]: CSSProperties } = {
         verticalAlign: 'middle',
         width: '30px',
     },
-    rightMusicSheetControlButton: {
+    rightMusicSheetControlButton:{
         display: 'flex',
         alignContent: 'center',
         justifyContent: 'center',
