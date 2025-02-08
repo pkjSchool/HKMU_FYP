@@ -121,9 +121,8 @@ const RenderMusicSheet = ({ midiData, fileName, activeNotes }: RenderMusicSheetP
     
 
     return (
-        <div className="sheet-container" style={styles.sheetContainer}>
-            {fileName && 
-            <button style={styles.leftMusicSheetControlButton} onClick={onClickLeftButton}>
+        <div className="sheet-container" style={ fileName ? styles.sheetContainer : {visibility: 'hidden'}}>
+            {fileName && <button style={styles.leftMusicSheetControlButton} onClick={onClickLeftButton}>
                 left
             </button>}
             <div ref={containerRef}></div>

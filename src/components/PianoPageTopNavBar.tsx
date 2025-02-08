@@ -9,7 +9,9 @@ import { formatTime } from "../util/utils";
 
 import "../css/VolumeSlider.css";
 
-
+interface CollapsibleNavBarProps {
+  
+}
 
 const CollapsibleNavBar = forwardRef((props: any, ref) => {
   const { playCallback, pausingCallback, stopCallback, progressCallback, menuCollapsedCallback, setMusicFile, volume, setVolume }= props;
@@ -44,7 +46,7 @@ const CollapsibleNavBar = forwardRef((props: any, ref) => {
   }
 
   const handleVolumeButtonOnClick = () => {
-    setVolume((prev) => (prev === 0 ? 1 : 0));
+    // setVolume((prev) => (prev === 0 ? 1 : 0));
   }
 
   const toggleNavBar = () => {

@@ -237,7 +237,7 @@ function App() {
   };
 
   return (
-    <div style={{ background: '#282c34', height: '100vh', width: '100vw' }}>
+    <div style={{ background: '#282c34', height: '100vh'}}>
       {resultComp}
       <MIDIController ref={MIDIControllerRef} onNoteOn={onNoteOn} onNoteOff={onNoteOff} audioVolume={volume} />
       <TopNavBar  ref={topNavBarRef} playCallback={handlePlay} pausingCallback={handlePause} stopCallback={handleStop} menuCollapsedCallback={handleMenuCollapsed} progressCallback={handleProgressChanged}/>
