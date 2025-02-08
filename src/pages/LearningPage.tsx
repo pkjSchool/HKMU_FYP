@@ -1,5 +1,3 @@
-import './css/App.css';
-
 function LearningPage() {
   return (
     <div>

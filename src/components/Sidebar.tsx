@@ -8,7 +8,6 @@ import {
   FaEllipsisH 
 } from "react-icons/fa";
 import { GrTasks } from "react-icons/gr";
-import "../css/Sidebar.css";
 import { NavLink } from "react-router-dom";
 
 interface SidebarItem {

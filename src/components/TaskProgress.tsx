@@ -1,6 +1,5 @@
 import React from "react";
 import { TiTick } from "react-icons/ti";
-import "../css/taskProgress.css";
 
 const TaskProgress: React.FC = () => {
 

@@ -1,34 +1,34 @@
-import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
-import App from './App.tsx'
+import App from './pages/App.tsx'
 
 import "bootstrap/dist/css/bootstrap.min.css";
-import './index.css'
-// import './css/bootstrap-modified.css';
-import './css/form.css';
 import './css/animate.min.css';
 import './css/animate.fix.css';
 
-// import './components/MusicNotePlayer/css/Interface.css'
-// import './components/MusicNotePlayer/css/Inputs.css'
-// import './components/MusicNotePlayer/css/Settings.css'
-// import './components/MusicNotePlayer/css/nano.min.css'
-// import './components/MusicNotePlayer/css/bootstrap-theme.min.css'
+import './css/form.css';
+import './index.css'
+
+import './css/App.css';
+import './css/profile.css';
+import "./css/login.css";
+import './css/LessonMap.css';
+import "./css/Sidebar.css";
+import "./css/taskProgress.css";
 
 // @ts-ignore
 import store from './store/globalConfig.js'
 import { Provider } from 'react-redux'
 
-import LessonPage from './LessonPage.tsx'
-import LearningPage from './LearningPage.tsx'
-import ProfilePage from './ProfilePage.tsx'
-import SelfStudyPage from './SelfStudyPage.tsx'
-import AiGenerationPage from './AiGenerationPage.tsx'
-import MorePage from './MorePage.tsx'
-import LoginPage from './LoginPage.tsx'
+import LessonPage from './pages/LessonPage.tsx'
+import LearningPage from './pages/LearningPage.tsx'
+import ProfilePage from './pages/ProfilePage.tsx'
+import SelfStudyPage from './pages/SelfStudyPage.tsx'
+import AiGenerationPage from './pages/AiGenerationPage.tsx'
+import MorePage from './pages/MorePage.tsx'
+import LoginPage from './pages/LoginPage.tsx'
 import PianoPlayingPage from './PianoPlayingPage.tsx'
-import TaskPage from './TaskPage.tsx'
-import LessonDetail from './LessonDetail.tsx'
+import TaskPage from './pages/TaskPage.tsx'
+import LessonDetail from './pages/LessonDetail.tsx'
 
 import { BrowserRouter, Route, Routes, Navigate } from "react-router-dom";
 

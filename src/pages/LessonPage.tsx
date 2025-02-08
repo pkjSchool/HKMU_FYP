@@ -1,6 +1,5 @@
-import LessonMap from './components/LessonMap';
-import './css/App.css';
-import TaskProgress from './components/TaskProgress';
+import LessonMap from '../components/LessonMap';
+import TaskProgress from '../components/TaskProgress';
 
 const sampleChapters = [
   {

@@ -1,6 +1,6 @@
 import { useParams } from "react-router-dom";
-import Ch1_1 from "./pages/ch1-1";
-import Ch1_2 from "./pages/ch1-2";
+import Ch1_1 from "./lesson_component/ch1-1";
+import Ch1_2 from "./lesson_component/ch1-2";
 
 type LessonComponent = () => JSX.Element;
 

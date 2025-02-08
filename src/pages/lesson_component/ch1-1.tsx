@@ -1,16 +1,15 @@
-import "bootstrap/dist/css/bootstrap.min.css";
 import { useState } from "react";
 import { useParams } from "react-router-dom";
-import Quiz from "../components/Quiz";
-import question1 from "../assets/quiz_img/quiz_1/quiz1_1piano.png";
-import question2_ans1 from "../assets/quiz_img/quiz_1/quiz1_2.jpg";
-import question2_ans2 from "../assets/quiz_img/quiz_1/quiz1_2_1.png"; 
-import question2_ans3 from "../assets/quiz_img/quiz_1/quiz1_2_2.png";  
-import question2_ans4 from "../assets/quiz_img/quiz_1/quiz1_2_3.png";  
-import question3_ans1 from "../assets/quiz_img/quiz_1/quiz1_3.png";
-import question3_ans2 from "../assets/quiz_img/quiz_1/quiz1_3_1.png";
-import question3_ans3 from "../assets/quiz_img/quiz_1/quiz1_3_2.png";
-import question3_ans4 from "../assets/quiz_img/quiz_1/quiz1_3_3.png";
+import Quiz from "../../components/Quiz";
+import question1 from "../../assets/quiz_img/quiz_1/quiz1_1piano.png";
+import question2_ans1 from "../../assets/quiz_img/quiz_1/quiz1_2.jpg";
+import question2_ans2 from "../../assets/quiz_img/quiz_1/quiz1_2_1.png"; 
+import question2_ans3 from "../../assets/quiz_img/quiz_1/quiz1_2_2.png";  
+import question2_ans4 from "../../assets/quiz_img/quiz_1/quiz1_2_3.png";  
+import question3_ans1 from "../../assets/quiz_img/quiz_1/quiz1_3.png";
+import question3_ans2 from "../../assets/quiz_img/quiz_1/quiz1_3_1.png";
+import question3_ans3 from "../../assets/quiz_img/quiz_1/quiz1_3_2.png";
+import question3_ans4 from "../../assets/quiz_img/quiz_1/quiz1_3_3.png";
 
 const questionsCh1_1 = [
   {

@@ -1,5 +1,4 @@
 import { FC } from 'react';
-import '../css/LessonMap.css';
 import { NavLink } from "react-router-dom";
 
 interface Lesson {

@@ -1,8 +1,7 @@
-import './css/profile.css';
 import React, { useEffect } from 'react';
 import {useForm} from 'react-hook-form';
 import { useSelector, useDispatch } from "react-redux";
-import { setInfo } from "./store/loginInfo.js";
+import { setInfo } from "../store/loginInfo.js";
 
 interface IFormInput {
   displayName: string

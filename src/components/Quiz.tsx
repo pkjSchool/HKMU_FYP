@@ -1,4 +1,3 @@
-import "bootstrap/dist/css/bootstrap.min.css";
 import { useState } from "react";
 import quizBackground from "../assets/quiz_background.jpg";
 
