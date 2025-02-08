@@ -26,7 +26,7 @@ import SelfStudyPage from './pages/SelfStudyPage.tsx'
 import AiGenerationPage from './pages/AiGenerationPage.tsx'
 import MorePage from './pages/MorePage.tsx'
 import LoginPage from './pages/LoginPage.tsx'
-import PianoPlayingPage from './PianoPlayingPage.tsx'
+import PianoPlayingPage from './pages/PianoPlayingPage.tsx'
 import TaskPage from './pages/TaskPage.tsx'
 import LessonDetail from './pages/LessonDetail.tsx'
 

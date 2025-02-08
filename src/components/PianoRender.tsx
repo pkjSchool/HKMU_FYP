@@ -7,7 +7,7 @@ interface PianoRenderProps {
   onNoteOff: (note: number) => void;
 }
 
-const Piano = ({activeNote, onNoteOn, onNoteOff}: PianoRenderProps) => {
+const Piano = (props: PianoRenderProps) => {
     const renderDimensions = {
         whiteKeyHeight: 120,
         blackKeyHeight: 80,
@@ -20,10 +20,10 @@ const Piano = ({activeNote, onNoteOn, onNoteOff}: PianoRenderProps) => {
     const [activeNotes, setActiveNotes] = useState<number[]>([]);
 
     const isNoteActive = (note: number) => {
-      if (activeNote === null) {
+      if (props.activeNote === null) {
         return false;
       }else{
-        return activeNote.includes(note);
+        return props.activeNote.includes(note);
       }
     };
 
@@ -52,11 +52,11 @@ const Piano = ({activeNote, onNoteOn, onNoteOff}: PianoRenderProps) => {
                 backgroundColor: isActive ? "lightblue" : "white",
                 zIndex: 1,
               }}
-              onMouseDown={() => {onNoteOn(noteNumber)}}
+              onMouseDown={() => {props.onNoteOn(noteNumber)}}
               // onMouseOver={() => {onNoteOn(noteNumber)}}
-              onMouseLeave={() => {onNoteOff(noteNumber)}}
-              onMouseUp={() => {onNoteOff(noteNumber)}}
-              onTouchEnd={() => {onNoteOff(noteNumber)}}
+              onMouseLeave={() => {props.onNoteOff(noteNumber)}}
+              onMouseUp={() => {props.onNoteOff(noteNumber)}}
+              onTouchEnd={() => {props.onNoteOff(noteNumber)}}
               draggable={false}
             />
           );
@@ -75,11 +75,11 @@ const Piano = ({activeNote, onNoteOn, onNoteOff}: PianoRenderProps) => {
                 left: `${(currentWhiteKeyIndex - 1) * whiteKeyWidthPercentage + whiteKeyWidthPercentage * 0.7}%`,
                 zIndex: 2,
               }}
-              onMouseDown={(event) => {console.log(event); onNoteOn(noteNumber)}}
+              onMouseDown={(event) => {console.log(event); props.onNoteOn(noteNumber)}}
               // onMouseOver={() => {onNoteOn(noteNumber)}}
-              onMouseLeave={() => {onNoteOff(noteNumber)}}
-              onMouseUp={() => {onNoteOff(noteNumber)}}
-              onTouchEnd={() => {onNoteOff(noteNumber)}}
+              onMouseLeave={() => {props.onNoteOff(noteNumber)}}
+              onMouseUp={() => {props.onNoteOff(noteNumber)}}
+              onTouchEnd={() => {props.onNoteOff(noteNumber)}}
               draggable={false}
             />
           );
@@ -91,10 +91,11 @@ const Piano = ({activeNote, onNoteOn, onNoteOff}: PianoRenderProps) => {
 
 
     useEffect(() => {
-      setActiveNotes(activeNote || []);
-    }, [activeNote]);
+      setActiveNotes(props.activeNote || []);
+    }, [props.activeNote]);
  
     useEffect(() => {
+      console.log("note changed")
         const { whiteKeys, blackKeys } = renderKeys();
         setWhiteKeys(whiteKeys);
         setBlackKeys(blackKeys);

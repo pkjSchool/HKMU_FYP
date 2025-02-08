@@ -9,10 +9,26 @@ import { formatTime } from "../util/utils";
 
 import "../css/VolumeSlider.css";
 
+export type CollapsibleNavBarRef = {
+  onPlayerTimeUpdated: (time: number, end: number, bpm: number) => void;
+  handleUpdatePlayingTimestemp: (time: number) => void;
+}
 
+interface CollapsibleNavBarProps {
+  playCallback: () => void,
+  pausingCallback: () => void
+  stopCallback: () => void,
+  menuCollapsedCallback: (isCollapsed: boolean) => void,
+  progressCallback: (progress: number) => void,
+  setMusicFile: React.Dispatch<React.SetStateAction<File | null>>,
+  volume: number,
+  setVolume: React.Dispatch<React.SetStateAction<number>>,
+  isCollapsed: boolean,
+  setIsCollapsed: React.Dispatch<React.SetStateAction<boolean>>,
+}
 
-const CollapsibleNavBar = forwardRef((props: any, ref) => {
-  const { playCallback, pausingCallback, stopCallback, progressCallback, menuCollapsedCallback, setMusicFile, volume, setVolume }= props;
+const CollapsibleNavBar = (props: CollapsibleNavBarProps, ref: React.Ref<CollapsibleNavBarRef>) => {
+
   const progressBarReadonly = false;
 
   useImperativeHandle(ref, () => ({
@@ -20,7 +36,7 @@ const CollapsibleNavBar = forwardRef((props: any, ref) => {
     handleUpdatePlayingTimestemp
   }));
 
-  const [isCollapsed, setIsCollapsed] = useState(false);
+  const [isButtonHovered, setIsButtonHovered] = useState(false);
   const [hoveredButton, setHoveredButton] = useState<number>(-1);
   const [valProgress, setValProgress] = useState<number>(0);
   const [valSongEndSecond, setValSongEndSecond] = useState<number>(0);
@@ -44,35 +60,35 @@ const CollapsibleNavBar = forwardRef((props: any, ref) => {
   }
 
   const handleVolumeButtonOnClick = () => {
-    setVolume((prev) => (prev === 0 ? 1 : 0));
+    // setVolume((prev) => (prev === 0 ? 1 : 0));
   }
 
   const toggleNavBar = () => {
-    setIsCollapsed((prev) => !prev);
-    menuCollapsedCallback(!isCollapsed);
+    props.setIsCollapsed((prev) => !prev);
+    props.menuCollapsedCallback(!props.isCollapsed);
   };
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
     const uploadedFile = event.target.files?.[0] || null;
-    setMusicFile(uploadedFile);
+    props.setMusicFile(uploadedFile);
   };
 
   const clickPlay = () => {
-    playCallback();
+    props.playCallback();
   }
 
   const clickPause = () => {
-    pausingCallback();
+    props.pausingCallback();
   }
 
   const clickStop = () => {
-    stopCallback();
+    props.stopCallback();
   }
 
   const progressChanged = (progress: number) => {
     clickPause()
     setValProgress(progress);
-    progressCallback(progress);
+    props.progressCallback(progress);
     // (progress / 100) * (getPlayer().song.getEnd() / 1000)
   }
 
@@ -85,20 +101,11 @@ const CollapsibleNavBar = forwardRef((props: any, ref) => {
   }
 
   useEffect(() => {
-    menuCollapsedCallback(isCollapsed);
+    props.menuCollapsedCallback(props.isCollapsed);
   }, []);
 
   return (
-    <div style={{
-      position: "absolute",
-      top: isCollapsed ? "-130px" : "0px",
-      left: "0px",
-      width: "100%",
-      height: "130px",
-      zIndex: 100,
-      transition: "top 0.3s ease",
-    }}>
-
+    <div style={styleFunctions.topNavBarContainer(props.isCollapsed)}>
       <div className="topnavbar-warrper" style={{ ...styles.navbar, height: "100%" }}>
         <div className="container" style={styles.container}>
           <div className="topContainer-1" style={styles.topContainer}>
@@ -158,14 +165,15 @@ const CollapsibleNavBar = forwardRef((props: any, ref) => {
                       onMouseEnter={() => handleMouseEnter(6)}
                       onMouseLeave={handleMouseLeave}
                       onClick={handleVolumeButtonOnClick}>
-                      {volume === 0 ? (
+                      {props.volume === 0 ? (
                         <CiVolume size={25} color="white" style={{ pointerEvents: "none" }} />
                       ) : (
                         <CiVolumeHigh size={25} color="white" style={{ pointerEvents: "none" }} />
                       )}
                     </button>
                   </label>
-                  <input type="range" className="volume-slider" min={0} max={1} step={0.01} value={volume} style={styles.volumeSlider} onChange={(e) => { setVolume(parseFloat(e.target.value)) }} />
+                  <input type="range" className="volume-slider" min={0} max={1} step={0.01} value={props.volume}
+                    style={styles.volumeSlider} onChange={(e) => { props.setVolume(parseFloat(e.target.value)) }} />
                 </div>
               </div>
               <div className="right-group" style={{ ...styles.innerGroup }}>
@@ -195,13 +203,14 @@ const CollapsibleNavBar = forwardRef((props: any, ref) => {
       <div style={statusBarStyles}>
         <div>{formatTime(valSongCurSecond)} / {formatTime(valSongEndSecond)} | {valBpm} BPM | {formatTime(playingTimestemp)}</div>
       </div>
-      <button style={styleFunctions.floatingButton(isCollapsed)} onClick={toggleNavBar}>
-        {isCollapsed ? "Expand" : "Collapse"}
+      <button style={{ ...styleFunctions.floatingButton(props.isCollapsed), opacity: isButtonHovered ? 1 : 0.1 }} onClick={toggleNavBar}
+        onMouseEnter={() => setIsButtonHovered(true)} onMouseLeave={() => setIsButtonHovered(false)}>
+        {props.isCollapsed ? "Expand" : "Collapse"}
       </button>
     </div>
 
   );
-});
+};
 
 import { CSSProperties } from "react";
 interface Styles {
@@ -271,6 +280,15 @@ const styles: Styles = {
 };
 
 const styleFunctions: StyleFunctions = {
+  topNavBarContainer: (isCollapsed: boolean) => ({
+    position: "relative",
+    top: isCollapsed ? "-130px" : "0px",
+    left: "0px",
+    width: "100%",
+    height: "130px",
+    zIndex: 100,
+    transition: "top 0.3s ease",
+  }),
   navContent: (isCollapsed: boolean) => ({
     display: "flex",
     alignItems: "center",
@@ -280,7 +298,6 @@ const styleFunctions: StyleFunctions = {
   }),
   floatingButton: (isCollapsed: boolean) => ({
     position: "absolute",
-    // top: isCollapsed ? "10px" : "130px",
     top: "210px",
     left: "50%",
     transform: "translateX(-50%)",
@@ -320,4 +337,4 @@ const statusBarStyles: Object = {
   padding: "0 20px"
 }
 
-export default CollapsibleNavBar;
+export default forwardRef(CollapsibleNavBar);
