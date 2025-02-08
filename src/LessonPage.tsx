@@ -34,7 +34,7 @@ function App() {
   };
 
   return (
-    <>
+    <div className="lesson-index-container">
         <LessonMap 
           chapters={sampleChapters.map(chapter => ({
             ...chapter,
@@ -45,7 +45,7 @@ function App() {
           }))}
         />
         <TaskProgress />
-    </>
+    </div>
   );
 }
 

@@ -1,61 +1,46 @@
 import React from "react";
+import "../css/taskProgress.css";
 
 const TaskProgress: React.FC = () => {
+
+  const sampleTasks = [
+    {
+        title: "Self Study",
+        tasks: [
+            { name: "Accuracy more then 70%", progress: 100 },
+            { name: "Play 10 minutes long music", progress: 20 },
+            { name: "Get 3000 score", progress: 50 },
+        ],
+    },
+    {
+        title: "Learning",
+        tasks: [
+            { name: "Finish 1 lesson", progress: 100 },
+            { name: "Finish 2 lesson", progress: 50 },
+            { name: "Finish 3 lesson", progress: 33.3 },
+        ],
+    },
+];
+
   return (
-    <div
-      className="task-progress"
-      style={{
-        position: "absolute",
-        top: 0,
-        right: 0, 
-        width: "300px",
-        height: "100vh", 
-        backgroundColor: "#f9f9f9",
-        borderLeft: "1px solid #ddd",
-        padding: "20px",
-        boxSizing: "border-box",
-      }}
-    >
-      <h2>Task Progress</h2>
-      <div className="progress-bar">
-        <p>Progress 1</p>
-        <div style={{ background: "#ddd", height: "10px", borderRadius: "5px" }}>
-          <div
-            style={{
-              width: "70%", 
-              background: "#4caf50",
-              height: "100%",
-              borderRadius: "5px",
-            }}
-          ></div>
-        </div>
-      </div>
-      <div className="progress-bar">
-        <p>Progress 2</p>
-        <div style={{ background: "#ddd", height: "10px", borderRadius: "5px" }}>
-          <div
-            style={{
-              width: "50%",
-              background: "#2196f3",
-              height: "100%",
-              borderRadius: "5px",
-            }}
-          ></div>
-        </div>
-      </div>
-      <div className="progress-bar">
-        <p>Progress 3</p>
-        <div style={{ background: "#ddd", height: "10px", borderRadius: "5px" }}>
-          <div
-            style={{
-              width: "30%", 
-              background: "#ff9800",
-              height: "100%",
-              borderRadius: "5px",
-            }}
-          ></div>
-        </div>
-      </div>
+    <div className="task-progress">
+      {sampleTasks.map((taskGroup, groupIdx) => {
+          return <div key={groupIdx} className="progress-bar-group">
+                    <h2 className="progress-title">{taskGroup.title}</h2>
+                    {taskGroup.tasks.map((task, i) => {
+                      return  <div key={i} className="progress-bar-item animate__animated animate__fadeIn" style={{"animationDelay": `${(groupIdx+i)*0.1}s`}}>
+                                <p className="progress-bar-name">{task.name}</p>
+                                <div className="progress-bar-bg">
+                                  <div className="progress-bar-stick" style={{
+                                      width: `${task.progress}%`,
+                                      background: "#4caf50",
+                                    }}></div>
+                                </div>
+                              </div>
+                    })}
+                  </div>
+      })}
+
     </div>
   );
 };

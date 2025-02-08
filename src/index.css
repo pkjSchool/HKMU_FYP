@@ -41,7 +41,7 @@ a:hover {
 
 body {
   margin: 0;
-  /* background-color: transparent !important; */
+  background-color: transparent !important;
 }
 
 html, body, #root {
