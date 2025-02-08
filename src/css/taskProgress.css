@@ -23,7 +23,7 @@
 }
 
 .progress-bar-item {
-    margin-bottom: 20px;
+    margin-bottom: 10px;
 }
 
 .progress-bar-bg {
@@ -42,5 +42,5 @@
     margin-bottom: 20px;
     color: #ccc;
     font-weight: 600;
-    margin: 0 0 6px;
+    margin: 0;
 }

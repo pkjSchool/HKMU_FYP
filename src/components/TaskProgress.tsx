@@ -1,4 +1,5 @@
 import React from "react";
+import { TiTick } from "react-icons/ti";
 import "../css/taskProgress.css";
 
 const TaskProgress: React.FC = () => {
@@ -30,11 +31,16 @@ const TaskProgress: React.FC = () => {
                     {taskGroup.tasks.map((task, i) => {
                       return  <div key={i} className="progress-bar-item animate__animated animate__fadeIn" style={{"animationDelay": `${(groupIdx+i)*0.1}s`}}>
                                 <p className="progress-bar-name">{task.name}</p>
-                                <div className="progress-bar-bg">
-                                  <div className="progress-bar-stick" style={{
-                                      width: `${task.progress}%`,
-                                      background: "#4caf50",
-                                    }}></div>
+                                <div style={{display: "flex", "alignItems": "center", height: "32px"}}>
+                                  <div className="progress-bar-bg" style={{width: "calc(100% - 20px)"}}>
+                                    <div className="progress-bar-stick" style={{
+                                        width: `${task.progress}%`,
+                                        backgroundColor:((task.progress >= 100)?"#4caf50":"var(--bs-warning)")
+                                      }}></div>
+                                  </div>
+                                  <div style={{width: "20px"}}>
+                                    {task.progress >= 100 && <TiTick style={{"fontSize": "32px", color:"#4caf50"}} />}
+                                  </div>
                                 </div>
                               </div>
                     })}
