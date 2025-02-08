@@ -4,9 +4,9 @@ import { Midi } from 'tonejs-midi-fix';
 import MIDIController from './components/MidiController.js';
 import TopNavBar from './components/PianoPageTopNavBar.js';
 import PianoRender from './components/PianoRender.js';
-import MusicNotePlayerRender from './components/MusicNotePlayerRender';
-import PianoPlayingResult from './components/PianoPlayingResult';
-import { formatTime } from "./util/utils";
+import MusicNotePlayerRender from './components/MusicNotePlayerRender.js';
+import PianoPlayingResult from './components/PianoPlayingResult.js';
+import { formatTime } from "./util/utils.js";
 import MusicSheetRender from './components/RenderMusicSheet.js';
 import AudioPlayer from './components/AudioPlayer.js';
 
