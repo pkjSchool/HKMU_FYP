@@ -1,14 +1,14 @@
 import React, { useState } from "react";
-import MemoBeforeQuiz from "../components/MemoBeforeQuiz.tsx";
+import MemoBeforeQuiz from "../../components/MemoBeforeQuiz.tsx";
 import { useNavigate } from "react-router-dom";
-import Quiz from "../components/Quiz";
-import ANote from "../assets/baseImg/A.jpg";
-import BNote from "../assets/baseImg/B.jpg";
-import CNote from "../assets/baseImg/C.jpg";
-import DNote from "../assets/baseImg/D.jpg";
-import ENote from "../assets/baseImg/E.jpg";
-import FNote from "../assets/baseImg/F.jpg";
-import GNote from "../assets/baseImg/G.jpg";
+import Quiz from "../../components/Quiz";
+import ANote from "../../assets/baseImg/A.jpg";
+import BNote from "../../assets/baseImg/B.jpg";
+import CNote from "../../assets/baseImg/C.jpg";
+import DNote from "../../assets/baseImg/D.jpg";
+import ENote from "../../assets/baseImg/E.jpg";
+import FNote from "../../assets/baseImg/F.jpg";
+import GNote from "../../assets/baseImg/G.jpg";
 
 
 const questionsCh1_2 = [
