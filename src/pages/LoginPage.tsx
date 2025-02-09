@@ -1,8 +1,10 @@
-import React, {useEffect} from 'react';
+import React, { useEffect } from 'react';
 import TextBox from '../input_control/TextBox.js';
 import {Controller, FormProvider, useForm} from 'react-hook-form';
-import { useSelector, useDispatch } from "react-redux";
-import { setInfo } from "../store/loginInfo.js";
+import { useDispatch } from "react-redux";
+import { checkUserLogined, setLoginedUser, getLoginedUser } from "../access_control/user";
+import { login } from "../api_request/request";
+import { useNavigate } from "react-router-dom";
 
 interface IFormInput {
   username: string
@@ -10,21 +12,32 @@ interface IFormInput {
 }
 
 function LoginPage() {
+  const navigate = useNavigate();
   const dispatch = useDispatch();
-  const storedInfo = useSelector((state:any) => state.loginInfo);
+  // const storedInfo = getLoginedUser();
 
-  const {watch, register, handleSubmit, formState: {errors}} = useForm<IFormInput>();
+  const {watch, register, handleSubmit, setValue, formState: {errors}} = useForm<IFormInput>();
 
   const onSubmit = (data:any) => {
     // event.preventDefault();
-    alert(JSON.stringify(data))
-    dispatch(setInfo({'username': data.username, 'password': data.password}))
+    // alert(JSON.stringify(data))
+
+    login(data.username, data.password).then((response) => {
+      const result = response.data
+      if(result.status) {
+        const resultData = result.data
+        setLoginedUser(dispatch, resultData);
+
+        navigate('/');
+      } else {
+        alert(JSON.stringify(result));
+      }
+    })
   }
 
   useEffect(() => {
-
-      console.log('Component mounted');
-
+    setValue("username", "user1");
+    setValue("password", "123");
   }, []);
 
   // const [userName, setUserName] = React.useState('')
@@ -39,9 +52,14 @@ function LoginPage() {
   return (
     <div className="login-container">
       <div className="login-page">
-        {/* React Redux Form
-        <br/>username: {storedInfo.username}
-        <br/>password: {storedInfo.password} */}
+        {/* <div className="card">
+          <div className="card-body">
+            React Redux Form
+            <br/>login_id: {storedInfo.login_id}
+            <br/>user_id: {storedInfo.user_id}
+            <br/>username: {storedInfo.displayName}
+          </div>
+        </div> */}
         <form onSubmit={handleSubmit(onSubmit)}>
           <div className="card">
             <h2 className="card-header text-center">Login</h2>
