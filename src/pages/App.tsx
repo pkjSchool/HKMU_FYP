@@ -5,13 +5,8 @@ import TaskProgress from "../components/TaskProgress";
 import { Outlet } from "react-router-dom";
 
 
-
 function App() {
   const [sidebarWidth, setSidebarWidth] = useState<number>(260);
-
-  const handleLessonClick = (lessonId: string) => {
-    console.log(`Lesson ${lessonId} clicked`);
-  };
 
   return (
     <div className="app-container">

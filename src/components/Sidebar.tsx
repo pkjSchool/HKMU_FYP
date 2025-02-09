@@ -9,6 +9,7 @@ import {
 } from "react-icons/fa";
 import { GrTasks } from "react-icons/gr";
 import { NavLink } from "react-router-dom";
+import { getLoginedUser } from "../access_control/user";
 
 interface SidebarItem {
   name: string;
@@ -25,7 +26,7 @@ const items: SidebarItem[] = [
   { name: "profile", icon: <FaUser />, link: "/profile" },
   { name: "ai generation", icon: <FaRobot />, link: "/ai-generation" },
   { name: "more", icon: <FaEllipsisH />, link: "/more" },
-  { name: "login", icon: <FaEllipsisH />, link: "/login" }
+  { name: "logout", icon: <FaEllipsisH />, link: "/logout" }
 ];
 
 interface SidebarProps {
@@ -60,11 +61,24 @@ export const Sidebar: React.FC<SidebarProps> = ({ onResize }) => {
     window.removeEventListener("mouseup", stopResize);
   };
 
+  const userInfo = getLoginedUser();
+
   return (
     <aside ref={sidebarRef} style={{ width: `${width}px` }} className="sidebar">
       <div className="handle" onMouseDown={initResize} />
       <div className="inner">
         <nav className="menu">
+
+          <div className="card">
+            <div className="card-body">
+              login_id: {userInfo.login_id}
+              <br/>user_id: {userInfo.user_id}
+              <br/>username: {userInfo.displayName}
+            </div>
+          </div>
+
+          <br />
+
           {items.map(item => (
             <NavLink to={item.link} key={item.name} className={({ isActive }) => isActive ? 'router-link-active' : '' }>
               {item.icon}
