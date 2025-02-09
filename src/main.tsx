@@ -28,7 +28,7 @@ import AiGenerationPage from './pages/AiGenerationPage.tsx'
 import MorePage from './pages/MorePage.tsx'
 import LoginPage from './pages/LoginPage.tsx'
 import LogoutPage from './pages/LogoutPage.tsx'
-import InitialPage from './pages/initialPage.tsx';
+import InitialPage from './pages/InitialPage.tsx';
 import PianoPlayingPage from './pages/PianoPlayingPage.tsx'
 import TaskPage from './pages/TaskPage.tsx'
 import LessonDetail from './pages/LessonDetail.tsx'
