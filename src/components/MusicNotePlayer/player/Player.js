@@ -204,8 +204,9 @@ export class Player {
 	clearScheduleBeats() {
 		if(this.scheduleBPM) { clearTimeout(this.scheduleBPM) }
 		this.oldBPM = 0
+		this.noteBPM = 0
+
 		// this.countBPM = 0
-		// this.noteBPM = 0
 		// this.nextBPMTime = 0
 	}
 
@@ -214,10 +215,11 @@ export class Player {
 		const currentTime = this.getTime()
 		const currentBpm = this.getBPM(currentTime)
 		this.oldBPM = currentBpm
-		this.noteBPM = 4
+		this.noteBPM = this.song.timeSignature.numerator
 
 		// this.countBPM = 0
 		// this.nextBPMTime = 0
+		// console.log(this.song.timeSignature.numerator)
 
 		const res = this.findNextBeatAndCount()
 
@@ -241,7 +243,7 @@ export class Player {
 			targetCount = 0
 		}
 
-		console.log(targetTime, targetCount)
+		// console.log(targetTime, targetCount)
 		return [targetTime, targetCount]
 	}
 
