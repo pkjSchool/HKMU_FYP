@@ -1,6 +1,6 @@
-import React from 'react'
-import { Render } from "./MusicNotePlayer/Rendering/Render.js"
-import { Player, getPlayer } from "./MusicNotePlayer/player/Player.js"
+import React from "react";
+import { Render } from "./MusicNotePlayer/Rendering/Render.js";
+import { Player, getPlayer } from "./MusicNotePlayer/player/Player.js";
 
 class MusicNotePlayerRender extends React.Component<any, any> {
   bgCanvasRef: React.RefObject<HTMLCanvasElement>;
@@ -30,63 +30,89 @@ class MusicNotePlayerRender extends React.Component<any, any> {
   }
 
   play = () => {
-    this.player.startPlay()
+    this.player.startPlay();
   };
 
   pause = () => {
-    this.player.pause()
+    this.player.pause();
   };
 
   stop = () => {
-    this.player.stop()
+    this.player.stop();
   };
 
-  changeMenuHeight = (h:number) => {
-    this.setState({menuHeight: h})
-    this.cnvrender.onMenuHeightChanged(h)
+  changeMenuHeight = (h: number) => {
+    this.setState({ menuHeight: h });
+    this.cnvrender.onMenuHeightChanged(h);
   };
 
-  onNotePress = (note:number) => {
-    this.player.addInputNoteOn(note + this.noteNumberOffset)
-  }
+  onNotePress = (note: number) => {
+    this.player.addInputNoteOn(note + this.noteNumberOffset);
+  };
 
-  onNoteRelease = (note:number) => {
-    this.player.addInputNoteOff(note + this.noteNumberOffset)
-  }
+  onNoteRelease = (note: number) => {
+    this.player.addInputNoteOff(note + this.noteNumberOffset);
+  };
 
   componentDidMount() {
-      const wrapperEle = this.wrapperRef.current
+    const wrapperEle = this.wrapperRef.current;
 
-      const cnvBG = this.bgCanvasRef.current
-      const cnvMain = this.mainCanvasRef.current
+    const cnvBG = this.bgCanvasRef.current;
+    const cnvMain = this.mainCanvasRef.current;
 
-      this.animeId = 0;
+    this.animeId = 0;
 
-      this.player = getPlayer()
-      this.cnvrender = new Render(cnvBG, cnvMain, wrapperEle, this.player)
+    this.player = getPlayer();
+    this.cnvrender = new Render(cnvBG, cnvMain, wrapperEle, this.player);
 
-      this.player.loadSong(this.props.music, "fileName.midi", "name")
+    this.player.loadSong(this.props.music, this.props.music, "name");
 
-      const renderer = () => {
-        this.cnvrender.render(this.player.getPlayerState())
-        this.animeId = window.requestAnimationFrame(renderer)
-      }
+    const renderer = () => {
+      this.cnvrender.render(this.player.getPlayerState());
+      this.animeId = window.requestAnimationFrame(renderer);
+    };
 
-      renderer()
+    renderer();
   }
   componentWillUnmount() {
-    window.cancelAnimationFrame(this.animeId)
+    window.cancelAnimationFrame(this.animeId);
   }
 
   render() {
     return (
-      <div ref={this.wrapperRef} style={{position: "relative",height: "100%", width: "100%",zIndex: 0}}>
-        <canvas ref={this.bgCanvasRef} style={{backgroundColor: "black",position: "absolute",top: "0px",left: "0px",zIndex: -5, pointerEvents: "none"}}/>
-        <canvas ref={this.mainCanvasRef} style={{position: "absolute",top: "0px",left: "0px",zIndex: -5, pointerEvents: "none"}}/>
+      <div
+        ref={this.wrapperRef}
+        style={{
+          position: "relative",
+          height: "100%",
+          width: "100%",
+          zIndex: 0,
+        }}
+      >
+        <canvas
+          ref={this.bgCanvasRef}
+          style={{
+            backgroundColor: "black",
+            position: "absolute",
+            top: "0px",
+            left: "0px",
+            zIndex: -5,
+            pointerEvents: "none",
+          }}
+        />
+        <canvas
+          ref={this.mainCanvasRef}
+          style={{
+            position: "absolute",
+            top: "0px",
+            left: "0px",
+            zIndex: -5,
+            pointerEvents: "none",
+          }}
+        />
       </div>
     );
   }
 }
-
 
 export default MusicNotePlayerRender;
