@@ -1,5 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { setCookie, getCookie } from "../util/cookie";
+import { clearStorageUser, setStorageUser } from "../access_control/user";
 
 const loginInfo = createSlice({
     name: "loginInfo",
@@ -18,7 +18,8 @@ const loginInfo = createSlice({
             state.login_id = action.payload.login_id;
             state.displayName = action.payload.displayName;
             state.jsondata = action.payload.jsondata;
-            setCookie("user_id", action.payload.user_id, 30)
+
+            setStorageUser(action.payload.jsondata);
         },
         clearInfo (state, action) {
             state.isLogined = false;
@@ -26,6 +27,8 @@ const loginInfo = createSlice({
             state.login_id = null;
             state.displayName = null;
             state.jsondata = null;
+
+            clearStorageUser()
         }
     },
 });
