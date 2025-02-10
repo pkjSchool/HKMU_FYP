@@ -203,7 +203,7 @@ export class Player {
 
 	clearScheduleBeats() {
 		if(this.scheduleBPM) { clearTimeout(this.scheduleBPM) }
-		// this.oldBPM = 0
+		this.oldBPM = 0
 		// this.countBPM = 0
 		// this.noteBPM = 0
 		// this.nextBPMTime = 0
