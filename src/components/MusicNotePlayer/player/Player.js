@@ -203,20 +203,46 @@ export class Player {
 
 	clearScheduleBeats() {
 		if(this.scheduleBPM) { clearTimeout(this.scheduleBPM) }
-		this.oldBPM = 0
-		this.countBPM = 0
-		this.noteBPM = 0
-		this.nextBPMTime = 0
+		// this.oldBPM = 0
+		// this.countBPM = 0
+		// this.noteBPM = 0
+		// this.nextBPMTime = 0
 	}
 
-	setupScheduleBeats() {
+	setupBeats() {
 		this.clearScheduleBeats()
 		const currentTime = this.getTime()
 		const currentBpm = this.getBPM(currentTime)
 		this.oldBPM = currentBpm
-		this.countBPM = 0
 		this.noteBPM = 4
+
+		// this.countBPM = 0
+		// this.nextBPMTime = 0
+
+		const res = this.findNextBeatAndCount()
+
+		this.nextBPMTime = res[0]
+		this.countBPM = res[1]
+
 		this.scheduleBeats()
+	}
+
+	findNextBeatAndCount() {
+		const currentTime = this.getTime()
+		if(currentTime <= 0.1) return [0, 0]
+		let gapTime = (60.0 / parseInt(this.oldBPM, 10))
+		let timesPass = Math.round(currentTime / gapTime)
+		let countGroupPass = timesPass / this.noteBPM
+
+		let targetTime = timesPass * gapTime
+		let targetCount = this.noteBPM * (countGroupPass - Math.round(countGroupPass))
+
+		if(targetCount >= this.noteBPM) {
+			targetCount = 0
+		}
+
+		console.log(targetTime, targetCount)
+		return [targetTime, targetCount]
 	}
 
 	scheduleBeats() {
@@ -225,7 +251,6 @@ export class Player {
 			if(currentTime >= this.nextBPMTime){
 				this.countBPM = this.countBPM + 1
 				const newMeasure = (this.countBPM == 1) ? true : false
-				console.log(newMeasure)
 	
 				if(this.countBPM >= this.noteBPM) {
 					this.countBPM = 0
@@ -248,8 +273,7 @@ export class Player {
 		const currentTime = this.getTime()
 		const currentBpm = this.getBPM(currentTime)
 		if(currentBpm != this.oldBPM) {
-			console.log("BPM: ", currentBpm)
-			this.setupScheduleBeats()
+			this.setupBeats()
 		}
 
 		// this.playedBeats = this.playedBeats || {}
