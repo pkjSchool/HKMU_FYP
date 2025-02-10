@@ -10,6 +10,7 @@ import { formatTime } from "../util/utils.js";
 import MusicSheetRender from '../components/RenderMusicSheet.js';
 import { MUSIC1, MUSIC2 } from '../data/sample_music.js';
 import AudioPlayer from '../components/AudioPlayer.js';
+import { Player, getPlayer } from "../components/MusicNotePlayer/player/Player.js"
 
 const ACCURATE_OFFSET = 150
 
@@ -98,7 +99,7 @@ function App() {
 
     }
   }
-  const handleProgressChanged = (progress: number) => { if (notePlayerRef.current) notePlayerRef.current.player.setTime(progress) }
+  const handleProgressChanged = (progress: number) => { if (notePlayerRef.current) getPlayer().setTime(progress) }
 
   const onPlayerTimeUpdated = (time: number, end: number, bpm: number) => { if (topNavBarRef.current) topNavBarRef.current.onPlayerTimeUpdated(time, end, bpm) }
   // background: '#282c34', 
@@ -137,7 +138,7 @@ function App() {
   }
 
   const handleInitial = () => {
-    if (notePlayerRef.current) notePlayerRef.current.player.resetNoteMeasurement()
+    if (notePlayerRef.current) getPlayer().resetNoteMeasurement()
     changeStartTime()
     resetPlayingTime()
     setIsFinished(false)
@@ -146,7 +147,7 @@ function App() {
   }
 
   const handleReset = () => {
-    if (notePlayerRef.current) notePlayerRef.current.player.resetNoteMeasurement()
+    if (notePlayerRef.current) getPlayer().resetNoteMeasurement()
     changeStartTime()
     resetPlayingTime()
     setIsFinished(false)
@@ -163,7 +164,7 @@ function App() {
   }
 
   const renderResult = () => {
-    const playerStatus = (notePlayerRef.current) ? notePlayerRef.current.player.getPlayerState() : {}
+    const playerStatus = (notePlayerRef.current) ? getPlayer().getPlayerState() : {}
 
     let inputOnRange = 0
     let totalNote = 0
@@ -202,21 +203,21 @@ function App() {
     const notePlayerRefCtx = notePlayerRef.current
 
     if (notePlayerRefCtx) {
-      notePlayerRefCtx.player.addFinishListener(() => { handleFinish() })
-      notePlayerRefCtx.player.addTimeUpdatedListener(onPlayerTimeUpdated)
-      notePlayerRefCtx.player.addNewSongCallback(() => { handleInitial() })
+      getPlayer().addFinishListener(() => { handleFinish() })
+      getPlayer().addTimeUpdatedListener(onPlayerTimeUpdated)
+      getPlayer().addNewSongCallback(() => { handleInitial() })
     }
 
     const updatePlayingTime = setInterval(() => {
-      if (!getIsFinished() && notePlayerRefCtx && notePlayerRefCtx.player.isPlaying()) increasePlayingTime(0.1)
+      if (!getIsFinished() && notePlayerRefCtx && getPlayer().isPlaying()) increasePlayingTime(0.1)
     }, 100);
 
     return () => {
       if (notePlayerRefCtx) {
-        notePlayerRefCtx.player.pause()
-        notePlayerRefCtx.player.clearFinishListener()
-        notePlayerRefCtx.player.clearTimeUpdatedListener()
-        notePlayerRefCtx.player.clearNewSongCallback()
+        getPlayer().pause()
+        getPlayer().clearFinishListener()
+        getPlayer().clearTimeUpdatedListener()
+        getPlayer().clearNewSongCallback()
       }
 
       clearInterval(updatePlayingTime)
@@ -258,7 +259,7 @@ function App() {
         setMusicFile={setMusicFile} volume={volume} setVolume={setVolume}
         isCollapsed={isCollapsed} setIsCollapsed={setIsCollapsed} />
       <div style={{ position: 'absolute', top: '0px', height: '100%', width: '100%', zIndex: 0 }}>
-        <MusicNotePlayerRender ref={notePlayerRef} music={MUSIC1} />
+        <MusicNotePlayerRender ref={notePlayerRef} music={MUSIC2} />
       </div>
       <MusicSheetRender midiData={midiData} fileName={fileName} activeNotes={activeNotes} isCollapsed={isCollapsed} />
       <PianoRender

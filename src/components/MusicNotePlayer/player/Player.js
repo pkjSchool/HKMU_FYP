@@ -159,7 +159,10 @@ export class Player {
 			return
 		}
 
-		this.playMetronomeBeats(currentTime)
+		// if(currentTime >= 0){
+			this.playMetronomeBeats(currentTime)
+		// }
+
 
 		while (this.isNextNoteReached(currentTime)) {
 			let toRemove = 0
@@ -198,22 +201,22 @@ export class Player {
 				beatsBySecond[second].forEach(beatTimestamp => {
 					if (
 						!this.playedBeats.hasOwnProperty(beatTimestamp) &&
-						beatTimestamp / 1000 < currentTime + 0.5
+						beatTimestamp / 1000 < currentTime + 0.01 &&
+						beatTimestamp >= 0 && !this.isSongEnded(currentTime + 0.01)
 					) {
-						let newMeasure =
-							this.getCurrentSong().measureLines[Math.floor(beatTimestamp / 1000)] &&
-							this.getCurrentSong().measureLines[
-								Math.floor(beatTimestamp / 1000)
-							].includes(beatTimestamp)
+						let newMeasure = this.isNewMetronomeBeats(beatTimestamp)
 						this.playedBeats[beatTimestamp] = true
-						this.audioPlayer.playBeat(
-							beatTimestamp / 1000 - currentTime,
-							newMeasure
-						)
+						this.audioPlayer.playBeat(currentTime, newMeasure)
 					}
 				})
 			}
 		})
+	}
+
+	isNewMetronomeBeats(beatTimestamp) {
+		console.log(this.getCurrentSong().lastMeasureLines)
+		return this.getCurrentSong().measureLines[Math.floor(beatTimestamp / 1000)] &&
+		this.getCurrentSong().measureLines[ Math.floor(beatTimestamp / 1000) ].includes(beatTimestamp)
 	}
 
 	requestNextTick() {

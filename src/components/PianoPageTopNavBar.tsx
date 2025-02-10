@@ -6,6 +6,7 @@ import { MdAudiotrack, MdOutlineExitToApp } from "react-icons/md";
 import { CiVolume, CiVolumeHigh } from "react-icons/ci";
 import { IoIosSettings } from "react-icons/io";
 import { formatTime } from "../util/utils";
+import { Player, getPlayer } from "./MusicNotePlayer/player/Player.js"
 
 import "../css/VolumeSlider.css";
 
@@ -42,7 +43,7 @@ const CollapsibleNavBar = (props: CollapsibleNavBarProps, ref: React.Ref<Collaps
   const [valSongEndSecond, setValSongEndSecond] = useState<number>(0);
   const [valSongCurSecond, setValSongCurSecond] = useState<number>(0);
   const [valBpm, setValBpm] = useState<number>(0);
-  const [valPrePlay, setValPrePlay] = useState<number>(2);
+  const [valPrePlay, setValPrePlay] = useState<number>(-2);
   const [playingTimestemp, setPlayingTimestemp] = useState<number>(0);
 
 
@@ -101,6 +102,7 @@ const CollapsibleNavBar = (props: CollapsibleNavBarProps, ref: React.Ref<Collaps
   }
 
   useEffect(() => {
+    setValPrePlay(getPlayer().startDelay)
     props.menuCollapsedCallback(props.isCollapsed);
   }, []);
 
@@ -198,7 +200,7 @@ const CollapsibleNavBar = (props: CollapsibleNavBarProps, ref: React.Ref<Collaps
         </div>
       </div>
       <div style={progressBarStyles}>
-        <input type="range" className="musicProgressBar" name="valPrograss" min={0 - valPrePlay} max={valSongEndSecond} step="0.01" value={valProgress} disabled={progressBarReadonly} onChange={(e) => { progressChanged(parseFloat(e.target.value)) }} />
+        <input type="range" className="musicProgressBar" name="valPrograss" min={valPrePlay} max={valSongEndSecond} step="0.01" value={valProgress} disabled={progressBarReadonly} onChange={(e) => { progressChanged(parseFloat(e.target.value)) }} />
       </div>
       <div style={statusBarStyles}>
         <div>{formatTime(valSongCurSecond)} / {formatTime(valSongEndSecond)} | {valBpm} BPM | {formatTime(playingTimestemp)}</div>

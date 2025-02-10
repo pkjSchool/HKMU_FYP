@@ -459,16 +459,17 @@ class Parser {
 			}
 
 			//keep track of completed beats to show beatLines
-			generatedBeats +=
-				Math.floor(ticksPerBeat * beatsToGenerate) / ticksPerBeat
+			generatedBeats += Math.floor(ticksPerBeat * beatsToGenerate) / ticksPerBeat
 			while (generatedBeats >= 1) {
 				generatedBeats -= 1
 				let beatTime = totTime - generatedBeats * secondsToGenerate * 1000
 				let beatSecond = Math.floor(beatTime / 1000)
-				if (!beatsBySecond.hasOwnProperty(beatSecond)) {
-					beatsBySecond[beatSecond] = []
+				if(beatTime >= 0) {
+					if (!beatsBySecond.hasOwnProperty(beatSecond)) {
+						beatsBySecond[beatSecond] = []
+					}
+					beatsBySecond[beatSecond].push(beatTime)
 				}
-				beatsBySecond[beatSecond].push(beatTime)
 			}
 
 			if (midiEvent.event.hasOwnProperty("channel")) {
