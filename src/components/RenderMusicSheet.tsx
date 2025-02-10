@@ -39,7 +39,7 @@ const RenderMusicSheet = forwardRef(({ midiData, fileName, activeNotes, isCollap
     }, [fileName]);
 
     useEffect(() => {
-        console.log("staveList", staveList);
+        // console.log("staveList", staveList);
     }, [staveList]);
 
     // Render the music sheet
@@ -58,9 +58,9 @@ const RenderMusicSheet = forwardRef(({ midiData, fileName, activeNotes, isCollap
 
                 // draw the music sheet
                 const [startIndex, endIndex] = measuresIndex;
-                console.log("startIndex", startIndex, "endIndex", endIndex);
+                // console.log("startIndex", startIndex, "endIndex", endIndex);
                 const staveLists = staveList.slice(startIndex, endIndex);
-                console.log(staveLists);
+                // console.log(staveLists);
                 staveLists.forEach((stave, index) => {
                     stave.setContext(context).draw();
                     const notes = StaveNotesList[startIndex + index];
@@ -76,7 +76,7 @@ const RenderMusicSheet = forwardRef(({ midiData, fileName, activeNotes, isCollap
 
             const musicScore = midiData2MusicNotation(midiData);
             setMusicScore(musicScore);
-            console.log(musicScore);
+            // console.log(musicScore);
 
             // get the stave notes list 
             const StaveNotesList = createStaveNote(musicScore);
@@ -96,7 +96,7 @@ const RenderMusicSheet = forwardRef(({ midiData, fileName, activeNotes, isCollap
                     stave.addClef("treble").addTimeSignature(musicScore.timeSignature[0] + "/" + musicScore.timeSignature[1]);
                 }
                 
-                console.log(position);
+                // console.log(position);
                 staveList.push(stave);
             });
             setStaveList(staveList);

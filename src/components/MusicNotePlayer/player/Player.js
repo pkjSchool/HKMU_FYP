@@ -111,6 +111,7 @@ export class Player {
 		this.runNewSongCallback()
 	}
 	startPlay() {
+		if (!this.song || !this.paused) return
 		console.log("Starting Song")
 		this.wasPaused = false
 
@@ -214,7 +215,6 @@ export class Player {
 	}
 
 	isNewMetronomeBeats(beatTimestamp) {
-		console.log(this.getCurrentSong().lastMeasureLines)
 		return this.getCurrentSong().measureLines[Math.floor(beatTimestamp / 1000)] &&
 		this.getCurrentSong().measureLines[ Math.floor(beatTimestamp / 1000) ].includes(beatTimestamp)
 	}
@@ -261,6 +261,7 @@ export class Player {
 		this.audioPlayer.resume()
 	}
 	resetNoteSequence() {
+		if (!this.song) return
 		this.noteSequence = this.song.getNoteSequence()
 		this.noteSequence = this.noteSequence.filter(
 			note => note.timestamp > this.getTime()

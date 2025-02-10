@@ -95,7 +95,7 @@ const Piano = (props: PianoRenderProps) => {
     }, [props.activeNote]);
  
     useEffect(() => {
-      console.log("note changed")
+      // console.log("note changed")
         const { whiteKeys, blackKeys } = renderKeys();
         setWhiteKeys(whiteKeys);
         setBlackKeys(blackKeys);

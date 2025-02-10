@@ -41,7 +41,7 @@ function App() {
   }, [musicFile]);
 
   useEffect(() => {
-    console.log("active", activeNotes)
+    // console.log("active", activeNotes)
   }, [activeNotes]);
 
   /**
@@ -237,13 +237,13 @@ function App() {
   */
   const parseMidi = async (file: File) => {
     try {
-
       const midiArrayBuffer = await file.arrayBuffer();
       const fileName = file.name;
       const midiData = new Midi(midiArrayBuffer);
       setMidiData(midiData);
       setFileName(fileName);
 
+      getPlayer().loadSong(file, fileName, fileName)
     } catch (e) {
       console.error("Error parsing MIDI file", e);
     }
@@ -259,7 +259,7 @@ function App() {
         setMusicFile={setMusicFile} volume={volume} setVolume={setVolume}
         isCollapsed={isCollapsed} setIsCollapsed={setIsCollapsed} />
       <div style={{ position: 'absolute', top: '0px', height: '100%', width: '100%', zIndex: 0 }}>
-        <MusicNotePlayerRender ref={notePlayerRef} music={MUSIC2} />
+        <MusicNotePlayerRender ref={notePlayerRef} />
       </div>
       <MusicSheetRender midiData={midiData} fileName={fileName} activeNotes={activeNotes} isCollapsed={isCollapsed} />
       <PianoRender

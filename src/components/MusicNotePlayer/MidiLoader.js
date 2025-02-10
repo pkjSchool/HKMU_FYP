@@ -4,17 +4,18 @@ export class MidiLoader {
 	 * @param {String} url
 	 */
 	static async loadFile(url) {
-		const response = await fetch(url)
-		if (response.ok) {
+		// const response = await fetch(url)
+		// if (response.ok) {
+			const response = url
 			let arrayBuffer = await response.arrayBuffer()
 			if (arrayBuffer) {
 				arrayBuffer = new Uint8Array(arrayBuffer)
 
 				return parseMidi(arrayBuffer)
 			}
-		} else {
-			throw new Error(`could not load ${url}`)
-		}
+		// } else {
+		// 	throw new Error(`could not load ${url}`)
+		// }
 	}
 }
 function parseMidi(data) {
@@ -478,7 +479,7 @@ class Parser {
 			midiEvent = getNextEvent()
 			if (newBPM) {
 				bpms.push({
-					bpm: beatsPerMinute,
+					bpm: Math.ceil(beatsPerMinute),
 					timestamp: totTime
 				})
 			}
