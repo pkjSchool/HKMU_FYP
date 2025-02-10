@@ -235,10 +235,12 @@ export class Player {
 	
 				this.nextBPMTime = currentTime + (60.0 / parseInt(this.oldBPM, 10))
 			}
-
-			this.scheduleBPM = window.setTimeout(()=> {
-				this.scheduleBeats()
-			}, 10);
+			
+			if(!this.isSongEnded(currentTime + 0.005)){
+				this.scheduleBPM = window.setTimeout(()=> {
+					this.scheduleBeats()
+				}, 10);
+			}
 		}
 	}
 
