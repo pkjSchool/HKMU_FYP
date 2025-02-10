@@ -37,6 +37,13 @@ export class Player {
 		this.finishListeners = []
 		this.timeUpdatedListeners = []
 
+		// this.oldBPM = 0
+		// this.countBPM = 0
+		// this.noteBPM = 0
+		// this.nextBPMTime = 0
+		// this.scheduleBPM = null
+		this.clearScheduleBeats()
+
 		console.log("Player created.")
 		this.playTick()
 	}
@@ -70,6 +77,7 @@ export class Player {
 		this.progress += seconds - this.getTime()
 		this.runTimeUpdatedListener()
 		this.resetNoteSequence()
+		this.clearScheduleBeats()
 	}
 	async loadSong(theSong, fileName, name) {
 		this.audioPlayer.stopAllSources()
@@ -161,7 +169,7 @@ export class Player {
 		}
 
 		// if(currentTime >= 0){
-			this.playMetronomeBeats(currentTime)
+			this.playMetronomeBeats()
 		// }
 
 
@@ -193,25 +201,73 @@ export class Player {
 		this.requestNextTick()
 	}
 
-	playMetronomeBeats(currentTime) {
-		this.playedBeats = this.playedBeats || {}
-		let beatsBySecond = this.getCurrentSong().temporalData.beatsBySecond
-		let secondsToCheck = [Math.floor(currentTime), Math.floor(currentTime) + 1]
-		secondsToCheck.forEach(second => {
-			if (beatsBySecond[second]) {
-				beatsBySecond[second].forEach(beatTimestamp => {
-					if (
-						!this.playedBeats.hasOwnProperty(beatTimestamp) &&
-						beatTimestamp / 1000 < currentTime + 0.01 &&
-						beatTimestamp >= 0 && !this.isSongEnded(currentTime + 0.01)
-					) {
-						let newMeasure = this.isNewMetronomeBeats(beatTimestamp)
-						this.playedBeats[beatTimestamp] = true
-						this.audioPlayer.playBeat(currentTime, newMeasure)
-					}
-				})
+	clearScheduleBeats() {
+		if(this.scheduleBPM) { clearTimeout(this.scheduleBPM) }
+		this.oldBPM = 0
+		this.countBPM = 0
+		this.noteBPM = 0
+		this.nextBPMTime = 0
+	}
+
+	setupScheduleBeats() {
+		this.clearScheduleBeats()
+		const currentTime = this.getTime()
+		const currentBpm = this.getBPM(currentTime)
+		this.oldBPM = currentBpm
+		this.countBPM = 0
+		this.noteBPM = 4
+		this.scheduleBeats()
+	}
+
+	scheduleBeats() {
+		if(this.oldBPM > 0){
+			const currentTime = this.getTime()
+			if(currentTime >= this.nextBPMTime){
+				this.countBPM = this.countBPM + 1
+				const newMeasure = (this.countBPM == 1) ? true : false
+				console.log(newMeasure)
+	
+				if(this.countBPM >= this.noteBPM) {
+					this.countBPM = 0
+				}
+	
+				this.audioPlayer.playBeat(currentTime, newMeasure)
+	
+				this.nextBPMTime = currentTime + (60.0 / parseInt(this.oldBPM, 10))
 			}
-		})
+
+			this.scheduleBPM = window.setTimeout(()=> {
+				this.scheduleBeats()
+			}, 10);
+		}
+	}
+
+	playMetronomeBeats() {
+		const currentTime = this.getTime()
+		const currentBpm = this.getBPM(currentTime)
+		if(currentBpm != this.oldBPM) {
+			console.log("BPM: ", currentBpm)
+			this.setupScheduleBeats()
+		}
+
+		// this.playedBeats = this.playedBeats || {}
+		// let beatsBySecond = this.getCurrentSong().temporalData.beatsBySecond
+		// let secondsToCheck = [Math.floor(currentTime), Math.floor(currentTime) + 1]
+		// secondsToCheck.forEach(second => {
+		// 	if (beatsBySecond[second]) {
+		// 		beatsBySecond[second].forEach(beatTimestamp => {
+		// 			if (
+		// 				!this.playedBeats.hasOwnProperty(beatTimestamp) &&
+		// 				beatTimestamp / 1000 < currentTime + 0.01 &&
+		// 				beatTimestamp >= 0 && !this.isSongEnded(currentTime + 0.01)
+		// 			) {
+		// 				let newMeasure = this.isNewMetronomeBeats(beatTimestamp)
+		// 				this.playedBeats[beatTimestamp] = true
+		// 				this.audioPlayer.playBeat(currentTime, newMeasure)
+		// 			}
+		// 		})
+		// 	}
+		// })
 	}
 
 	isNewMetronomeBeats(beatTimestamp) {
@@ -251,6 +307,7 @@ export class Player {
 		this.progress = 0
 		this.scrollOffset = 0
 		this.runTimeUpdatedListener()
+		this.clearScheduleBeats()
 	}
 	resume() {
 		if (!this.song || !this.paused) return
