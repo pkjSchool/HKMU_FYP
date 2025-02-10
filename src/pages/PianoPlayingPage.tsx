@@ -8,9 +8,9 @@ import MusicNotePlayerRender from '../components/MusicNotePlayerRender.js';
 import PianoPlayingResult from '../components/PianoPlayingResult.js';
 import { formatTime } from "../util/utils.js";
 import MusicSheetRender from '../components/RenderMusicSheet.js';
+import { MUSIC1, MUSIC2 } from '../data/sample_music.js';
 import AudioPlayer from '../components/AudioPlayer.js';
 
-const MUSIC = "data:audio/midi;base64,TVRoZAAAAAYAAQACA8BNVHJrAAAACwD/UQMHoSAA/y8ATVRyawAAAIYAwQ0AkUd/g2CRRX8AgUcAg2CBRQAAkUN/g2CRQX8AgUMAg2CBQQAAkUB/g2CRPn8AgUAAg2CBPgAAkTx/g2CRO38AgTwAg2CBOwAAkTl/g2CRN38AgTkAg2CBNwAAkTV/g2CRNH8AgTUAg2CBNAAAkTJ/g2CBMgAAkTB/g2CBMADDQP8vAA=="
 const ACCURATE_OFFSET = 150
 
 function App() {
@@ -258,7 +258,7 @@ function App() {
         setMusicFile={setMusicFile} volume={volume} setVolume={setVolume}
         isCollapsed={isCollapsed} setIsCollapsed={setIsCollapsed} />
       <div style={{ position: 'absolute', top: '0px', height: '100%', width: '100%', zIndex: 0 }}>
-        <MusicNotePlayerRender ref={notePlayerRef} music={MUSIC} />
+        <MusicNotePlayerRender ref={notePlayerRef} music={MUSIC1} />
       </div>
       <MusicSheetRender midiData={midiData} fileName={fileName} activeNotes={activeNotes} isCollapsed={isCollapsed} />
       <PianoRender
