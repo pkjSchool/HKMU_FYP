@@ -45,7 +45,7 @@ export class AudioPlayer {
 		const gainNode = this.context.createGain();
 		let gainValue = 2 * (note.velocity / 127) * volume
 
-		if(true){
+		if(false){
 			gainNode.gain.value = gainValue;
 			source.connect(gainNode);
 			gainNode.connect(this.context.destination);
