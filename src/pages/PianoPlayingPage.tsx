@@ -310,7 +310,7 @@ function App() {
           zIndex: 0,
         }}
       >
-        <MusicNotePlayerRender ref={notePlayerRef} music={MUSIC} />
+        <MusicNotePlayerRender ref={notePlayerRef} />
       </div>
       <MusicSheetRender2
         musicXML={musicXML}
