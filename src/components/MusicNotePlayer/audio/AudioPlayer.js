@@ -45,7 +45,7 @@ export class AudioPlayer {
 		const gainNode = this.context.createGain();
 		let gainValue = 2 * (note.velocity / 127) * volume
 
-		if(false){
+		if (false) {
 			gainNode.gain.value = gainValue;
 			source.connect(gainNode);
 			gainNode.connect(this.context.destination);
@@ -97,7 +97,7 @@ export class AudioPlayer {
 		}
 		this.buffers = buffers;
 	};
-	
+
 	async loadAudio(path) {
 		const response = await fetch(path);
 		const arrayBuffer = await response.arrayBuffer();

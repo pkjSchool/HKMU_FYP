@@ -326,7 +326,7 @@ export class Player {
 		return (
 			this.noteSequence.length &&
 			this.noteSequence[0].timestamp / 1000 <
-				currentTime + lookahead * this.playbackSpeed
+			currentTime + lookahead * this.playbackSpeed
 		)
 	}
 
@@ -414,14 +414,14 @@ export class Player {
 		let offNote = this.inputActiveNotes[noteNumber]
 		this.inputPlayedNotes.push(offNote)
 
-		if(!this.inputSortedNotes[noteNumber]) {this.inputSortedNotes[noteNumber] = []}
+		if (!this.inputSortedNotes[noteNumber]) { this.inputSortedNotes[noteNumber] = [] }
 		this.inputSortedNotes[noteNumber].push({
 			"noteNumber": offNote.noteNumber,
 			"offTime": offNote.offTime,
 			"timestamp": offNote.timestamp
 		})
 
-		for(let track of this.song.activeTracks) {
+		for (let track of this.song.activeTracks) {
 
 			let time = this.getState().time
 			let firstSecondShown = Math.floor(time - 4)
@@ -430,10 +430,10 @@ export class Player {
 			for (let i = firstSecondShown; i < lastSecondShown; i++) {
 				if (track.notesBySeconds[i]) {
 					track.notesBySeconds[i]
-						.map(note => { 
+						.map(note => {
 
-							if(offNote.noteNumber == note.noteNumber && !note.isInputAccurate) {
-								if(
+							if (offNote.noteNumber == note.noteNumber && !note.isInputAccurate) {
+								if (
 									(offNote.timestamp <= (note.timestamp + this.ACCURATE_OFFSET) && offNote.timestamp >= (note.timestamp - this.ACCURATE_OFFSET)) &&
 									(offNote.offTime <= (note.offTime + this.ACCURATE_OFFSET) && offNote.offTime >= (note.offTime - this.ACCURATE_OFFSET))
 								) {
@@ -453,7 +453,7 @@ export class Player {
 	getPlayingNotes() {
 		let currentTime = currentTime
 		let playingNotes = []
-	
+
 		if (!this.noteSequence) {
 			return playingNotes
 		}
@@ -462,10 +462,10 @@ export class Player {
 				playingNotes.push(note)
 			}
 		})
-	
+
 		return this.noteSequence
 	}
-	
+
 	addFinishListener(event) {
 		this.finishListeners.push(event)
 	}
@@ -473,7 +473,7 @@ export class Player {
 		this.finishListeners = []
 	}
 	runFinishListener() {
-		for(let i in this.finishListeners) {
+		for (let i in this.finishListeners) {
 			this.finishListeners[i]()
 		}
 	}
@@ -485,7 +485,7 @@ export class Player {
 		this.newSongCallbacks = []
 	}
 	runNewSongCallback() {
-		for(let i in this.newSongCallbacks) {
+		for (let i in this.newSongCallbacks) {
 			this.newSongCallbacks[i]()
 		}
 	}
@@ -497,9 +497,9 @@ export class Player {
 		this.timeUpdatedListeners = []
 	}
 	runTimeUpdatedListener() {
-		if(this.song) {
+		if (this.song) {
 			let time = this.getTime()
-			for(let i in this.timeUpdatedListeners) {
+			for (let i in this.timeUpdatedListeners) {
 				this.timeUpdatedListeners[i](time, this.song.getEnd(), this.getBPM(time))
 			}
 		}
@@ -520,24 +520,24 @@ export class Player {
 	getPlayer = () => {
 		return this
 	}
-	
+
 	getCurrentSong = () => {
 		return this.song
 	}
-	
+
 	getPlayerState = () => {
 		return this.getState()
 	}
-	
+
 	isPlaying = () => {
 		return this.playing
 	}
-	
+
 	resetNoteMeasurement = () => {
 		const playerStatus = this.getState()
-		if(playerStatus.song) {
-			for(let tracksIdx in playerStatus.song.activeTracks){
-				for(let notesIdx in playerStatus.song.activeTracks[tracksIdx].notes){
+		if (playerStatus.song) {
+			for (let tracksIdx in playerStatus.song.activeTracks) {
+				for (let notesIdx in playerStatus.song.activeTracks[tracksIdx].notes) {
 					playerStatus.song.activeTracks[tracksIdx].notes[notesIdx].isEntered = false
 					playerStatus.song.activeTracks[tracksIdx].notes[notesIdx].isInputAccurate = false
 					playerStatus.song.activeTracks[tracksIdx].notes[notesIdx].noteEnterStart = null
@@ -545,7 +545,7 @@ export class Player {
 				}
 			}
 		}
-	
+
 		this.clearInputRecords()
 	}
 
