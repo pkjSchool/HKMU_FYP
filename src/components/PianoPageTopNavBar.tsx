@@ -6,6 +6,7 @@ import { MdAudiotrack, MdOutlineExitToApp } from "react-icons/md";
 import { CiVolume, CiVolumeHigh } from "react-icons/ci";
 import { IoIosSettings } from "react-icons/io";
 import { formatTime } from "../util/utils";
+import { Player, getPlayer } from "./MusicNotePlayer/player/Player.js";
 
 import "../css/VolumeSlider.css";
 
@@ -44,7 +45,7 @@ const CollapsibleNavBar = (
   const [valSongEndSecond, setValSongEndSecond] = useState<number>(0);
   const [valSongCurSecond, setValSongCurSecond] = useState<number>(0);
   const [valBpm, setValBpm] = useState<number>(0);
-  const [valPrePlay, setValPrePlay] = useState<number>(2);
+  const [valPrePlay, setValPrePlay] = useState<number>(-2);
   const [playingTimestemp, setPlayingTimestemp] = useState<number>(0);
 
   const handleMouseEnter = (index: number) => {
@@ -124,6 +125,7 @@ const CollapsibleNavBar = (
   };
 
   useEffect(() => {
+    setValPrePlay(getPlayer().startDelay);
     props.menuCollapsedCallback(props.isCollapsed);
   }, []);
 
@@ -301,7 +303,7 @@ const CollapsibleNavBar = (
           type="range"
           className="musicProgressBar"
           name="valPrograss"
-          min={0 - valPrePlay}
+          min={valPrePlay}
           max={valSongEndSecond}
           step="0.01"
           value={valProgress}

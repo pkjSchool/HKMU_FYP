@@ -57,7 +57,7 @@ export class AudioPlayer {
 	}
 
 	playBeat(time, newMeasure) {
-		if (time < 0 || !this.isRunning()) return
+		if (!this.isRunning()) return
 		const source = this.context.createBufferSource()
 		source.buffer = newMeasure ? this.metronomSound1 : this.metronomSound2
 		const gainNode = this.context.createGain()
@@ -85,7 +85,7 @@ export class AudioPlayer {
 
 		this.context.decodeAudioData(
 			this.base64ToArrayBuffer(metronome2),
-			data => (this.metronomSound1 = data)
+			data => (this.metronomSound2 = data)
 		)
 	}
 

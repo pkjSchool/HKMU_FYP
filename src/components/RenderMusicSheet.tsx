@@ -53,7 +53,7 @@ const RenderMusicSheet = forwardRef(
     }, [fileName]);
 
     useEffect(() => {
-      console.log("staveList", staveList);
+        // console.log("staveList", staveList);
     }, [staveList]);
 
     // Render the music sheet
@@ -91,9 +91,9 @@ const RenderMusicSheet = forwardRef(
       if (midiData) {
         setMeasuresIndex([0, 5]);
 
-        const musicScore = midiData2MusicNotation(midiData);
-        setMusicScore(musicScore);
-        console.log(musicScore);
+            const musicScore = midiData2MusicNotation(midiData);
+            setMusicScore(musicScore);
+            // console.log(musicScore);
 
         // get the stave notes list
         const StaveNotesList = createStaveNote(musicScore);

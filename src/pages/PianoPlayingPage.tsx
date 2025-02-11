@@ -12,10 +12,14 @@ import MusicNotePlayerRender from "../components/MusicNotePlayerRender.js";
 import PianoPlayingResult from "../components/PianoPlayingResult.js";
 import { formatTime } from "../util/utils.js";
 import MusicSheetRender from "../components/RenderMusicSheet.js";
+import { MUSIC1, MUSIC2 } from "../data/sample_music.js";
+import AudioPlayer from "../components/AudioPlayer.js";
+import {
+  Player,
+  getPlayer,
+} from "../components/MusicNotePlayer/player/Player.js";
 import MusicSheetRender2 from "../components/RenderMusicSheet2.js";
 
-const MUSIC =
-  "data:audio/midi;base64,TVRoZAAAAAYAAQACA8BNVHJrAAAACwD/UQMHoSAA/y8ATVRyawAAAIYAwQ0AkUd/g2CRRX8AgUcAg2CBRQAAkUN/g2CRQX8AgUMAg2CBQQAAkUB/g2CRPn8AgUAAg2CBPgAAkTx/g2CRO38AgTwAg2CBOwAAkTl/g2CRN38AgTkAg2CBNwAAkTV/g2CRNH8AgTUAg2CBNAAAkTJ/g2CBMgAAkTB/g2CBMADDQP8vAA==";
 const ACCURATE_OFFSET = 150;
 
 function App() {
@@ -100,7 +104,7 @@ function App() {
     }
   };
   const handleProgressChanged = (progress: number) => {
-    if (notePlayerRef.current) notePlayerRef.current.player.setTime(progress);
+    if (notePlayerRef.current) getPlayer().setTime(progress);
   };
 
   const onPlayerTimeUpdated = (time: number, end: number, bpm: number) => {
@@ -145,8 +149,7 @@ function App() {
   };
 
   const handleInitial = () => {
-    if (notePlayerRef.current)
-      notePlayerRef.current.player.resetNoteMeasurement();
+    if (notePlayerRef.current) getPlayer().resetNoteMeasurement();
     changeStartTime();
     resetPlayingTime();
     setIsFinished(false);
@@ -155,8 +158,7 @@ function App() {
   };
 
   const handleReset = () => {
-    if (notePlayerRef.current)
-      notePlayerRef.current.player.resetNoteMeasurement();
+    if (notePlayerRef.current) getPlayer().resetNoteMeasurement();
     changeStartTime();
     resetPlayingTime();
     setIsFinished(false);
@@ -176,7 +178,7 @@ function App() {
 
   const renderResult = () => {
     const playerStatus = notePlayerRef.current
-      ? notePlayerRef.current.player.getPlayerState()
+      ? getPlayer().getPlayerState()
       : {};
 
     let inputOnRange = 0;
@@ -220,30 +222,26 @@ function App() {
     const notePlayerRefCtx = notePlayerRef.current;
 
     if (notePlayerRefCtx) {
-      notePlayerRefCtx.player.addFinishListener(() => {
+      getPlayer().addFinishListener(() => {
         handleFinish();
       });
-      notePlayerRefCtx.player.addTimeUpdatedListener(onPlayerTimeUpdated);
-      notePlayerRefCtx.player.addNewSongCallback(() => {
+      getPlayer().addTimeUpdatedListener(onPlayerTimeUpdated);
+      getPlayer().addNewSongCallback(() => {
         handleInitial();
       });
     }
 
     const updatePlayingTime = setInterval(() => {
-      if (
-        !getIsFinished() &&
-        notePlayerRefCtx &&
-        notePlayerRefCtx.player.isPlaying()
-      )
+      if (!getIsFinished() && notePlayerRefCtx && getPlayer().isPlaying())
         increasePlayingTime(0.1);
     }, 100);
 
     return () => {
       if (notePlayerRefCtx) {
-        notePlayerRefCtx.player.pause();
-        notePlayerRefCtx.player.clearFinishListener();
-        notePlayerRefCtx.player.clearTimeUpdatedListener();
-        notePlayerRefCtx.player.clearNewSongCallback();
+        getPlayer().pause();
+        getPlayer().clearFinishListener();
+        getPlayer().clearTimeUpdatedListener();
+        getPlayer().clearNewSongCallback();
       }
 
       clearInterval(updatePlayingTime);
@@ -274,6 +272,8 @@ function App() {
       const midiData = new Midi(midiArrayBuffer);
       setMidiData(midiData);
       setFileName(fileName);
+
+      getPlayer().loadSong(file, fileName, fileName);
     } catch (e) {
       console.error("Error parsing MIDI file", e);
     }

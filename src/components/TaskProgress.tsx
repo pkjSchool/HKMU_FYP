@@ -1,26 +1,8 @@
 import React from "react";
 import { TiTick } from "react-icons/ti";
+import sampleTasks from "../data/task";
 
 const TaskProgress: React.FC = () => {
-
-  const sampleTasks = [
-    {
-        title: "Self Study",
-        tasks: [
-            { name: "Accuracy more then 70%", progress: 100 },
-            { name: "Play 10 minutes long music", progress: 20 },
-            { name: "Get 3000 score", progress: 50 },
-        ],
-    },
-    {
-        title: "Learning",
-        tasks: [
-            { name: "Finish 1 lesson", progress: 100 },
-            { name: "Finish 2 lesson", progress: 50 },
-            { name: "Finish 3 lesson", progress: 33.3 },
-        ],
-    },
-];
 
   return (
     <div className="task-progress">
@@ -33,12 +15,12 @@ const TaskProgress: React.FC = () => {
                                 <div style={{display: "flex", "alignItems": "center", height: "32px"}}>
                                   <div className="progress-bar-bg" style={{width: "calc(100% - 20px)"}}>
                                     <div className="progress-bar-stick" style={{
-                                        width: `${task.progress}%`,
-                                        backgroundColor:((task.progress >= 100)?"#4caf50":"var(--bs-warning)")
+                                        width: `${task.test_progress}%`,
+                                        backgroundColor:((task.test_progress >= 100)?"#4caf50":"var(--bs-warning)")
                                       }}></div>
                                   </div>
                                   <div style={{width: "20px"}}>
-                                    {task.progress >= 100 && <TiTick style={{"fontSize": "32px", color:"#4caf50"}} />}
+                                    {task.test_progress >= 100 && <TiTick style={{"fontSize": "32px", color:"#4caf50"}} />}
                                   </div>
                                 </div>
                               </div>
