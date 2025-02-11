@@ -13,7 +13,6 @@ import PianoPlayingResult from "../components/PianoPlayingResult.js";
 import { formatTime } from "../util/utils.js";
 import MusicSheetRender from "../components/RenderMusicSheet.js";
 import { MUSIC1, MUSIC2 } from "../data/sample_music.js";
-import AudioPlayer from "../components/AudioPlayer.js";
 import {
   Player,
   getPlayer,
@@ -310,7 +309,7 @@ function App() {
           zIndex: 0,
         }}
       >
-        <MusicNotePlayerRender ref={notePlayerRef} music={MUSIC} />
+        <MusicNotePlayerRender ref={notePlayerRef} />
       </div>
       <MusicSheetRender2
         musicXML={musicXML}
