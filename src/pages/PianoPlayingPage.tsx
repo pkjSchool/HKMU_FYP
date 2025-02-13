@@ -6,12 +6,12 @@ import MIDIController, {
 } from "../components/PianoPlayingPage/MidiController.js";
 import TopNavBar, {
   CollapsibleNavBarRef as TopNavBarRef,
-} from "../components/PianoPageTopNavBar.js";
-import PianoRender from "../components/PianoRender.js";
-import MusicNotePlayerRender from "../components/MusicNotePlayerRender.js";
+} from "../components/PianoPlayingPage/PianoPageTopNavBar.js";
+import PianoRender from "../components/PianoPlayingPage/PianoRender.js";
+import MusicNotePlayerRender from "../components/PianoPlayingPage/MusicNotePlayerRender.js";
 import PianoPlayingResult from "../components/PianoPlayingPage/PianoPlayingResult.js";
 import { formatTime } from "../util/utils.js";
-import MusicSheetRender from "../components/RenderMusicSheet.js";
+import MusicSheetRender from "../components/PianoPlayingPage/RenderMusicSheet.js";
 import { MUSIC1, MUSIC2 } from "../data/sample_music.js";
 import {
   Player,
