@@ -1,6 +1,6 @@
 import { useState } from "react";
 import quizBackground from "../assets/quiz_background.jpg";
-import placeholderImage from "../assets/ERRORIMG.jpeg"; 
+import placeholderImage from "../assets/ERRORIMG.png"; 
 
 interface AnswerOption {
   answerText?: string;

@@ -65,8 +65,6 @@ class MusicNotePlayerRender extends React.Component<any, any> {
     this.player = getPlayer();
     this.cnvrender = new Render(cnvBG, cnvMain, wrapperEle, this.player);
 
-    this.player.loadSong(this.props.music, this.props.music, "name");
-
     const renderer = () => {
       this.cnvrender.render(this.player.getPlayerState());
       this.animeId = window.requestAnimationFrame(renderer);
