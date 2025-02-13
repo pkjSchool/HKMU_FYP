@@ -18,6 +18,7 @@ import {
   getPlayer,
 } from "../components/MusicNotePlayer/player/Player.js";
 import MusicSheetRender2 from "../components/PianoPlayingPage/RenderMusicSheet2.js";
+import axios from "axios";
 
 const ACCURATE_OFFSET = 150;
 
@@ -36,9 +37,12 @@ function App() {
   const topNavBarRef = useRef<TopNavBarRef>(null);
 
   const [volume, setVolume] = useState<number>(1);
+  const [musicFile, setMusicFile] = useState<File | null>(null);
   const [musicXML, setMusicXML] = useState<string | null>(null);
   const [midiData, setMidiData] = useState<Midi | null>(null);
   const [fileName, setFileName] = useState<string | null>(null);
+  const [isLoadingMidi, setIsLoadingMidi] = useState<boolean>(false);
+  const [isLoadingXML, setIsLoadingXML] = useState<boolean>(false);
   const [isFileLoaded, setIsFileLoaded] = useState<boolean>(false);
   const [isCollapsed, setIsCollapsed] = useState<boolean>(false);
 
@@ -248,10 +252,21 @@ function App() {
   }, []);
 
   useEffect(() => {
-    if (musicXML) {
+    if (musicFile) {
+      if (musicFile.type === "audio/midi"  || musicFile.type === "audio/mid") {
+        setIsLoadingMidi(true);
+
+        const formData = new FormData();
+        formData.append("midi", musicFile);
+        console.log("start to parse midi file");
+        axios.post("http://localhost:5000/midi2mucicxml", formData).then((res) => {
+          setMusicXML(res.data);
+          setIsLoadingMidi(false);
+        });
+      }
       setIsFileLoaded(true);
     }
-  }, [musicXML]);
+  }, [musicFile]);
 
   let resultComp = null;
 
@@ -293,7 +308,7 @@ function App() {
         stopCallback={handleStop}
         menuCollapsedCallback={handleMenuCollapsed}
         progressCallback={handleProgressChanged}
-        setMusicXML={setMusicXML}
+        setMusicFile={setMusicFile}
         volume={volume}
         setVolume={setVolume}
         isCollapsed={isCollapsed}

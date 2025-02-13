@@ -21,22 +21,19 @@ interface CollapsibleNavBarProps {
   stopCallback: () => void;
   menuCollapsedCallback: (isCollapsed: boolean) => void;
   progressCallback: (progress: number) => void;
-  setMusicXML: React.Dispatch<React.SetStateAction<string | null>>;
+  setMusicFile: React.Dispatch<React.SetStateAction<File | null>>;
   volume: number;
   setVolume: React.Dispatch<React.SetStateAction<number>>;
   isCollapsed: boolean;
   setIsCollapsed: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-const CollapsibleNavBar = (
-  props: CollapsibleNavBarProps,
-  ref: React.Ref<CollapsibleNavBarRef>
-) => {
+const CollapsibleNavBar = (props: CollapsibleNavBarProps,ref: React.Ref<CollapsibleNavBarRef>) => {
   const progressBarReadonly = false;
 
   useImperativeHandle(ref, () => ({
     onPlayerTimeUpdated,
-    handleUpdatePlayingTimestemp,
+    handleUpdatePlayingTimestemp,       
   }));
 
   const [isButtonHovered, setIsButtonHovered] = useState(false);
@@ -74,27 +71,12 @@ const CollapsibleNavBar = (
   ): void => {
     const uploadedFile = event.target.files?.[0] || null;
 
-    console.log("adfgsd");
     if (!uploadedFile) {
       console.log("No file uploaded");
       return;
     }
 
-    console.log(uploadedFile);
-
-    const reader = new FileReader();
-
-    reader.onload = (e) => {
-      const result = e.target?.result as string;
-      if (result) {
-        props.setMusicXML(result);
-      }
-    };
-    reader.onerror = () => {
-      console.log("Error reading file");
-    };
-
-    reader.readAsText(uploadedFile);
+    props.setMusicFile(uploadedFile);
   };
 
   const clickPlay = () => {
@@ -153,7 +135,7 @@ const CollapsibleNavBar = (
                 </div>
                 <input
                   type="file"
-                  accept=".musicxml, .midi, .mid"
+                  accept=".midi, .mid, .wav"
                   style={{ display: "none" }}
                   onChange={(e) => handleFileChange(e)}
                 />
