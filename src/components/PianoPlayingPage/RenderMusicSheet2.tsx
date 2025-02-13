@@ -10,6 +10,7 @@ import {
   Note,
   StemDirectionType,
 } from "opensheetmusicdisplay";
+import { set } from "react-hook-form";
 
 interface RenderMusicSheetProps {
   musicXML: string | null;
@@ -24,6 +25,7 @@ const RenderMusicSheet = (props: RenderMusicSheetProps) => {
   const osmdRef = useRef<OpenSheetMusicDisplay | null>(null);
   const cursorRef = useRef<HTMLImageElement>(null);
   const [localActiveNotes, setLocalActiveNotes] = useState<number[]>([]);
+  const [scrollAmount, setScrollAmount] = useState<number>(0);
 
   useEffect(() => {
     console.log("RenderMusicSheet: musicXML");
@@ -69,48 +71,22 @@ const RenderMusicSheet = (props: RenderMusicSheetProps) => {
 
   useEffect(() => {
     if (osmdRef.current) {
-      const cursorX = osmdRef.current.cursor.cursorElement.x;
-      const container = containerRef.current;
+      // if (localActiveNotes.length < props.activeNotes.length) {
 
-      // console.log("rect.left: ",osmdRef.current.cursor.cursorElement.x);
-      // console.log("window.innerWidth: ", window.innerWidth);
-      // console.log("rect.right ", osmdRef.current.cursor.cursorElement.y);
+        // if (container && window.innerWidth - cursorX < 200) {
+        //   console.log("adfgdsfg")
+        //   container.scrollLeft = container.scrollLeft + 100;
+        // }
+      // }
 
-
-      if (container && window.innerWidth - cursorX < 200) {
-        container.scrollLeft = 1200;
-      }
-
-      if (localActiveNotes.length < props.activeNotes.length) {
-        var cursor = osmdRef.current.cursor;
-        var currentSheetNote = cursor.NotesUnderCursor()[0];
-        var currentPressedNote =
-          props.activeNotes[props.activeNotes.length - 1];
-        var currentPressedNoteName = noteMap[currentPressedNote];
-
-        console.log(cursor.GNotesUnderCursor()[0])
-        cursor.GNotesUnderCursor()[0].sourceNote.NoteheadColor = "#ff0000";
-        cursor.GNotesUnderCursor()[0].sourceNote.StemColorXml = "#ff0000";
-        
-        osmdRef.current.render();
-
-        // console.log("currentPressedNoteName: ", currentPressedNoteName);
-        // console.log("currentSheetNote: ", currentSheetNote.Pitch.ToStringShortGet);
-
-
-        if (currentPressedNoteName[0] === currentSheetNote.Pitch.ToStringShortGet[0] && currentPressedNoteName[1] === '4') {
-          cursor.next();
-        }
-      }
+      checkNoteIsCorrect();
+      setLocalActiveNotes(props.activeNotes);
     }
   }, [props.activeNotes]);
 
-  useEffect(() => {
-    setLocalActiveNotes(props.activeNotes);
-  }, [localActiveNotes]);
-
   const onchange = () => {
     if (osmdRef.current) {
+
       var cursor = osmdRef.current.cursor;
 
       cursor.next();
@@ -130,6 +106,67 @@ const RenderMusicSheet = (props: RenderMusicSheetProps) => {
     }
   };
 
+  const checkNoteIsCorrect = () => {
+    if (localActiveNotes.length < props.activeNotes.length) {
+      if (osmdRef.current) {
+      
+      // get current sheet note
+      var cursor = osmdRef.current.cursor;
+      if (cursor.GNotesUnderCursor().length === 0) {
+        return;
+      }
+      var currentSheetNote = cursor.NotesUnderCursor()[0];
+
+      // get user press note
+      var currentPressedNote = props.activeNotes[props.activeNotes.length - 1];
+      var currentPressedNoteName = noteMap[currentPressedNote];
+
+      console.log(cursor.GNotesUnderCursor()[0])
+      
+      
+
+      // console.log("currentPressedNoteName: ", currentPressedNoteName);
+      // console.log("currentSheetNote: ", currentSheetNote.Pitch.ToStringShortGet);
+
+    if (!currentSheetNote.isRest()){
+      if (currentPressedNoteName[0] === currentSheetNote.Pitch.ToStringShortGet[0] && currentPressedNoteName[1] === '4') {
+        cursor.GNotesUnderCursor()[0].sourceNote.StemColorXml = "#00ff00";
+        cursor.GNotesUnderCursor()[0].sourceNote.NoteheadColor = "#00ff00";
+        osmdRef.current.render();
+        var cursor = osmdRef.current.cursor;
+        cursor.next();
+      }else {
+        cursor.GNotesUnderCursor()[0].sourceNote.StemColorXml = "#ff0000";
+        cursor.GNotesUnderCursor()[0].sourceNote.NoteheadColor = "#ff0000";
+        osmdRef.current.render();
+        var cursor = osmdRef.current.cursor;
+        cursor.next();
+      }
+      }else{
+        cursor.next();
+      }
+      const cursorX = osmdRef.current.cursor.cursorElement.x;
+      const container = containerRef.current;
+
+      console.log("current.cursor.cursorElement.x ",osmdRef.current.cursor.cursorElement.x);
+      console.log("window.innerWidth: ", window.innerWidth);
+      
+      if (container) {
+        // Calculate the required scrollLeft value
+        console.log("asdfsadfsadfa", cursorX%window.innerWidth)
+        
+        if (cursorX%window.innerWidth  > 1200) {
+          var localScrollAmount = cursorX - window.innerWidth + 1200; // Adjust the offset as needed
+          container.scrollLeft =  localScrollAmount;
+          setScrollAmount(localScrollAmount);
+        }else{
+          container.scrollLeft =  scrollAmount;
+        }
+      }
+    }
+  }
+  }
+
   return (
     <div
       className="sheet-container"
@@ -144,7 +181,7 @@ const RenderMusicSheet = (props: RenderMusicSheetProps) => {
       }
     >
       <button onClick={onchange}>HI</button>
-      <div ref={osmdContainerRef} style={{ width: "100%", height: "200px" }} />
+      <div ref={osmdContainerRef} style={{ width: "100%", height: "200px" }} ></div>
     </div>
   );
 };
