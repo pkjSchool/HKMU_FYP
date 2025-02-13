@@ -1,5 +1,5 @@
 import { useEffect, useState, forwardRef, useImperativeHandle, useRef } from 'react';
-import { notePathMap } from '../Map.js';
+import { notePathMap } from '../../Map.js';
 
 export type MidiControllerRef = {
   playNote: (note: number, velocity: number) => void;
@@ -9,7 +9,6 @@ export type MidiControllerRef = {
 interface MIDIControllerProps {
   onNoteOn: (note: number) => void;
   onNoteOff: (note: number) => void;
-  audioVolume: number;
 }
 
 const MIDIController = (props: MIDIControllerProps, ref: React.Ref<MidiControllerRef>) => {
