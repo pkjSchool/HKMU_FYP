@@ -14,56 +14,82 @@ import question3_ans2 from "../../assets/quiz_img/quiz_1/quiz1_3_1.png";
 import question3_ans3 from "../../assets/quiz_img/quiz_1/quiz1_3_2.png";
 import question3_ans4 from "../../assets/quiz_img/quiz_1/quiz1_3_3.png";
 
-const questionsCh1_1 = [
-  {
-    questionText: "How many keys does a standard piano have?",
-    imageSrc: question1,
-    answerOptions: [
-      { answerText: "61", isCorrect: false },
-      { answerText: "87", isCorrect: false },
-      { answerText: "88", isCorrect: true },
-      { answerText: "89", isCorrect: false },
-    ],
-  },
-  {
-    questionText: "which is the correct gesture to play the piano?",
-    answerOptions: [
-      { isImage: true, imageSrc: question2_ans1, isCorrect: false },
-      { isImage: true, imageSrc: question2_ans4, isCorrect: true },
-      { isImage: true, imageSrc: question2_ans3, isCorrect: false },
-      { isImage: true, imageSrc: question2_ans2, isCorrect: false },
-    ],
-  },
-  {
-    questionText: "What is the name of the white keys on a piano?",
-    answerOptions: [
-      { answerText: "Flats", isCorrect: false },
-      { answerText: "Sharps", isCorrect: false },
-      { answerText: "Natural notes", isCorrect: true },
-      { answerText: "Chords", isCorrect: false },
-    ],
-  },
-  {
-    questionText: "What is the name of the black keys on a piano?",
-    answerOptions: [
-      { answerText: "Flats", isCorrect: false },
-      { answerText: "Sharps", isCorrect: false },
-      { answerText: "Natural notes", isCorrect: true },
-      { answerText: "Chords", isCorrect: false },
-    ],
-  },
-  {
-    questionText: "Which musical note is the correct one?",
-    answerOptions: [
-      { isImage: true, imageSrc: question3_ans1, isCorrect: true },
-      { isImage: true, imageSrc: question3_ans2, isCorrect: false },
-      { isImage: true, imageSrc: question3_ans3, isCorrect: false },
-      { isImage: true, imageSrc: question3_ans4, isCorrect: false },
-    ],
-  },
+// const questionsCh1_1 = [
+//   {
+//     questionText: "How many keys does a standard piano have?",
+//     imageSrc: question1,
+//     answerOptions: [
+//       { answerText: "61", isCorrect: false },
+//       { answerText: "87", isCorrect: false },
+//       { answerText: "88", isCorrect: true },
+//       { answerText: "89", isCorrect: false },
+//     ],
+//   },
+//   {
+//     questionText: "which is the correct gesture to play the piano?",
+//     answerOptions: [
+//       { isImage: true, imageSrc: question2_ans1, isCorrect: false },
+//       { isImage: true, imageSrc: question2_ans4, isCorrect: true },
+//       { isImage: true, imageSrc: question2_ans3, isCorrect: false },
+//       { isImage: true, imageSrc: question2_ans2, isCorrect: false },
+//     ],
+//   },
+//   {
+//     questionText: "What is the name of the white keys on a piano?",
+//     answerOptions: [
+//       { answerText: "Flats", isCorrect: false },
+//       { answerText: "Sharps", isCorrect: false },
+//       { answerText: "Natural notes", isCorrect: true },
+//       { answerText: "Chords", isCorrect: false },
+//     ],
+//   },
+//   {
+//     questionText: "What is the name of the black keys on a piano?",
+//     answerOptions: [
+//       { answerText: "Flats", isCorrect: false },
+//       { answerText: "Sharps", isCorrect: false },
+//       { answerText: "Natural notes", isCorrect: true },
+//       { answerText: "Chords", isCorrect: false },
+//     ],
+//   },
+//   {
+//     questionText: "Which musical note is the correct one?",
+//     answerOptions: [
+//       { isImage: true, imageSrc: question3_ans1, isCorrect: true },
+//       { isImage: true, imageSrc: question3_ans2, isCorrect: false },
+//       { isImage: true, imageSrc: question3_ans3, isCorrect: false },
+//       { isImage: true, imageSrc: question3_ans4, isCorrect: false },
+//     ],
+//   },
   
 
 
+// ];
+const questionsCh1_1 = [
+  // 一般選擇題
+  {
+    questionText: "What is the name of this note?",
+    imageSrc: "path/to/image.png",
+    answerOptions: [
+      { answerText: "C4", isCorrect: true },
+      { answerText: "D4", isCorrect: false },
+      { answerText: "E4", isCorrect: false },
+    ]
+  },
+  // 彈奏題
+  {
+    questionText: "請彈奏中央 C (Middle C)",
+    imageSrc: "path/to/sheet.png",
+    isPianoQuestion: true,
+    requiredNotes: [60] // 中央 C 的 MIDI 音符編號
+  },
+  // 和弦彈奏題
+  {
+    questionText: "請彈奏 C 大三和弦",
+    imageSrc: "path/to/chord.png",
+    isPianoQuestion: true,
+    requiredNotes: [60, 64, 67] // C4, E4, G4
+  }
 ];
 const tutorialCards = [
   {
