@@ -1,6 +1,6 @@
 import React from "react";
-import { Render } from "./MusicNotePlayer/Rendering/Render.js";
-import { Player, getPlayer } from "./MusicNotePlayer/player/Player.js";
+import { Render } from "../MusicNotePlayer/Rendering/Render.js";
+import { Player, getPlayer } from "../MusicNotePlayer/player/Player.js";
 
 class MusicNotePlayerRender extends React.Component<any, any> {
   bgCanvasRef: React.RefObject<HTMLCanvasElement>;

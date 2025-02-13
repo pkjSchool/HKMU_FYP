@@ -5,10 +5,10 @@ import { FaRegFolderOpen, FaPlay, FaPause, FaStop } from "react-icons/fa";
 import { MdAudiotrack, MdOutlineExitToApp } from "react-icons/md";
 import { CiVolume, CiVolumeHigh } from "react-icons/ci";
 import { IoIosSettings } from "react-icons/io";
-import { formatTime } from "../util/utils";
-import { Player, getPlayer } from "./MusicNotePlayer/player/Player.js";
+import { formatTime } from "../../util/utils";
+import { Player, getPlayer } from "../MusicNotePlayer/player/Player.js";
 
-import "../css/VolumeSlider.css";
+import "../../css/VolumeSlider.css";
 
 export type CollapsibleNavBarRef = {
   onPlayerTimeUpdated: (time: number, end: number, bpm: number) => void;
