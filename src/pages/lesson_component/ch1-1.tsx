@@ -61,6 +61,9 @@ const questionsCh1_1 = [
       { isImage: true, imageSrc: question3_ans4, isCorrect: false },
     ],
   },
+  
+
+
 ];
 
 function Ch1_1() {
