@@ -3,22 +3,21 @@ import { Midi } from "tonejs-midi-fix";
 
 import MIDIController, {
   MidiControllerRef,
-} from "../components/MidiController.js";
+} from "../components/PianoPlayingPage/MidiController.js";
 import TopNavBar, {
   CollapsibleNavBarRef as TopNavBarRef,
-} from "../components/PianoPageTopNavBar.js";
-import PianoRender from "../components/PianoRender.js";
-import MusicNotePlayerRender from "../components/MusicNotePlayerRender.js";
-import PianoPlayingResult from "../components/PianoPlayingResult.js";
+} from "../components/PianoPlayingPage/PianoPageTopNavBar.js";
+import PianoRender from "../components/PianoPlayingPage/PianoRender.js";
+import MusicNotePlayerRender from "../components/PianoPlayingPage/MusicNotePlayerRender.js";
+import PianoPlayingResult from "../components/PianoPlayingPage/PianoPlayingResult.js";
 import { formatTime } from "../util/utils.js";
-import MusicSheetRender from "../components/RenderMusicSheet.js";
+import MusicSheetRender from "../components/PianoPlayingPage/RenderMusicSheet.js";
 import { MUSIC1, MUSIC2 } from "../data/sample_music.js";
-import AudioPlayer from "../components/AudioPlayer.js";
 import {
   Player,
   getPlayer,
 } from "../components/MusicNotePlayer/player/Player.js";
-import MusicSheetRender2 from "../components/RenderMusicSheet2.js";
+import MusicSheetRender2 from "../components/PianoPlayingPage/RenderMusicSheet2.js";
 
 const ACCURATE_OFFSET = 150;
 
@@ -285,7 +284,6 @@ function App() {
         ref={MIDIControllerRef}
         onNoteOn={onNoteOn}
         onNoteOff={onNoteOff}
-        audioVolume={volume}
       />
       {resultComp}
       <TopNavBar
@@ -310,7 +308,7 @@ function App() {
           zIndex: 0,
         }}
       >
-        <MusicNotePlayerRender ref={notePlayerRef} />
+        {/* <MusicNotePlayerRender ref={notePlayerRef} /> */}
       </div>
       <MusicSheetRender2
         musicXML={musicXML}
