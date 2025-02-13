@@ -54,7 +54,7 @@ export class Render {
 				? playerState.song.getMeasureLines()
 				: []
 
-			this.drawGroupLine(time, measureLines)
+			// this.drawGroupLine(time, measureLines)
 
 			let currentActiveNotes = this.noteRender.render(
 				time,

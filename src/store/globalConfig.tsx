@@ -1,9 +1,11 @@
 import { configureStore } from "@reduxjs/toolkit";
-import loginInfo from './loginInfo.js'
+import loginInfo from './loginInfo.tsx'
+import webStatus from './webStatus.tsx'
 
 const store = configureStore({
   reducer: {
     loginInfo,
+    webStatus
   },
 });
 

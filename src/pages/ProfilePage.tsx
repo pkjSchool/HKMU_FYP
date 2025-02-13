@@ -1,30 +1,51 @@
-import React, { useEffect } from 'react';
-import {useForm} from 'react-hook-form';
-import { useSelector, useDispatch } from "react-redux";
-import { setInfo } from "../store/loginInfo.js";
+import { useEffect } from 'react';
+import { useForm } from 'react-hook-form';
+import { useDispatch } from "react-redux";
+import { user_info_get, user_info_update } from "../api_request/request";
+import { setLoginedUser, getLoginedUser } from "../access_control/user";
 
 interface IFormInput {
+  user_id: number
   displayName: string
   password?: string
   conformPassword: string
 }
 
 function ProfilePage() {
-
+  const userInfo = getLoginedUser();
   const dispatch = useDispatch();
-  const storedInfo = useSelector((state:any) => state.loginInfo);
 
-  const {watch, register, handleSubmit, formState: {errors}} = useForm<IFormInput>();
+  const {watch, register, handleSubmit, setValue, formState: {errors}} = useForm<IFormInput>();
 
   const onSubmit = (data:any) => {
-    alert(JSON.stringify(data))
-    dispatch(setInfo({'displayName': data.displayName, 'password': data.password}))
+    // alert(JSON.stringify(data))
+    user_info_update(data.user_id, data.displayName, data.password, data.conformPassword).then((response) => {
+      const result = response.data
+      if(result.status) {
+        const resultData = result.data
+        updateUserInfo()
+      } else {
+        alert(JSON.stringify(result));
+      }
+    })
+  }
+
+  const updateUserInfo = () => {
+    user_info_get(parseInt(userInfo.user_id)).then((response) => {
+        const result = response.data
+        if(result.status) {
+            const resultData = result.data
+            console.log(resultData);
+            setLoginedUser(dispatch, resultData);
+        } else {
+            alert(JSON.stringify(result));
+        }
+    })
   }
 
   useEffect(() => {
-
-      console.log('Component mounted');
-
+    setValue("user_id", userInfo.user_id);
+    setValue("displayName", userInfo.displayName);
   }, []);
 
   return (
