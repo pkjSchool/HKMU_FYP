@@ -1,7 +1,7 @@
 import { forwardRef, useEffect, useRef, useState } from "react";
 import { CSSProperties } from "styled-components";
-import cursorImg from "../assets/Sheet_music/cursor.png";
-import "../css/RenderMusicSheet.css";
+import cursorImg from "../../assets/Sheet_music/cursor.png";
+import "../../css/RenderMusicSheet.css";
 import { noteMap } from "../../Map";
 
 import {
