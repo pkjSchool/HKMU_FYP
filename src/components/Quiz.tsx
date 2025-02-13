@@ -49,8 +49,8 @@ const Quiz: React.FC<QuizProps> = ({ title, questions, onExit }) => {
   const onNoteOff = (note: number) => {
     const noteArrIdx = activeNotes.indexOf(note);
     if (noteArrIdx >= 0) {
-      setActiveNotes((prev) => prev.filter((n) => n !== note));
-
+      setActiveNotes(prev => prev.filter(n => n !== note));
+      
       if (MIDIControllerRef.current) {
         MIDIControllerRef.current.stopNote(note);
       }
