@@ -23,35 +23,40 @@ const Quiz: React.FC<QuizProps> = ({ title, questions, onExit }) => {
     }
   };
 
-  const onNoteOn = (note: number) => {
-    const noteArrIdx = activeNotes.indexOf(note);
-    if (noteArrIdx < 0) {
-      const newNotes = [...activeNotes, note];
-      setActiveNotes(newNotes);
-
-      if (MIDIControllerRef.current) {
-        MIDIControllerRef.current.playNote(note, 50);
-      }
-      const requiredNotes = questions[currentQuestion].requiredNotes || [];
-
-      const allRequiredNotesPressed =
+  const checkAnswer = (newNotes: number[]) => {
+    if (answered) return;
+    const requiredNotes = questions[currentQuestion].requiredNotes || [];
+    const allRequiredNotesPressed =
         requiredNotes.length > 0 &&
         requiredNotes.every((requiredNote) => newNotes.includes(requiredNote));
-
-      if (allRequiredNotesPressed && !answered) {
+    if (allRequiredNotesPressed) {
         console.log("Correct answer!");
-        setAnswered(true);
         setScore((prevScore) => prevScore + 1);
-      }
+        setTimeout(() => {
+            setAnswered(true);
+        }, 100); 
     }
-  };
+};
+
+
+const onNoteOn = (note: number) => {
+    const noteArrIdx = activeNotes.indexOf(note);
+    if (noteArrIdx < 0) {
+        if (MIDIControllerRef.current) {
+            MIDIControllerRef.current.playNote(note, 50);
+        }
+        const newNotes = [...activeNotes, note];
+        setActiveNotes(newNotes);
+        checkAnswer(newNotes);
+    }
+};
 
   const onNoteOff = (note: number) => {
     const noteArrIdx = activeNotes.indexOf(note);
     setActiveNotes((prev) => prev.filter((n) => n !== note));
     if (noteArrIdx >= 0) {
-      setActiveNotes(prev => prev.filter(n => n !== note));
-      
+      setActiveNotes((prev) => prev.splice(noteArrIdx, 1));
+
       if (MIDIControllerRef.current) {
         MIDIControllerRef.current.stopNote(note);
       }
@@ -99,7 +104,20 @@ const Quiz: React.FC<QuizProps> = ({ title, questions, onExit }) => {
           </button>
         </div>
 
-        <div className="card-body">
+        <div
+          className="card-body"
+          style={
+            questions[currentQuestion].isPianoQuestion
+              ? {
+                  padding: 0,
+                  flex: "1 1 auto",
+                }
+              : {
+                  padding: "1rem",
+                  flex: "1 1 auto",
+                }
+          }
+        >
           {showScore ? (
             <div className="text-center">
               <h4>Quiz completed!</h4>
