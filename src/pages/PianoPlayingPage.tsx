@@ -18,6 +18,7 @@ import {
   getPlayer,
 } from "../components/MusicNotePlayer/player/Player.js";
 import MusicSheetRender2 from "../components/PianoPlayingPage/RenderMusicSheet2.js";
+import axios from "axios";
 
 const ACCURATE_OFFSET = 150;
 
@@ -36,9 +37,12 @@ function App() {
   const topNavBarRef = useRef<TopNavBarRef>(null);
 
   const [volume, setVolume] = useState<number>(1);
+  const [musicFile, setMusicFile] = useState<File | null>(null);
   const [musicXML, setMusicXML] = useState<string | null>(null);
   const [midiData, setMidiData] = useState<Midi | null>(null);
   const [fileName, setFileName] = useState<string | null>(null);
+  const [isMidi2XML, setIsMidi2XML] = useState<boolean>(false);
+  const [isWav2Midi, setIsWav2Midi] = useState<boolean>(false);
   const [isFileLoaded, setIsFileLoaded] = useState<boolean>(false);
   const [isCollapsed, setIsCollapsed] = useState<boolean>(false);
 
@@ -248,10 +252,39 @@ function App() {
   }, []);
 
   useEffect(() => {
-    if (musicXML) {
+    console.log("music file changed");
+    if (musicFile) {
+      if (musicFile.type === "audio/midi"  || musicFile.type === "audio/mid") {
+        setIsMidi2XML(true);
+
+        const formData = new FormData();
+        formData.append("midi", musicFile);
+        console.log("start to parse midi file");
+        axios.post("http://localhost:5000/midi2mucicxml", formData).then((res) => {
+          setMusicXML(res.data);
+          setIsMidi2XML(false);
+        });
+      }
+
+      if (musicFile.type === "audio/wav") {
+        setIsWav2Midi(true);
+
+        const formData = new FormData();
+        formData.append("audio", musicFile);
+        console.log("start to parse wav file");
+        axios.post("http://localhost:5000/transcribe", formData, {responseType: "arraybuffer", timeout: 180000}).then((res) => {
+          const midiBlob = new Blob([res.data], { type: "audio/midi" });
+
+          // Convert Blob to File
+          const midiFile = new File([midiBlob], "transcribed.mid", { type: "audio/midi" });
+          console.log(midiFile.type);
+          setMusicFile(midiFile);
+          setIsWav2Midi(false);
+        });
+      }
       setIsFileLoaded(true);
     }
-  }, [musicXML]);
+  }, [musicFile]);
 
   let resultComp = null;
 
@@ -293,7 +326,7 @@ function App() {
         stopCallback={handleStop}
         menuCollapsedCallback={handleMenuCollapsed}
         progressCallback={handleProgressChanged}
-        setMusicXML={setMusicXML}
+        setMusicFile={setMusicFile}
         volume={volume}
         setVolume={setVolume}
         isCollapsed={isCollapsed}
