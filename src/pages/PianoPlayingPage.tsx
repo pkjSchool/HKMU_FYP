@@ -41,8 +41,8 @@ function App() {
   const [musicXML, setMusicXML] = useState<string | null>(null);
   const [midiData, setMidiData] = useState<Midi | null>(null);
   const [fileName, setFileName] = useState<string | null>(null);
-  const [isLoadingMidi, setIsLoadingMidi] = useState<boolean>(false);
-  const [isLoadingXML, setIsLoadingXML] = useState<boolean>(false);
+  const [isMidi2XML, setIsMidi2XML] = useState<boolean>(false);
+  const [isWav2Midi, setIsWav2Midi] = useState<boolean>(false);
   const [isFileLoaded, setIsFileLoaded] = useState<boolean>(false);
   const [isCollapsed, setIsCollapsed] = useState<boolean>(false);
 
@@ -252,16 +252,34 @@ function App() {
   }, []);
 
   useEffect(() => {
+    console.log("music file changed");
     if (musicFile) {
       if (musicFile.type === "audio/midi"  || musicFile.type === "audio/mid") {
-        setIsLoadingMidi(true);
+        setIsMidi2XML(true);
 
         const formData = new FormData();
         formData.append("midi", musicFile);
         console.log("start to parse midi file");
         axios.post("http://localhost:5000/midi2mucicxml", formData).then((res) => {
           setMusicXML(res.data);
-          setIsLoadingMidi(false);
+          setIsMidi2XML(false);
+        });
+      }
+
+      if (musicFile.type === "audio/wav") {
+        setIsWav2Midi(true);
+
+        const formData = new FormData();
+        formData.append("audio", musicFile);
+        console.log("start to parse wav file");
+        axios.post("http://localhost:5000/transcribe", formData, {responseType: "arraybuffer", timeout: 180000}).then((res) => {
+          const midiBlob = new Blob([res.data], { type: "audio/midi" });
+
+          // Convert Blob to File
+          const midiFile = new File([midiBlob], "transcribed.mid", { type: "audio/midi" });
+          console.log(midiFile.type);
+          setMusicFile(midiFile);
+          setIsWav2Midi(false);
         });
       }
       setIsFileLoaded(true);
