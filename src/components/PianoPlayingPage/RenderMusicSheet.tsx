@@ -153,7 +153,7 @@ const RenderMusicSheet = forwardRef(
         className="sheet-container"
         style={
           fileName
-            ? { ...styles.sheetContainer, top: isCollapsed ? "-40px" : "70px" }
+            ? { ...styles.sheetContainer, top: isCollapsed ? "-70px" : "60px" }
             : { visibility: "hidden" }
         }
       >

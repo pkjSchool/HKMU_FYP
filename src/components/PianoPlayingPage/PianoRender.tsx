@@ -75,7 +75,7 @@ const Piano = (props: PianoRenderProps) => {
                 left: `${(currentWhiteKeyIndex - 1) * whiteKeyWidthPercentage + whiteKeyWidthPercentage * 0.7}%`,
                 zIndex: 2,
               }}
-              onMouseDown={(event) => {console.log(event); props.onNoteOn(noteNumber)}}
+              onMouseDown={() => {props.onNoteOn(noteNumber)}}
               // onMouseOver={() => {onNoteOn(noteNumber)}}
               onMouseLeave={() => {props.onNoteOff(noteNumber)}}
               onMouseUp={() => {props.onNoteOff(noteNumber)}}
