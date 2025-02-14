@@ -129,21 +129,25 @@ const RenderMusicSheet = (props: RenderMusicSheetProps,ref: React.Ref<RenderMusi
       if(playTime < 0) {
         cursorReset();
       } else {
-        const targetIndexTime = _timestampToMeasureTndex(bpm, playTime, 4)
-        const index = targetIndexTime[0]
-        const offset = targetIndexTime[1]
+        const denominator = osmd.Sheet.playbackSettings?.rhythm.denominator
+        const numerator = osmd.Sheet.playbackSettings?.rhythm.numerator
+        const userStartTempoInBPM = osmd.Sheet.userStartTempoInBPM
+
+        const targetIndexInfo = _timestampToMeasureTndex(osmd.Sheet.SourceMeasures, userStartTempoInBPM, playTime, denominator)
+        const targetMeasuresIndex = targetIndexInfo["index"]
+        const targetMeasuresOffset = targetIndexInfo["offset"]
         // 獲取指定小節
-        const measure = osmd.Sheet.SourceMeasures[index];
+        const measure = osmd.Sheet.SourceMeasures[targetMeasuresIndex];
         // 在小節內找到特定時間的位置
         if(measure){
             // 遍歷小節內的所有垂直 staff entry 容器：
             for (let v = measure.VerticalSourceStaffEntryContainers.length - 1; v >= 0; v--) {
                 const vsse = measure.VerticalSourceStaffEntryContainers[v];
                 // 檢查時間戳是否小於或等於指定的偏移量：
-                if (_timestampToMillisecs(measure, vsse.Timestamp) <= offset + Number.EPSILON) {
+                if (_timestampToMillisecs(measure, vsse.Timestamp) <= targetMeasuresOffset + Number.EPSILON) {
                     // 如果是相同的 staff entry，則不做任何操作
                     // if (_currentMeasureIndex !== index || _currentVoiceEntryIndex !== v) {
-                        _updateCursor(osmd, index, v);
+                        _updateCursor(osmd, targetMeasuresIndex, v);
                     // }
                     scrollToCursor()
                     return;
@@ -154,12 +158,34 @@ const RenderMusicSheet = (props: RenderMusicSheetProps,ref: React.Ref<RenderMusi
     }
   }
 
-  const _timestampToMeasureTndex = (bpm:number, playTime:number, measureBeat:number) => {
+  const _timestampToMeasureTndex = (measureList:any, bpm:number, playTime:number, measureBeat:number) => {
     // 這個輔助函數將時間戳轉換為毫秒 / BPM
-    const x = (60 / bpm * measureBeat) * 1000
-    const r = Math.floor(playTime / x)
-    const y = playTime - (r * x)
-    return [r, y];
+    // const beatLong = (60 / bpm * measureBeat) * 1000
+    // const measurePlayed = Math.floor(playTime / beatLong)
+    // const totalTime = (measurePlayed * beatLong)
+    // const measureOffset = playTime - totalTime
+    // return {"index": measurePlayed, "offset": measureOffset}
+
+    let measurePlayed = 0
+    let totalTime = 0
+    
+    for (let listIdx = 0; listIdx < measureList.length; listIdx++) {
+      const measure = measureList[listIdx];
+      const tempoInBPM = measure.tempoInBPM
+      const beatLong = (60 / tempoInBPM * measureBeat) * 1000
+      measurePlayed = listIdx
+
+      if(playTime <= (totalTime + beatLong)) {
+        // console.log({"listIdx": listIdx, "totalTime": totalTime})
+        break
+      }
+
+      totalTime = (totalTime + beatLong)
+    }
+
+    const measureOffset = playTime - totalTime
+
+    return {"index": measurePlayed, "offset": measureOffset}
   }
 
   const _timestampToMillisecs = (measure:any, timestamp:any) => {
