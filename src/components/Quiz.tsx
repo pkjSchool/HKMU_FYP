@@ -154,7 +154,8 @@ const Quiz: React.FC<QuizProps> = ({ title, questions, onExit }) => {
                     src={questions[currentQuestion].imageSrc}
                     alt="Question"
                     className="img-fluid mb-3"
-                    style={{ maxHeight: "300px", objectFit: "contain" }}
+                    style={{maxWidth: '100%',
+                      maxHeight: '70%', objectFit: "contain" }}
                   />
                 )}
                 <p className="card-text fs-5">

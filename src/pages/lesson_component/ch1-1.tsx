@@ -3,127 +3,174 @@ import { useParams } from "react-router-dom";
 import Quiz from "../../components/Quiz";
 import { useNavigate } from "react-router-dom";
 import VideoBeforeQuiz from "../../components/VideoBeforeQuiz.tsx";
+import MemoBeforeQuiz from "../../components/MemoBeforeQuiz.tsx";
 import quiz_video from "../../assets/quiz_video/test.mp4";
 import question1 from "../../assets/quiz_img/quiz_1/quiz1_1piano.png";
 import question2_ans1 from "../../assets/quiz_img/quiz_1/quiz1_2.jpg";
 import question2_ans2 from "../../assets/quiz_img/quiz_1/quiz1_2_1.png";
 import question2_ans3 from "../../assets/quiz_img/quiz_1/quiz1_2_2.png";
 import question2_ans4 from "../../assets/quiz_img/quiz_1/quiz1_2_3.png";
-import question3_ans1 from "../../assets/quiz_img/quiz_1/quiz1_3.png";
-import question3_ans2 from "../../assets/quiz_img/quiz_1/quiz1_3_1.png";
-import question3_ans3 from "../../assets/quiz_img/quiz_1/quiz1_3_2.png";
-import question3_ans4 from "../../assets/quiz_img/quiz_1/quiz1_3_3.png";
+import fingerPositioning from "../../assets/baseImg/Finger-Positioning-On-Piano.jpg";
+import EveryGoodBoyDoesFine from "../../assets/baseImg/EGBDF.jpg"
+import FACE from "../../assets/baseImg/FACE.jpg"
+import quiz1Q from "../../assets/quiz_img/quiz_1/quiz1Q.jpg"
+import quiz2Q from "../../assets/quiz_img/quiz_1/quiz2Q.jpg"
+import quiz3Q from "../../assets/quiz_img/quiz_1/quiz3Q.jpg"
+import quiz4Q from "../../assets/quiz_img/quiz_1/quiz4Q.jpg"
+import quiz5Q from "../../assets/quiz_img/quiz_1/quiz5Q.jpg"
+import quiz6Q from "../../assets/quiz_img/quiz_1/quiz6Q.jpg"
+import quiz7Q from "../../assets/quiz_img/quiz_1/quiz7Q.jpg"
+import quiz8Q from "../../assets/quiz_img/quiz_1/pianoQuizC.jpg"
+import quiz9Q from "../../assets/quiz_img/quiz_1/pianoQuizD.jpg"
+import quiz10Q from "../../assets/quiz_img/quiz_1/pianoQuizE.jpg"
+import quiz11Q from "../../assets/quiz_img/quiz_1/pianoQuizF.jpg"
+import quiz12Q from "../../assets/quiz_img/quiz_1/pianoQuizG.jpg"
+import quiz13Q from "../../assets/quiz_img/quiz_1/pianoQuizA.jpg"
+import quiz14Q from "../../assets/quiz_img/quiz_1/pianoQuizB.jpg"
 
-// const questionsCh1_1 = [
-//   {
-//     questionText: "How many keys does a standard piano have?",
-//     imageSrc: question1,
-//     answerOptions: [
-//       { answerText: "61", isCorrect: false },
-//       { answerText: "87", isCorrect: false },
-//       { answerText: "88", isCorrect: true },
-//       { answerText: "89", isCorrect: false },
-//     ],
-//   },
-//   {
-//     questionText: "which is the correct gesture to play the piano?",
-//     answerOptions: [
-//       { isImage: true, imageSrc: question2_ans1, isCorrect: false },
-//       { isImage: true, imageSrc: question2_ans4, isCorrect: true },
-//       { isImage: true, imageSrc: question2_ans3, isCorrect: false },
-//       { isImage: true, imageSrc: question2_ans2, isCorrect: false },
-//     ],
-//   },
-//   {
-//     questionText: "What is the name of the white keys on a piano?",
-//     answerOptions: [
-//       { answerText: "Flats", isCorrect: false },
-//       { answerText: "Sharps", isCorrect: false },
-//       { answerText: "Natural notes", isCorrect: true },
-//       { answerText: "Chords", isCorrect: false },
-//     ],
-//   },
-//   {
-//     questionText: "What is the name of the black keys on a piano?",
-//     answerOptions: [
-//       { answerText: "Flats", isCorrect: false },
-//       { answerText: "Sharps", isCorrect: false },
-//       { answerText: "Natural notes", isCorrect: true },
-//       { answerText: "Chords", isCorrect: false },
-//     ],
-//   },
-//   {
-//     questionText: "Which musical note is the correct one?",
-//     answerOptions: [
-//       { isImage: true, imageSrc: question3_ans1, isCorrect: true },
-//       { isImage: true, imageSrc: question3_ans2, isCorrect: false },
-//       { isImage: true, imageSrc: question3_ans3, isCorrect: false },
-//       { isImage: true, imageSrc: question3_ans4, isCorrect: false },
-//     ],
-//   },
-  
-
-
-// ];
 const questionsCh1_1 = [
-  // 一般選擇題
+  // Multiple choice question
   {
-    questionText: "What is the name of this note?",
-    imageSrc: "path/to/image.png",
+    questionText: "What is the name of this key?",
+    imageSrc: quiz1Q, 
     answerOptions: [
       { answerText: "C4", isCorrect: true },
       { answerText: "D4", isCorrect: false },
       { answerText: "E4", isCorrect: false },
+      { answerText: "G4", isCorrect: false },
     ]
   },
-  // 彈奏題
   {
-    questionText: "請彈奏中央 C (Middle C)",
-    imageSrc: "path/to/sheet.png",
-    isPianoQuestion: true,
-    requiredNotes: [60] // 中央 C 的 MIDI 音符編號
+    questionText: "What is the name of this key?",
+    imageSrc: quiz2Q, 
+    answerOptions: [
+      { answerText: "C4", isCorrect: false },
+      { answerText: "D4", isCorrect: true },
+      { answerText: "E4", isCorrect: false },
+      { answerText: "G4", isCorrect: false },
+    ]
   },
-  // 和弦彈奏題
   {
-    questionText: "請彈奏 C 大三和弦",
-    imageSrc: "path/to/chord.png",
+    questionText: "What is the name of this key?",
+    imageSrc: quiz3Q, 
+    answerOptions: [
+      { answerText: "C4", isCorrect: false },
+      { answerText: "D4", isCorrect: false },
+      { answerText: "E4", isCorrect: true },
+      { answerText: "G4", isCorrect: false },
+    ]
+  },
+  {
+    questionText: "What is the name of this key?",
+    imageSrc: quiz4Q, 
+    answerOptions: [
+      { answerText: "C4", isCorrect: false },
+      { answerText: "D4", isCorrect: false },
+      { answerText: "G4", isCorrect: false },
+      { answerText: "F4", isCorrect: true },
+    ]
+  },
+  {
+    questionText: "What is the name of this key?",
+    imageSrc: quiz5Q, 
+    answerOptions: [
+      { answerText: "C4", isCorrect: false },
+      { answerText: "D4", isCorrect: false },
+      { answerText: "G4", isCorrect: true },
+      { answerText: "F4", isCorrect: false },
+    ]
+  },
+  {
+    questionText: "What is the name of this key?",
+    imageSrc: quiz6Q, 
+    answerOptions: [
+      { answerText: "A4", isCorrect: true },
+      { answerText: "D4", isCorrect: false },
+      { answerText: "B4", isCorrect: false },
+      { answerText: "F4", isCorrect: false },
+    ]
+  },
+  {
+    questionText: "What is the name of this key?",
+    imageSrc: quiz7Q, 
+    answerOptions: [
+      { answerText: "A4", isCorrect: false },
+      { answerText: "D4", isCorrect: false },
+      { answerText: "B4", isCorrect: true },
+      { answerText: "F4", isCorrect: false },
+    ]
+  },
+  {
+    questionText: "Please play the note",
+    imageSrc: quiz8Q,
     isPianoQuestion: true,
-    requiredNotes: [60, 64, 67] // C4, E4, G4
+    requiredNotes: [60] // MIDI note number for Middle C
+  },
+  // Chord playing question 
+  {
+    questionText: "Please play the note",
+    imageSrc: quiz9Q,
+    isPianoQuestion: true,
+    requiredNotes: [62] 
+  },
+  {
+    questionText: "Please play the note",
+    imageSrc: quiz10Q,
+    isPianoQuestion: true,
+    requiredNotes: [64] 
   }
+  
 ];
 const tutorialCards = [
   {
-    title: "正確的彈琴手勢",
-    content: "請將手自然彎曲，就像握著一顆蘋果的形狀。手指應該保持彎曲，指尖垂直觸碰琴鍵。記住：手腕要放鬆，保持水平，不要下垂或抬高。",
-    imageSrc: "/assets/tutorial/correct_hand_position.jpg", // 需要一張展示正確手型的圖片
+    title: "Correct Playing Posture",
+    content: "Keep your hands naturally curved as if holding an apple. Fingers should be curved with fingertips touching the keys vertically. Remember: Keep wrists relaxed and level, not drooping or raised.",
+    imageSrc: question2_ans4,
   },
   {
-    title: "右手基本位置 - 認識中央C",
-    content: "右手拇指（第一指）放在中央C上。其餘手指依序放在DEFG上：食指放D、中指放E、無名指放F、小指放G。這是最基本的五指位置。中央C的位置在鋼琴中間，在兩個黑鍵組的左邊白鍵。",
-    imageSrc: "/assets/tutorial/hand_position_C.jpg", // 需要一張標示手指位置和對應音符的圖片
+    title: "❌ Common Posture Mistakes to Avoid",
+    content: "❌Common mistakes to avoid❌",
+    imageSrc: question2_ans3,
   },
   {
-    title: "認識五線譜上的音符位置",
-    content: "從下往上數的五條線，可以記住一個口訣：「Every Good Boy Does Fine」(EGBDF)。線與線之間的空格則是：FACE。中央C位於第一加線下方。小技巧：找到中央C後，往右依序就是DEFGAB，就像字母表一樣順序。",
-    imageSrc: "/assets/tutorial/staff_notes.jpg", // 需要一張標示五線譜音符位置的圖片
+    title: "❌ Common Posture Mistakes to Avoid",
+    content: "❌Common mistakes to avoid❌",
+    imageSrc: question2_ans2,
   },
   {
-    title: "音符位置小技巧",
-    content: "1. 中央C在兩個黑鍵組的左邊\n2. 所有的C都在兩個黑鍵組的左邊\n3. 所有的F都在三個黑鍵組的左邊\n4. 相鄰的白鍵音符永遠按字母順序排列：CDEFGAB\n5. 練習時可以用貼紙標記重要音符位置，幫助記憶",
-    imageSrc: "/assets/tutorial/piano_keys_guide.jpg", // 需要一張標示鍵盤上音符位置的指引圖
+    title: "❌ Common Posture Mistakes to Avoid",
+    content: "❌Common mistakes to avoid❌",
+    imageSrc: question2_ans1,
   },
   {
-    title: "實際練習",
-    content: "現在請試著：\n1. 找到中央C\n2. 將右手拇指放在C上\n3. 其餘手指自然放在DEFG上\n4. 確保手型像握著蘋果一樣自然彎曲\n5. 依序彈奏CDEFG，感受每個手指的動作",
-    imageSrc: "/assets/tutorial/practice_position.jpg", // 需要一張展示完整手位和實踐的圖片
-  }
+    title: "Right Hand Basic Position - Finding Middle C",
+    content: "Place your right thumb (first finger) on Middle C. Rest remaining fingers on DEFG: index on D, middle on E, ring on F, pinky on G. This is the basic five-finger position. Middle C is located in the middle of the piano, to the left of the two black keys.",
+    imageSrc: fingerPositioning,
+  },
+  {
+    title: "Understanding Notes on the Staff",
+    content: "Counting lines from bottom to top, remember: 'Every Good Boy Does Fine' (EGBDF). Spaces spell: FACE. Middle C is on the first ledger line below. Tip: After finding Middle C, notes to the right follow alphabetically: DEFGAB.",
+    imageSrc: EveryGoodBoyDoesFine,
+  },
+  {
+    title: "Understanding Notes on the Staff2",
+    content: "Spaces spell: FACE. Middle C is on the first ledger line below. Tip: After finding Middle C, notes to the right follow alphabetically: DEFGAB.",
+    imageSrc: FACE,
+  },
 ];
+
+    
 function Ch1_1() {
-  const [showVideo, setShowVideo] = useState(true);
+  // State to track current displayed component
+  const [currentStep, setCurrentStep] = useState<'video' | 'memo' | 'quiz'>('video');
   const navigate = useNavigate();
 
   const handleVideoEnd = () => {
-    setShowVideo(false);
+    setCurrentStep('memo');
+  };
+
+  const handleMemoComplete = () => {
+    setCurrentStep('quiz');
   };
 
   const handleExitQuiz = () => {
@@ -131,25 +178,43 @@ function Ch1_1() {
     navigate("/");
   };
 
+  // Render component based on current step
+  const renderStep = () => {
+    switch (currentStep) {
+      case 'video':
+        return (
+          <VideoBeforeQuiz
+            videoSrc={quiz_video}
+            onVideoEnd={handleVideoEnd}
+            autoPlay={true}
+            controls={true}
+          />
+        );
+      case 'memo':
+        return (
+          <MemoBeforeQuiz
+            cards={tutorialCards}
+            onComplete={handleMemoComplete}
+          />
+        );
+      case 'quiz':
+        return (
+          <Quiz
+            title="Lesson 1: Piano Basics"
+            questions={questionsCh1_1}
+            onExit={handleExitQuiz}
+          />
+        );
+      default:
+        return null;
+    }
+  };
+
   return (
     <>
-      {showVideo ? (
-        <VideoBeforeQuiz
-          videoSrc={quiz_video}
-          onVideoEnd={handleVideoEnd}
-          autoPlay={true}
-          controls={true}
-        />
-      ) : (
-        <Quiz
-          title="Lesson 1: Piano Basics"
-          questions={questionsCh1_1}
-          onExit={handleExitQuiz}
-        />
-      )}
+      {renderStep()}
     </>
   );
 }
-
 export default Ch1_1;
 
