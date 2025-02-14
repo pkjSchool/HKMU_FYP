@@ -28,7 +28,7 @@ import quiz12Q from "../../assets/quiz_img/quiz_1/pianoQuizG.jpg"
 import quiz13Q from "../../assets/quiz_img/quiz_1/pianoQuizA.jpg"
 import quiz14Q from "../../assets/quiz_img/quiz_1/pianoQuizB.jpg"
 
-const questionsCh1_1 = [
+export const questionsCh1_1 = [
   // Multiple choice question
   {
     questionText: "What is the name of this key?",

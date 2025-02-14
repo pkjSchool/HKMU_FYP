@@ -12,13 +12,21 @@ export function login(
     });
 }
 
-export function lesson_save(
+export function user_lesson_get(
+    user_id:number
+) {
+    return axios.get(`${baseURL}/user_lesson/${user_id}`, {
+
+    });
+}
+
+export function user_lesson_save(
                     user_id:number,
                     chapter_id:number,
                     lesson_id:number,
                     score:number
                 ) {
-    return axios.post(`${baseURL}/lesson_save`, {
+    return axios.post(`${baseURL}/user_lesson`, {
         user_id: user_id,
         chapter_id: chapter_id,
         lesson_id: lesson_id,
@@ -53,17 +61,5 @@ export function user_task_get(
 ) {
     return axios.get(`${baseURL}/user_task/${user_id}`, {
 
-    });
-}
-
-export function user_task_update(
-    user_id:number,
-    task_id:number,
-    progress:string
-) {
-    return axios.post(`${baseURL}/user_info/${user_id}`, {
-        user_id: user_id,
-        task_id: task_id,
-        progress: progress,
     });
 }

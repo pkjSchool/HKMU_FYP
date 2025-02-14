@@ -11,7 +11,7 @@ import FNote from "../../assets/baseImg/F.jpg";
 import GNote from "../../assets/baseImg/G.jpg";
 
 
-const questionsCh1_2 = [
+export const questionsCh1_2 = [
   {
     questionText: "Where is the F key?",
     answerOptions: [
