@@ -12,6 +12,14 @@ export function login(
     });
 }
 
+export function user_lesson_count(
+    user_id:number
+) {
+    return axios.get(`${baseURL}/user_lesson_count/${user_id}`, {
+
+    });
+}
+
 export function user_lesson_get(
     user_id:number
 ) {
