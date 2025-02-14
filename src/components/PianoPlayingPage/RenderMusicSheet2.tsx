@@ -263,18 +263,14 @@ const RenderMusicSheet = (props: RenderMusicSheetProps,ref: React.Ref<RenderMusi
 
         if (!currentSheetNote.isRest()) {
           if (currentPressedNoteName[0] === currentSheetNote.Pitch.ToStringShortGet[0] && currentPressedNoteName[1] === '4') {
-            cursor.GNotesUnderCursor()[0].sourceNote.StemColorXml = "#00ff00";
-            cursor.GNotesUnderCursor()[0].sourceNote.NoteheadColor = "#00ff00";
-            osmdRef.current.render();
-            var cursor = osmdRef.current.cursor;
+            noteMarkRed( cursor.GNotesUnderCursor()[0].sourceNote)
+            // osmdRef.current.render();
+            // var cursor = osmdRef.current.cursor;
             // cursor.next();
           } else {
-            if (cursor.GNotesUnderCursor()[0].sourceNote.NoteheadColor != "#00ff00") {
-              cursor.GNotesUnderCursor()[0].sourceNote.StemColorXml = "#ff0000";
-              cursor.GNotesUnderCursor()[0].sourceNote.NoteheadColor = "#ff0000";
-            }
-            osmdRef.current.render();
-            var cursor = osmdRef.current.cursor;
+            noteMarkGreen(cursor.GNotesUnderCursor()[0].sourceNote)
+            // osmdRef.current.render();
+            // var cursor = osmdRef.current.cursor;
             // cursor.next();
           }
         } else {
@@ -290,14 +286,32 @@ const RenderMusicSheet = (props: RenderMusicSheetProps,ref: React.Ref<RenderMusi
           // Calculate the required scrollLeft value
           // console.log("asdfsadfsadfa", cursorX%window.innerWidth)
           
-          if (cursorX%window.innerWidth  > 1200) {
+          if (cursorX % window.innerWidth  > 1200) {
             var localScrollAmount = cursorX - window.innerWidth + 1200; // Adjust the offset as needed
-            container.scrollLeft =  localScrollAmount;
+            container.scrollLeft = localScrollAmount;
             setScrollAmount(localScrollAmount);
           }else{
-            container.scrollLeft =  scrollAmount;
+            container.scrollLeft = scrollAmount;
           }
         }
+      }
+    }
+  }
+
+  const noteMarkRed = (sourceNote:any) => {
+    sourceNote.StemColorXml = "#00ff00";
+    sourceNote.NoteheadColor = "#00ff00";
+    if (osmdRef.current) {
+      osmdRef.current.render();
+    }
+  }
+
+  const noteMarkGreen = (sourceNote:any) => {
+    if (sourceNote.NoteheadColor != "#00ff00") {
+      sourceNote.StemColorXml = "#ff0000";
+      sourceNote.NoteheadColor = "#ff0000";
+      if (osmdRef.current) {
+        osmdRef.current.render();
       }
     }
   }
