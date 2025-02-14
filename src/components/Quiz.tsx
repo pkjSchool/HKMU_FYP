@@ -1,4 +1,4 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import quizBackground from "../assets/quiz_background.jpg";
 import PianoRender from "./PianoPlayingPage/PianoRender";
 import { QuizProps } from "./quiz.types";
@@ -15,6 +15,29 @@ const Quiz: React.FC<QuizProps> = ({ title, questions, onExit }) => {
   const [activeNotes, setActiveNotes] = useState<number[]>([]);
   const MIDIControllerRef = useRef<MidiControllerRef>(null);
 
+  useEffect(() => {
+    if (questions[currentQuestion].isPianoQuestion) {
+      checkAnswer(activeNotes);
+    }
+  }, [activeNotes]);
+
+  const checkAnswer = (notes: number[]) => {
+    if (answered) return;
+    const requiredNotes = questions[currentQuestion].requiredNotes || [];
+    const allRequiredNotesPressed =
+      requiredNotes.length > 0 &&
+      notes.length === requiredNotes.length &&
+      requiredNotes.every((requiredNote) => notes.includes(requiredNote));
+
+    if (allRequiredNotesPressed) {
+      console.log("Correct answer!");
+      setScore((prevScore) => prevScore + 1);
+      setTimeout(() => {
+        setAnswered(true);
+      }, 100);
+    }
+  };
+
   const handleAnswerButtonClick = (index: number, isCorrect: boolean) => {
     setAnswered(true);
     setSelectedAnswer(index);
@@ -26,22 +49,10 @@ const Quiz: React.FC<QuizProps> = ({ title, questions, onExit }) => {
   const onNoteOn = (note: number) => {
     const noteArrIdx = activeNotes.indexOf(note);
     if (noteArrIdx < 0) {
-      const newNotes = [...activeNotes, note];
-      setActiveNotes(newNotes);
+      setActiveNotes((prev) => [...prev, note]);
 
       if (MIDIControllerRef.current) {
         MIDIControllerRef.current.playNote(note, 50);
-      }
-      const requiredNotes = questions[currentQuestion].requiredNotes || [];
-
-      const allRequiredNotesPressed =
-        requiredNotes.length > 0 &&
-        requiredNotes.every((requiredNote) => newNotes.includes(requiredNote));
-
-      if (allRequiredNotesPressed && !answered) {
-        console.log("Correct answer!");
-        setAnswered(true);
-        setScore((prevScore) => prevScore + 1);
       }
     }
   };
@@ -49,13 +60,28 @@ const Quiz: React.FC<QuizProps> = ({ title, questions, onExit }) => {
   const onNoteOff = (note: number) => {
     const noteArrIdx = activeNotes.indexOf(note);
     setActiveNotes((prev) => prev.filter((n) => n !== note));
+
     if (noteArrIdx >= 0) {
-      setActiveNotes(prev => prev.filter(n => n !== note));
-      
+      // setActiveNotes((prev) => prev.filter((n) => n !== note));
+      setActiveNotes((prev) => prev.splice(noteArrIdx, 1));
+
       if (MIDIControllerRef.current) {
         MIDIControllerRef.current.stopNote(note);
       }
     }
+  };
+
+  const autoPlayChord = () => {
+    const requiredNotes = questions[currentQuestion].requiredNotes || [];
+    setActiveNotes([]);
+    requiredNotes.forEach((note) => {
+      onNoteOn(note);
+    });
+    setTimeout(() => {
+      requiredNotes.forEach((note) => {
+        onNoteOff(note);
+      });
+    }, 1000);
   };
 
   const handleNextQuestion = () => {
@@ -99,7 +125,20 @@ const Quiz: React.FC<QuizProps> = ({ title, questions, onExit }) => {
           </button>
         </div>
 
-        <div className="card-body">
+        <div
+          className="card-body"
+          style={
+            questions[currentQuestion].isPianoQuestion
+              ? {
+                  padding: 0,
+                  flex: "1 1 auto",
+                }
+              : {
+                  padding: "1rem",
+                  flex: "1 1 auto",
+                }
+          }
+        >
           {showScore ? (
             <div className="text-center">
               <h4>Quiz completed!</h4>
@@ -115,7 +154,8 @@ const Quiz: React.FC<QuizProps> = ({ title, questions, onExit }) => {
                     src={questions[currentQuestion].imageSrc}
                     alt="Question"
                     className="img-fluid mb-3"
-                    style={{ maxHeight: "300px", objectFit: "contain" }}
+                    style={{maxWidth: '100%',
+                      maxHeight: '70%', objectFit: "contain" }}
                   />
                 )}
                 <p className="card-text fs-5">
@@ -126,19 +166,33 @@ const Quiz: React.FC<QuizProps> = ({ title, questions, onExit }) => {
               {questions[currentQuestion].isPianoQuestion ? (
                 <>
                   <div className="piano-question">
-                    <div className="note-indicators mb-3">
-                      {questions[currentQuestion].requiredNotes?.map((note) => (
-                        <span
-                          key={note}
-                          className={`badge ${
-                            activeNotes.includes(note)
-                              ? "bg-success"
-                              : "bg-secondary"
-                          } me-2`}
+                    <div className="d-flex justify-content-between align-items-center mb-3">
+                      <div className="note-indicators">
+                        {questions[currentQuestion].requiredNotes?.map(
+                          (note) => (
+                            <span
+                              key={note}
+                              className={`badge ${
+                                activeNotes.includes(note)
+                                  ? "bg-success"
+                                  : "bg-secondary"
+                              } me-2`}
+                            >
+                              Note {note}
+                            </span>
+                          )
+                        )}
+                      </div>
+
+                      {!answered && (
+                        <button
+                          className="btn btn-outline-primary btn-sm"
+                          onClick={autoPlayChord}
+                          style={{ marginRight: "1rem" }}
                         >
-                          Note {note}
-                        </span>
-                      ))}
+                          <i className="bi bi-play-fill"></i> Test Chord
+                        </button>
+                      )}
                     </div>
 
                     <MIDIController
