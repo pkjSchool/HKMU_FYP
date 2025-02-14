@@ -1,12 +1,28 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { TiTick } from "react-icons/ti";
 import sampleTasks from "../data/task";
+import { user_task_get } from "../api_request/request";
+import { getLoginedUser } from "../access_control/user";
 
 const TaskProgress: React.FC = () => {
+    const userInfo = getLoginedUser();
+    const [userTasks, setUserTasks] = useState<any[]>([]);
+
+    useEffect(() => {
+        user_task_get(parseInt(userInfo.user_id)).then((response) => {
+            const result = response.data
+            if(result.status) {
+              const resultData = result.data
+              setUserTasks(resultData)
+            } else {
+              alert(JSON.stringify(result));
+            }
+        })
+    }, []);
 
   return (
     <div className="task-progress">
-      {sampleTasks.map((taskGroup, groupIdx) => {
+      {userTasks.map((taskGroup, groupIdx) => {
           return <div key={groupIdx} className="progress-bar-group">
                     <h2 className="progress-title">{taskGroup.title}</h2>
                     {taskGroup.tasks.map((task, i) => {
