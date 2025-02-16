@@ -17,7 +17,7 @@ import {
   Player,
   getPlayer,
 } from "../components/MusicNotePlayer/player/Player.js";
-import MusicSheetRender2 from "../components/PianoPlayingPage/RenderMusicSheet2.js";
+import MusicSheetRender2, { RenderMusicSheetRef } from "../components/PianoPlayingPage/RenderMusicSheet2.js";
 import axios from "axios";
 
 const ACCURATE_OFFSET = 150;
@@ -35,6 +35,8 @@ function App() {
   const notePlayerRef = useRef<MusicNotePlayerRender | null>(null);
   const MIDIControllerRef = useRef<MidiControllerRef>(null);
   const topNavBarRef = useRef<TopNavBarRef>(null);
+  const musicSheetRenderRef = useRef<RenderMusicSheetRef>(null);
+  
 
   const [volume, setVolume] = useState<number>(1);
   const [musicFile, setMusicFile] = useState<File | null>(null);
@@ -228,7 +230,12 @@ function App() {
       getPlayer().addFinishListener(() => {
         handleFinish();
       });
+
       getPlayer().addTimeUpdatedListener(onPlayerTimeUpdated);
+      getPlayer().addTimeUpdatedListener((time: number, end: number, bpm: number)=>{
+        musicSheetRenderRef.current?.cursorMoveTo(time * 1000, bpm)
+      });
+
       getPlayer().addNewSongCallback(() => {
         handleInitial();
       });
@@ -255,12 +262,13 @@ function App() {
     console.log("music file changed");
     if (musicFile) {
       if (musicFile.type === "audio/midi"  || musicFile.type === "audio/mid") {
+        getPlayer().loadSong(musicFile, "fileName", "fileName");
         setIsMidi2XML(true);
 
         const formData = new FormData();
         formData.append("midi", musicFile);
         console.log("start to parse midi file");
-        axios.post("http://localhost:5000/midi2mucicxml", formData).then((res) => { 
+        axios.post("http://localhost/musicfile/midi2mucicxml", formData).then((res) => {
           setMusicXML(res.data);
           setIsMidi2XML(false);
         });
@@ -272,7 +280,7 @@ function App() {
         const formData = new FormData();
         formData.append("audio", musicFile);
         console.log("start to parse wav file");
-        axios.post("http://localhost:5000/transcribe", formData, {responseType: "arraybuffer", timeout: 180000}).then((res) => {
+        axios.post("http://localhost/musicfile/transcribe", formData, {responseType: "arraybuffer", timeout: 180000}).then((res) => {
           const midiBlob = new Blob([res.data], { type: "audio/midi" });
 
           // Convert Blob to File
@@ -297,19 +305,19 @@ function App() {
   /**
     Parse the midi file and set the midi data
   */
-  const parseMidi = async (file: File) => {
-    try {
-      const midiArrayBuffer = await file.arrayBuffer();
-      const fileName = file.name;
-      const midiData = new Midi(midiArrayBuffer);
-      setMidiData(midiData);
-      setFileName(fileName);
+  // const parseMidi = async (file: File) => {
+  //   try {
+  //     const midiArrayBuffer = await file.arrayBuffer();
+  //     const fileName = file.name;
+  //     const midiData = new Midi(midiArrayBuffer);
+  //     setMidiData(midiData);
+  //     setFileName(fileName);
 
-      getPlayer().loadSong(file, fileName, fileName);
-    } catch (e) {
-      console.error("Error parsing MIDI file", e);
-    }
-  };
+  //     getPlayer().loadSong(file, fileName, fileName);
+  //   } catch (e) {
+  //     console.error("Error parsing MIDI file", e);
+  //   }
+  // };
 
   return (
     <div style={{ background: "#282c34", height: "100vh" }}>
@@ -344,6 +352,7 @@ function App() {
         <MusicNotePlayerRender ref={notePlayerRef} />
       </div>
       <MusicSheetRender2
+        ref={musicSheetRenderRef}
         musicXML={musicXML}
         activeNotes={activeNotes}
         isFileLoaded={isFileLoaded}

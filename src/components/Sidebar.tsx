@@ -19,13 +19,13 @@ interface SidebarItem {
 
 const items: SidebarItem[] = [
   { name: "home", icon: <FaHome />, link: "/" },
-  { name: "learning", icon: <FaBook />, link: "/learning" },
+  // { name: "learning", icon: <FaBook />, link: "/learning" },
   { name: "self study", icon: <FaGraduationCap />, link: "/self-study" },
-  { name: "music player", icon: <FaGraduationCap />, link: "/music-player" },
+  // { name: "music player", icon: <FaGraduationCap />, link: "/music-player" },
   { name: "Task", icon: <GrTasks />, link: "/task" },
   { name: "profile", icon: <FaUser />, link: "/profile" },
   { name: "ai generation", icon: <FaRobot />, link: "/ai-generation" },
-  { name: "more", icon: <FaEllipsisH />, link: "/more" },
+  // { name: "more", icon: <FaEllipsisH />, link: "/more" },
   { name: "logout", icon: <FaEllipsisH />, link: "/logout" }
 ];
 

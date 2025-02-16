@@ -1,7 +1,5 @@
 import React, { useState } from "react";
 import { Sidebar } from "../components/Sidebar";
-import LessonMap from "../components/LessonMap";
-import TaskProgress from "../components/TaskProgress";
 import { Outlet } from "react-router-dom";
 
 

@@ -112,7 +112,7 @@ const MIDIController = (props: MIDIControllerProps, ref: React.Ref<MidiControlle
   const playNote = async (note: number, velocity: number) => {
     if (!audioContextRef.current) return;
 
-    console.log("In playNote", note)
+    // console.log("In playNote", note)
 
     const audioBuffer = audioBuffers[note];
     if (audioBuffer) {
