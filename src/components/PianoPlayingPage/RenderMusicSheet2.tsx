@@ -116,7 +116,6 @@ const RenderMusicSheet = (props: RenderMusicSheetProps) => {
         return;
       }
       var currentSheetNote = cursor.NotesUnderCursor()[0];
-
       // get user press note
       var currentPressedNote = props.activeNotes[props.activeNotes.length - 1];
       var currentPressedNoteName = noteMap[currentPressedNote];
@@ -128,19 +127,28 @@ const RenderMusicSheet = (props: RenderMusicSheetProps) => {
       // console.log("currentPressedNoteName: ", currentPressedNoteName);
       // console.log("currentSheetNote: ", currentSheetNote.Pitch.ToStringShortGet);
 
+
     if (!currentSheetNote.isRest()){
-      if (currentPressedNoteName[0] === currentSheetNote.Pitch.ToStringShortGet[0] && currentPressedNoteName[1] === '4') {
+      if (currentPressedNoteName[0] === currentSheetNote.Pitch.ToStringShortGet[0] &&  parseInt(currentPressedNoteName[1]) - 3 ===  parseInt(currentSheetNote.Pitch.ToStringShortGet[1])) {
         cursor.GNotesUnderCursor()[0].sourceNote.StemColorXml = "#00ff00";
         cursor.GNotesUnderCursor()[0].sourceNote.NoteheadColor = "#00ff00";
         osmdRef.current.render();
         var cursor = osmdRef.current.cursor;
         cursor.next();
+        var currentSheetNote = cursor.NotesUnderCursor()[0];
+        if (currentSheetNote.isRest()){
+          cursor.next();
+        }
       }else {
         cursor.GNotesUnderCursor()[0].sourceNote.StemColorXml = "#ff0000";
         cursor.GNotesUnderCursor()[0].sourceNote.NoteheadColor = "#ff0000";
         osmdRef.current.render();
         var cursor = osmdRef.current.cursor;
         cursor.next();
+        var currentSheetNote = cursor.NotesUnderCursor()[0];
+        if (currentSheetNote.isRest()){
+          cursor.next();
+        }
       }
       }else{
         cursor.next();
@@ -155,7 +163,7 @@ const RenderMusicSheet = (props: RenderMusicSheetProps) => {
         // Calculate the required scrollLeft value
         console.log("asdfsadfsadfa", cursorX%window.innerWidth)
         
-        if (cursorX%window.innerWidth  > 1200) {
+        if (cursorX%window.innerWidth  < 1200) {
           var localScrollAmount = cursorX - window.innerWidth + 1200; // Adjust the offset as needed
           container.scrollLeft =  localScrollAmount;
           setScrollAmount(localScrollAmount);

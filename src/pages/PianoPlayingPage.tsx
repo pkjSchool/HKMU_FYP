@@ -260,7 +260,7 @@ function App() {
         const formData = new FormData();
         formData.append("midi", musicFile);
         console.log("start to parse midi file");
-        axios.post("http://localhost:5000/midi2mucicxml", formData).then((res) => {
+        axios.post("http://localhost:5000/midi2mucicxml", formData).then((res) => { 
           setMusicXML(res.data);
           setIsMidi2XML(false);
         });
@@ -341,7 +341,7 @@ function App() {
           zIndex: 0,
         }}
       >
-        {/* <MusicNotePlayerRender ref={notePlayerRef} /> */}
+        <MusicNotePlayerRender ref={notePlayerRef} />
       </div>
       <MusicSheetRender2
         musicXML={musicXML}
