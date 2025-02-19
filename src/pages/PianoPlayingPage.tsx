@@ -101,7 +101,9 @@ function App() {
     if (notePlayerRef.current) notePlayerRef.current.pause();
   };
   const handleStop = () => {
-    if (notePlayerRef.current) notePlayerRef.current.stop();
+    if (notePlayerRef.current) {
+      notePlayerRef.current.stop();
+    }
   };
   const handleMenuCollapsed = (isCollapsed: boolean) => {
     if (notePlayerRef.current) {
@@ -169,6 +171,7 @@ function App() {
     setIsFinished(false);
     setIsShowResult(false);
     handleStop();
+    if (musicSheetRenderRef.current) musicSheetRenderRef.current.rerenderSheet();
   };
 
   const handleFinish = () => {
@@ -331,7 +334,7 @@ function App() {
         ref={topNavBarRef}
         playCallback={handlePlay}
         pausingCallback={handlePause}
-        stopCallback={handleStop}
+        stopCallback={handleReset}
         menuCollapsedCallback={handleMenuCollapsed}
         progressCallback={handleProgressChanged}
         setMusicFile={setMusicFile}
