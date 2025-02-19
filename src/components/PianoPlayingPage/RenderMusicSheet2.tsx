@@ -9,6 +9,7 @@ import {
   OpenSheetMusicDisplay,
   VoiceEntry,
   Note,
+  
   StemDirectionType,
 } from "opensheetmusicdisplay";
 import { set } from "react-hook-form";
@@ -17,6 +18,7 @@ export type RenderMusicSheetRef = {
   cursorNext: () => void;
   cursorPrev: () => void;
   cursorMoveTo: (time:number, bpm:number) => void;
+  rerenderSheet: () => void;
 };
 
 interface RenderMusicSheetProps {
@@ -30,7 +32,8 @@ const RenderMusicSheet = (props: RenderMusicSheetProps,ref: React.Ref<RenderMusi
   useImperativeHandle(ref, () => ({
     cursorNext,
     cursorPrev,
-    cursorMoveTo
+    cursorMoveTo,
+    rerenderSheet
   }));
   
   const containerRef = useRef<HTMLDivElement>(null);
@@ -38,6 +41,7 @@ const RenderMusicSheet = (props: RenderMusicSheetProps,ref: React.Ref<RenderMusi
   const osmdRef = useRef<OpenSheetMusicDisplay | null>(null);
   const [localActiveNotes, setLocalActiveNotes] = useState<number[]>([]);
   const [scrollAmount, setScrollAmount] = useState<number>(0);
+  const [musicSheet, setMusicSheet] = useState<string| null>(null);
 
   useEffect(() => {
     console.log("RenderMusicSheet: musicXML");
@@ -73,6 +77,7 @@ const RenderMusicSheet = (props: RenderMusicSheetProps,ref: React.Ref<RenderMusi
           cursor.show();
           cursorPrev()
 
+          setMusicSheet(props.musicXML)
         }).catch((e) => {
           console.error(e);
         });
@@ -93,6 +98,44 @@ const RenderMusicSheet = (props: RenderMusicSheetProps,ref: React.Ref<RenderMusi
       setLocalActiveNotes(props.activeNotes);
     }
   }, [props.activeNotes]);
+
+  const rerenderSheet = () => {
+    if (osmdRef.current && osmdContainerRef.current && musicSheet) {
+      osmdContainerRef.current.innerHTML = "";
+
+      // Initialize OpenSheetMusicDisplay
+      osmdRef.current = new OpenSheetMusicDisplay(osmdContainerRef.current, {
+        autoResize: true,
+        drawTitle: false,
+        drawSubtitle: false,
+        drawComposer: false,
+        drawLyricist: false,
+        drawPartNames: false,
+        drawMeasureNumbers: false,
+        drawFingerings: false,
+        drawCredits: false,
+        disableCursor: false,
+      });
+
+      let cursorsOptions = [{type: 0, color: "#3d5e94", alpha: 0.5, follow: true}];
+      osmdRef.current.setOptions({cursorsOptions: cursorsOptions});
+
+      // Load the XML and render
+      osmdRef.current.load(musicSheet).then(() => {
+          // Set the options to display only one system (row)
+          osmdRef.current!.EngravingRules.RenderSingleHorizontalStaffline = true;
+          osmdRef.current!.render();
+
+          // Add cursor
+          var cursor = osmdRef.current!.cursor;
+          cursor.show();
+          cursorPrev()
+
+        }).catch((e) => {
+          console.error(e);
+        });
+    }
+  }
 
   const cursorNext = () => {
     if (osmdRef.current) {
