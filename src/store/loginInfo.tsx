@@ -12,14 +12,13 @@ const loginInfo = createSlice({
     },
     reducers: {
         setInfo (state, action) {
-            console.log(action.payload)
             state.isLogined = true;
             state.user_id = action.payload.user_id;
             state.login_id = action.payload.login_id;
             state.displayName = action.payload.displayName;
             state.jsondata = action.payload.jsondata;
 
-            setStorageUser(action.payload.jsondata);
+            setStorageUser(action.payload.user_id);
         },
         clearInfo (state, action) {
             state.isLogined = false;

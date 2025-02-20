@@ -2,11 +2,14 @@ import { useState, useRef, useEffect } from "react";
 import quizBackground from "../assets/quiz_background.jpg";
 import PianoRender from "./PianoPlayingPage/PianoRender";
 import { QuizProps } from "./quiz.types";
+import { user_lesson_save } from "../api_request/request";
+import { getLoginedUser } from "../access_control/user";
 import MIDIController, {
   MidiControllerRef,
 } from "../components/PianoPlayingPage/MidiController.js";
 
-const Quiz: React.FC<QuizProps> = ({ title, questions, onExit }) => {
+const Quiz: React.FC<QuizProps> = ({ lesson_ref_id, chapter_ref_id, title, questions, onExit }) => {
+  const userInfo = getLoginedUser();
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [answered, setAnswered] = useState(false);
   const [selectedAnswer, setSelectedAnswer] = useState<number | null>(null);
@@ -93,6 +96,13 @@ const Quiz: React.FC<QuizProps> = ({ title, questions, onExit }) => {
       setCurrentQuestion(nextQuestion);
     } else {
       setShowScore(true);
+      user_lesson_save(parseInt(userInfo.user_id), chapter_ref_id, lesson_ref_id, score).then((response) => {
+
+      }).catch(()=>{
+
+      })
+
+
     }
   };
 

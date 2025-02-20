@@ -14,6 +14,8 @@ export interface AnswerOption {
   }
   
   export interface QuizProps {
+    lesson_ref_id: number;
+    chapter_ref_id: number;
     title: string;
     questions: Question[];
     onExit?: () => void;

@@ -9,27 +9,25 @@ function InitialPage() {
     const dispatch = useDispatch();
 
     const loadUser = () => {
-        setLoginedUser(dispatch, {
-            "login_id": "user1",
-            "name": "Tester",
-            "password": "123",
-            "user_id": 1
-        });
-        finishInitial();
-        return;
+        // setLoginedUser(dispatch, {
+        //     "login_id": "user1",
+        //     "name": "Tester",
+        //     "password": "123",
+        //     "user_id": 1
+        // });
+        // finishInitial();
+        // return;
 
         const storageUser = getStorageUser()
 
         if(storageUser) {
-            setLoginedUser(dispatch, storageUser)
-            const userInfo = getLoginedUser();
-
-            if(userInfo.isLogined && userInfo.user_id) {
-                user_info_get(parseInt(userInfo.user_id)).then((response) => {
+            console.log("getLoginedUser", storageUser);
+            if(storageUser) {
+                user_info_get(parseInt(storageUser)).then((response) => {
                     const result = response.data
                     if(result.status) {
                         const resultData = result.data
-                        console.log(resultData);
+                        console.log("user_info_get", resultData);
                         setLoginedUser(dispatch, resultData);
                         finishInitial()
                     } else {
@@ -37,6 +35,8 @@ function InitialPage() {
                     }
                 })
             }
+        } else {
+            finishInitial()
         }
     }
 

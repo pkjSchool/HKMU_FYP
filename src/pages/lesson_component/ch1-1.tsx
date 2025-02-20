@@ -178,6 +178,9 @@ function Ch1_1() {
     navigate("/");
   };
 
+  const chapter_ref_id = 1
+  const lesson_ref_id = 1
+
   // Render component based on current step
   const renderStep = () => {
     switch (currentStep) {
@@ -200,6 +203,8 @@ function Ch1_1() {
       case 'quiz':
         return (
           <Quiz
+            lesson_ref_id={lesson_ref_id}
+            chapter_ref_id={chapter_ref_id}
             title="Lesson 1: Piano Basics"
             questions={questionsCh1_1}
             onExit={handleExitQuiz}

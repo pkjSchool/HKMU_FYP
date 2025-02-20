@@ -1,7 +1,7 @@
 import LessonMap from '../components/LessonMap';
 import TaskProgress from '../components/TaskProgress';
 
-const sampleChapters = [
+export const sampleChapters = [
   {
     ref_id: 1,
     title: "Chapter 1",
