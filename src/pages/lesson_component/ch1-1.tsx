@@ -28,6 +28,9 @@ import quiz12Q from "../../assets/quiz_img/quiz_1/pianoQuizG.jpg"
 import quiz13Q from "../../assets/quiz_img/quiz_1/pianoQuizA.jpg"
 import quiz14Q from "../../assets/quiz_img/quiz_1/pianoQuizB.jpg"
 
+const chapter_ref_id = 1
+const lesson_ref_id = 1
+
 export const questionsCh1_1 = [
   // Multiple choice question
   {
@@ -177,9 +180,6 @@ function Ch1_1() {
     console.log("Quiz exited!");
     navigate("/");
   };
-
-  const chapter_ref_id = 1
-  const lesson_ref_id = 1
 
   // Render component based on current step
   const renderStep = () => {

@@ -10,6 +10,8 @@ import ENote from "../../assets/baseImg/E.jpg";
 import FNote from "../../assets/baseImg/F.jpg";
 import GNote from "../../assets/baseImg/G.jpg";
 
+const chapter_ref_id = 1
+const lesson_ref_id = 2
 
 export const questionsCh1_2 = [
   {
@@ -113,6 +115,8 @@ const Ch1_2 = () => {
         <MemoBeforeQuiz cards={tutorialCards} onComplete={handleComplete} />
       ) : (
         <Quiz
+          chapter_ref_id={chapter_ref_id}
+          lesson_ref_id={lesson_ref_id}
           title="Lesson 1: Piano Basics"
           questions={questionsCh1_2}
           onExit={handleExitQuiz}
