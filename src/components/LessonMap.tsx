@@ -4,6 +4,8 @@ import { NavLink } from "react-router-dom";
 import { user_lesson_get } from "../api_request/request";
 import { getLoginedUser } from "../access_control/user";
 
+import { calcLessonStarNumber, printLessonStar } from "../util/lessonStar";
+
 import { questionsCh1_1 } from "../pages/lesson_component/ch1-1";
 import { questionsCh1_2 } from "../pages/lesson_component/ch1-2";
 
@@ -62,7 +64,7 @@ const LessonMap: FC<LessonMapProps> = ({ chapters }) => {
     const record = getUserLessonRecord(chapter_id, lesson_id)
     const lessonMaxScore = getLessonMaxScore(chapter_id, lesson_id)
     let lessonUserScore = null
-    if (record) {
+    if (record && lessonMaxScore) {
       lessonUserScore = record.score
       if(lessonUserScore > lessonMaxScore) {
         lessonUserScore = lessonMaxScore
@@ -70,6 +72,13 @@ const LessonMap: FC<LessonMapProps> = ({ chapters }) => {
     }
  
     return (lessonUserScore)?(lessonUserScore + " / " + lessonMaxScore):null
+  }
+
+  const getLessonStar = (chapter_id:number, lesson_id:number, lesson:Lesson) => {
+    const record = getUserLessonRecord(chapter_id, lesson_id)
+    const lessonMaxScore = getLessonMaxScore(chapter_id, lesson_id)
+    const stars = (record && lessonMaxScore)?printLessonStar(record.score, lessonMaxScore):null
+    return (record) ? stars:null
   }
 
   useEffect(() => {
@@ -104,11 +113,7 @@ const LessonMap: FC<LessonMapProps> = ({ chapters }) => {
                     {lessonIndex + 1} 
                   </NavLink>
                   <div className="lesson-score">{getLessonScore(chapter.ref_id, lesson.ref_id)}</div>
-                  {lesson.stars !== undefined && (
-                    <div className="lesson-status">
-                      {Array(lesson.stars).fill('⭐').join('')}
-                    </div>
-                  )}
+                  <div className="lesson-status">{getLessonStar(chapter.ref_id, lesson.ref_id, lesson)}</div>
                 </div>
                 {lessonIndex < chapter.lessons.length - 1 && (
                   <div className={["connector-wrapper", getConnectorDirectionClass(lessonIndex)].join(" ")}>

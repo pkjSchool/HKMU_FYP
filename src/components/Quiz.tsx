@@ -4,6 +4,8 @@ import PianoRender from "./PianoPlayingPage/PianoRender";
 import { QuizProps } from "./quiz.types";
 import { user_lesson_save } from "../api_request/request";
 import { getLoginedUser } from "../access_control/user";
+import { IoStar, IoStarOutline } from "react-icons/io5";
+import { calcLessonStarNumber } from "../util/lessonStar";
 import MIDIController, {
   MidiControllerRef,
 } from "../components/PianoPlayingPage/MidiController.js";
@@ -23,6 +25,33 @@ const Quiz: React.FC<QuizProps> = ({ lesson_ref_id, chapter_ref_id, title, quest
       checkAnswer(activeNotes);
     }
   }, [activeNotes]);
+
+  const getResultStar = (score:number, lessonMaxScore:number) => {
+    const starsNumber = calcLessonStarNumber(score, lessonMaxScore)
+    switch (starsNumber) {
+      case 2:
+        return <>
+          <IoStar className={starAnime} style={{...starSmall, ...starOrder1}} />
+          <IoStarOutline className={starAnime} style={{...starBig, ...starOrder2}} />
+          <IoStar className={starAnime} style={{...starSmall, ...starOrder3}} />
+        </>
+        break;
+      case 3:
+        return <>
+            <IoStar className={starAnime} style={{...starSmall, ...starOrder1}} />
+            <IoStar className={starAnime} style={{...starBig, ...starOrder2}} />
+            <IoStar className={starAnime} style={{...starSmall, ...starOrder3}} />
+          </>
+        break;
+      default:
+        return <>
+          <IoStar className={starAnime} style={{...starSmall, ...starOrder1}} />
+          <IoStarOutline className={starAnime} style={{...starBig, ...starOrder2}} />
+          <IoStarOutline className={starAnime} style={{...starSmall, ...starOrder3}} />
+        </>
+        break;
+    }
+  }
 
   const checkAnswer = (notes: number[]) => {
     if (answered) return;
@@ -151,6 +180,9 @@ const Quiz: React.FC<QuizProps> = ({ lesson_ref_id, chapter_ref_id, title, quest
         >
           {showScore ? (
             <div className="text-center">
+              <div className="mt-3 mb-3" style={starWrapper}>
+                { getResultStar(score, questions.length) }
+              </div>
               <h4>Quiz completed!</h4>
               <p>
                 Score: {score} out of {questions.length}
@@ -275,4 +307,24 @@ const Quiz: React.FC<QuizProps> = ({ lesson_ref_id, chapter_ref_id, title, quest
     </div>
   );
 };
+
+const starOrder1 = { animationDelay: "0.5s" }
+
+const starOrder2 = { animationDelay: "0.8s" }
+
+const starOrder3 = { animationDelay: "1.1s" }
+
+const starWrapper:object = { display:"flex", justifyContent:"center", alignItems:"baseline" }
+
+const starSmall = {
+    fontSize:"60px",
+    color: "var(--bs-warning)"
+}
+const starBig = {
+    fontSize:"80px",
+    color: "var(--bs-warning)"  
+}
+
+const starAnime = "animate__animated animate__zoomIn animate__faster"
+
 export default Quiz;
