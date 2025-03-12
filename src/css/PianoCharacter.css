@@ -1,0 +1,37 @@
+.piano-character {
+    position: fixed;
+    width: 250px;
+    height: 250px;
+    transition: all 0.3s ease;
+}
+
+.piano-character-image {
+    position: absolute;
+    left: 25px;
+    bottom: 0;
+}
+
+.piano-character-image img {
+    width: 200px;
+    height: 200px;
+}
+
+.piano-character-message {
+    position: relative;
+    height: 50px;
+    background: #fff;
+    padding: 0px 3px 0px 3px;
+    border-radius: 5px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.piano-character-message:after {
+    content: " ";
+    position: absolute;
+    right: 30px;
+    bottom: -15px;
+    border-top: 15px solid black;
+    border-right: 15px solid transparent;
+    border-left: 15px solid transparent;
+    border-bottom: none;
+}

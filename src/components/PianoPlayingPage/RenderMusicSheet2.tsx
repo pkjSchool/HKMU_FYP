@@ -372,8 +372,6 @@ const RenderMusicSheet = (props: RenderMusicSheetProps,ref: React.Ref<RenderMusi
           : { visibility: "hidden" }
       }
     >
-      {/* <button style={styles.leftMusicSheetControlButton} onClick={cursorPrev}>Prev</button>
-      <button style={styles.rightMusicSheetControlButton} onClick={cursorNext}>Next</button> */}
       <div ref={osmdContainerRef} style={{ width: "100%", height: "200px" }} ></div>
     </div>
   );
@@ -393,28 +391,6 @@ const styles: { [key: string]: CSSProperties } = {
     whiteSpace: "nowrap",
     // justifyContent: "space-between",
     transition: "top 0.3s ease",
-  },
-  leftMusicSheetControlButton: {
-    position: "fixed",
-    top: "20%",
-    left: 0,
-    zIndex: 999,
-    // display: "flex",
-    // alignContent: "center",
-    // justifyContent: "center",
-    // verticalAlign: "middle",
-    // width: "30px",
-  },
-  rightMusicSheetControlButton: {
-    position: "fixed",
-    top: "20%",
-    right: 0,
-    zIndex: 999,
-    // display: "flex",
-    // alignContent: "center",
-    // justifyContent: "center",
-    // verticalAlign: "middle",
-    // width: "30px",
   },
 };
 

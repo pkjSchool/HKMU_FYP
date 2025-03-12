@@ -11,7 +11,6 @@ import PianoRender from "../components/PianoPlayingPage/PianoRender.js";
 import MusicNotePlayerRender from "../components/PianoPlayingPage/MusicNotePlayerRender.js";
 import PianoPlayingResult from "../components/PianoPlayingPage/PianoPlayingResult.js";
 import { formatTime } from "../util/utils.js";
-import MusicSheetRender from "../components/PianoPlayingPage/RenderMusicSheet.js";
 import { MUSIC1, MUSIC2 } from "../data/sample_music.js";
 import {
   Player,
