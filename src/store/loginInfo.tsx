@@ -1,6 +1,12 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { clearStorageUser, setStorageUser } from "../access_control/user";
-
+interface LoginInfoState {
+    isLogined: boolean,
+    user_id: number | null,
+    login_id: number | null,
+    displayName: string | null,
+    jsondata: JSON | null
+}
 const loginInfo = createSlice({
     name: "loginInfo",
     initialState: {
@@ -31,6 +37,6 @@ const loginInfo = createSlice({
         }
     },
 });
-
+export type { LoginInfoState };
 export const { setInfo, clearInfo } = loginInfo.actions;
 export default loginInfo.reducer;

@@ -1,15 +1,11 @@
-import { useEffect } from 'react';
-
-import { useDispatch } from 'react-redux';
+import { useEffect, useRef, useState } from 'react';
 
 import LessonMap from '../components/LessonMap';
 import TaskProgress from '../components/TaskProgress';
-import PianoCharacter from '../components/Character/PianoCharacter';
+import PianoCharacter, {PianoCharacterRef} from '../components/Character/PianoCharacter.tsx';
 
 // import { showCharacter, hideCharater, setMessage, changePosition } from '../store/pianoCharacherSlice';
 // import { AppDispatch, RootState } from '../store/globalConfig';
-import { handleShowCharacter, handleHideCharacter, handleSetMessage, changeCharacterPosition } from '../access_control/piano_character.tsx';
-import { getLoginedUser } from '../access_control/user.tsx';
 
 export const sampleChapters = [
   {
@@ -45,21 +41,20 @@ function App() {
     console.log(`Lesson ${lessonId} clicked`);
   };
 
-  const dispatch = useDispatch();
-
-  const userInfo = getLoginedUser();
+  const pianoCharacterRef = useRef<PianoCharacterRef>(null);
 
   useEffect(() => {
-    handleShowCharacter(dispatch);
-    handleSetMessage(dispatch, `Hello, ${userInfo.displayName}! Welcome back!`);
-  }, [])
+    pianoCharacterRef.current?.setMessageHandler(`Hello! Welcome back!`);
+    pianoCharacterRef.current?.showCharacterHandler();
+    pianoCharacterRef.current?.changePositionHandler({ right: "50px", bottom: "0px" });
+  }, []);
 
   return (
     <div className="lesson-index-container">
-        <button onClick={() => handleShowCharacter(dispatch)}>Show Character</button>
-        <button onClick={() => handleHideCharacter(dispatch)}>Hide Character</button>
-        <button onClick={() => handleSetMessage(dispatch,`Hello, ${Math.random().toFixed(3)}! Welcome back!`)}>Set Message</button>
-        <button onClick={() => changeCharacterPosition(dispatch)}>Change Position</button>
+        <button onClick={() => pianoCharacterRef.current?.showCharacterHandler()}>Show Character</button>
+        <button onClick={() => pianoCharacterRef.current?.hideCharacterHandler()}>Hide Character</button>
+        <button onClick={() => pianoCharacterRef.current?.setMessageHandler(`Hello, ${Math.random().toFixed(3)}! Welcome back!`)}>Set Message</button>
+        <button onClick={() => pianoCharacterRef.current?.changePositionHandler({ right: Math.floor(Math.random() * (100 - 1) + 1), bottom: Math.floor(Math.random() * (100 - 1) + 1) })}>Change Position</button>
         <LessonMap 
           chapters={sampleChapters.map(chapter => ({
             ...chapter,
@@ -70,7 +65,7 @@ function App() {
           }))}
         />
         <TaskProgress />
-        <PianoCharacter /> 
+        <PianoCharacter ref={pianoCharacterRef}/> 
     </div>
   );
 }

@@ -1,4 +1,5 @@
 import { useState, useRef, useEffect } from "react";
+
 import quizBackground from "../assets/quiz_background.jpg";
 import PianoRender from "./PianoPlayingPage/PianoRender";
 import { QuizProps } from "./quiz.types";
@@ -10,6 +11,8 @@ import MIDIController, {
   MidiControllerRef,
 } from "../components/PianoPlayingPage/MidiController.js";
 
+import PianoCharacter, {PianoCharacterRef} from "./Character/PianoCharacter";
+
 const Quiz: React.FC<QuizProps> = ({ lesson_ref_id, chapter_ref_id, title, questions, onExit }) => {
   const userInfo = getLoginedUser();
   const [currentQuestion, setCurrentQuestion] = useState(0);
@@ -19,12 +22,29 @@ const Quiz: React.FC<QuizProps> = ({ lesson_ref_id, chapter_ref_id, title, quest
   const [showScore, setShowScore] = useState(false);
   const [activeNotes, setActiveNotes] = useState<number[]>([]);
   const MIDIControllerRef = useRef<MidiControllerRef>(null);
+  const pianoCharacterRef = useRef<PianoCharacterRef>(null);
 
   useEffect(() => {
     if (questions[currentQuestion].isPianoQuestion) {
       checkAnswer(activeNotes);
     }
   }, [activeNotes]);
+
+  useEffect(() => {
+    if (showScore){
+      const starsNumber = calcLessonStarNumber(score, questions.length)
+      pianoCharacterRef.current?.showCharacterHandler()
+      if (starsNumber === 3) {
+        pianoCharacterRef.current?.setMessageHandler("Well done! You're ready to take on more challenges. Keep up the great work")
+      } else if (starsNumber === 2) {
+        pianoCharacterRef.current?.setMessageHandler("You're on the right track! Keep exploring the keys, and soon you'll be playing your first song!")
+      } else {
+        pianoCharacterRef.current?.setMessageHandler("Learning piano is like learning a new language—it takes time! Keep practicing, and soon you'll master the fundamentals.")
+      }
+      pianoCharacterRef.current?.changePositionHandler({ right: '40%', bottom: '40%'})  
+    } 
+    
+  }, [showScore])
 
   const getResultStar = (score:number, lessonMaxScore:number) => {
     const starsNumber = calcLessonStarNumber(score, lessonMaxScore)
@@ -125,6 +145,7 @@ const Quiz: React.FC<QuizProps> = ({ lesson_ref_id, chapter_ref_id, title, quest
       setCurrentQuestion(nextQuestion);
     } else {
       setShowScore(true);
+
       user_lesson_save(parseInt(userInfo.user_id), chapter_ref_id, lesson_ref_id, score).then((response) => {
 
       }).catch(()=>{
@@ -304,6 +325,7 @@ const Quiz: React.FC<QuizProps> = ({ lesson_ref_id, chapter_ref_id, title, quest
           )}
         </div>
       </div>
+      <PianoCharacter ref={pianoCharacterRef}/>
     </div>
   );
 };
@@ -320,6 +342,7 @@ const starSmall = {
     fontSize:"60px",
     color: "var(--bs-warning)"
 }
+
 const starBig = {
     fontSize:"80px",
     color: "var(--bs-warning)"  
