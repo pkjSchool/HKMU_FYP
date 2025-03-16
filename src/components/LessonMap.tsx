@@ -1,14 +1,24 @@
-import { FC } from 'react';
+import { FC, useState, useEffect, useRef } from 'react';
 import { NavLink } from "react-router-dom";
+
+import { user_lesson_get } from "../api_request/request";
+import { getLoginedUser } from "../access_control/user";
+
+import { calcLessonStarNumber, printLessonStar } from "../util/lessonStar";
+
+import { questionsCh1_1 } from "../pages/lesson_component/ch1-1";
+import { questionsCh1_2 } from "../pages/lesson_component/ch1-2";
 
 interface Lesson {
   id: string;
+  ref_id: number;
   completed: boolean;
   stars?: number;
   onClick?: () => void;
 }
 
 interface Chapter {
+  ref_id: number;
   title: string;
   lessons: Lesson[];
 }
@@ -18,10 +28,71 @@ interface LessonMapProps {
 }
 
 const LessonMap: FC<LessonMapProps> = ({ chapters }) => {
+    const userInfo = getLoginedUser();
+    // const [isLoad, setIsload] = useState<boolean>(false);
+    const [userLessonRecord, setUserLessonRecord] = useState([]);
 
   const getConnectorDirectionClass = (idx:number) => {
     return (idx%2==0)?"connector-left":"connector-right"
   }
+
+  // const setUserLessonRecord = (list:any) => {
+  //   return userLessonRecord.current = list
+  // }
+
+  const getLessonMaxScore = (chapter_id:number, lesson_id:number) => {
+    const record: { [key: number]: { [key: number]: any[] } } = {
+      1: { "1": questionsCh1_1, 2: questionsCh1_2}
+    }
+    const target = (record[chapter_id])?record[chapter_id][lesson_id]: null
+    return (target)?target.length:null
+  }
+
+  const getUserLessonRecord = (chapter_id:number, lesson_id:number) => {
+    let target = null
+    if (userLessonRecord && userLessonRecord.length) {
+      userLessonRecord.forEach((item:any)=> {
+        if(item.chapter_id == chapter_id && item.lesson_id == lesson_id) {
+          target = item
+        }
+      })
+    }
+    return target
+  }
+
+  const getLessonScore = (chapter_id:number, lesson_id:number) => {
+    const record = getUserLessonRecord(chapter_id, lesson_id)
+    const lessonMaxScore = getLessonMaxScore(chapter_id, lesson_id)
+    let lessonUserScore = null
+    if (record && lessonMaxScore) {
+      lessonUserScore = record.score
+      if(lessonUserScore > lessonMaxScore) {
+        lessonUserScore = lessonMaxScore
+      }
+    }
+ 
+    return (lessonUserScore)?(lessonUserScore + " / " + lessonMaxScore):null
+  }
+
+  const getLessonStar = (chapter_id:number, lesson_id:number, lesson:Lesson) => {
+    const record = getUserLessonRecord(chapter_id, lesson_id)
+    const lessonMaxScore = getLessonMaxScore(chapter_id, lesson_id)
+    const stars = (record && lessonMaxScore)?printLessonStar(record.score, lessonMaxScore):null
+    return (record) ? stars:null
+  }
+
+  useEffect(() => {
+    user_lesson_get(parseInt(userInfo.user_id)).then((response) => {
+          const result = response.data
+          if(result.status) {
+            const resultData = result.data
+            setUserLessonRecord(resultData)
+            // setIsload(true)
+          } else {
+            alert(JSON.stringify(result));
+          }
+      })
+  }, []);
 
   return (
     <div className="lesson-map-container">
@@ -41,11 +112,8 @@ const LessonMap: FC<LessonMapProps> = ({ chapters }) => {
                   >
                     {lessonIndex + 1} 
                   </NavLink>
-                  {lesson.stars !== undefined && (
-                    <div className="lesson-status">
-                      {Array(lesson.stars).fill('⭐').join('')}
-                    </div>
-                  )}
+                  <div className="lesson-score">{getLessonScore(chapter.ref_id, lesson.ref_id)}</div>
+                  <div className="lesson-status">{getLessonStar(chapter.ref_id, lesson.ref_id, lesson)}</div>
                 </div>
                 {lessonIndex < chapter.lessons.length - 1 && (
                   <div className={["connector-wrapper", getConnectorDirectionClass(lessonIndex)].join(" ")}>

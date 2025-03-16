@@ -1,9 +1,8 @@
 import { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
-import { useSelector, useDispatch } from "react-redux";
+import { useDispatch } from "react-redux";
 import { user_info_get, user_info_update } from "../api_request/request";
 import { setLoginedUser, getLoginedUser } from "../access_control/user";
-import { setCookie } from "../util/cookie";
 
 interface IFormInput {
   user_id: number

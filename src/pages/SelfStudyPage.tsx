@@ -1,4 +1,4 @@
-import MusicNotePlayerRender from '../components/MusicNotePlayerRender';
+import MusicNotePlayerRender from '../components/PianoPlayingPage/MusicNotePlayerRender';
 
 function SelfStudyPage() {
 

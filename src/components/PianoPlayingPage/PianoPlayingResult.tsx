@@ -1,7 +1,7 @@
 import {useEffect, useState} from "react";
 import { IoStar, IoStarOutline } from "react-icons/io5";
 import { NavLink } from "react-router-dom";
-import shine from "../assets/shine.mp3";
+import shine from "../../assets/shine.mp3";
 
 function playSound(audioContext: AudioContext, buffer: AudioBuffer) {
     const source = audioContext.createBufferSource();

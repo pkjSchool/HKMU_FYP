@@ -61,24 +61,26 @@ const InitialRequired: FC<Props> = ({ children }) => {
 createRoot(document.getElementById('root')!).render(
   // <StrictMode>
     <Provider store={ store }>
-      <BrowserRouter>
-        <Routes>
-          <Route path="/" element={ <InitialRequired><AuthRequired><App /></AuthRequired></InitialRequired> } >
-            <Route path="/" element={ <InitialRequired><AuthRequired><LessonPage /></AuthRequired></InitialRequired> } />
-            <Route path="/learning" element={ <InitialRequired><AuthRequired><LearningPage /></AuthRequired></InitialRequired> } />
-            <Route path="/self-study" element={ <InitialRequired><AuthRequired><Navigate to="/playing" replace={true} /></AuthRequired></InitialRequired> } />
-            <Route path="/task" element={ <InitialRequired><AuthRequired><TaskPage /></AuthRequired></InitialRequired> } />
-            <Route path="/profile" element={ <InitialRequired><AuthRequired><ProfilePage /></AuthRequired></InitialRequired> } /> 
-            <Route path="/ai-generation" element={ <InitialRequired><AuthRequired><AiGenerationPage /></AuthRequired></InitialRequired> } />
-            <Route path="/more" element={ <InitialRequired><AuthRequired><MorePage /></AuthRequired></InitialRequired> } />
-          </Route>
-          <Route path="/music-player" element={ <InitialRequired><AuthRequired><SelfStudyPage /></AuthRequired></InitialRequired> } />
-          <Route path="/playing" element={ <InitialRequired><AuthRequired><PianoPlayingPage /></AuthRequired></InitialRequired> } />
-          <Route path="/login" element={ <InitialRequired><AnonymousRequired><LoginPage /></AnonymousRequired></InitialRequired> } />
-          <Route path="/logout" element={ <InitialRequired><AuthRequired><LogoutPage /></AuthRequired></InitialRequired> } />
-          <Route path="/lesson/:lessonId" element={<InitialRequired><AuthRequired><LessonDetail /></AuthRequired></InitialRequired>} />
-        </Routes>
-      </BrowserRouter>
+      <InitialRequired>
+        <BrowserRouter>
+          <Routes>
+            <Route path="/" element={ <AuthRequired><App /></AuthRequired> } >
+              <Route path="/" element={ <AuthRequired><LessonPage /></AuthRequired> } />
+              <Route path="/learning" element={ <AuthRequired><LearningPage /></AuthRequired> } />
+              <Route path="/self-study" element={ <AuthRequired><Navigate to="/playing" replace={true} /></AuthRequired> } />
+              <Route path="/task" element={ <AuthRequired><TaskPage /></AuthRequired> } />
+              <Route path="/profile" element={ <AuthRequired><ProfilePage /></AuthRequired> } /> 
+              <Route path="/ai-generation" element={ <AuthRequired><AiGenerationPage /></AuthRequired> } />
+              <Route path="/more" element={ <AuthRequired><MorePage /></AuthRequired> } />
+            </Route>
+            <Route path="/music-player" element={ <AuthRequired><SelfStudyPage /></AuthRequired> } />
+            <Route path="/playing" element={ <AuthRequired><PianoPlayingPage /></AuthRequired> } />
+            <Route path="/login" element={ <AnonymousRequired><LoginPage /></AnonymousRequired> } />
+            <Route path="/logout" element={ <AuthRequired><LogoutPage /></AuthRequired> } />
+            <Route path="/lesson/:lessonId" element={<AuthRequired><LessonDetail /></AuthRequired>} />
+          </Routes>
+        </BrowserRouter>
+      </InitialRequired>
     </Provider>
   // </StrictMode>,
 )

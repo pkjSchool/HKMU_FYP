@@ -5,8 +5,11 @@ import webStatus from './webStatus.tsx'
 const store = configureStore({
   reducer: {
     loginInfo,
-    webStatus
+    webStatus,
   },
 });
+
+export type RootState = ReturnType<typeof store.getState>;
+export type AppDispatch = typeof store.dispatch;
 
 export default store;

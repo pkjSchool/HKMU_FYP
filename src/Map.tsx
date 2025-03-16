@@ -1,4 +1,4 @@
-export const noteMap = {
+export const noteMap: {[key: number]: string} = {
     21: 'A0', 22: 'Bb0', 23: 'B0', 24: 'C1', 25: 'Db1', 26: 'D1', 27: 'Eb1', 28: 'E1', 29: 'F1', 30: 'Gb1', 31: 'G1', 32: 'Ab1',
     33: 'A1', 34: 'Bb1', 35: 'B1', 36: 'C2', 37: 'Db2', 38: 'D2', 39: 'Eb2', 40: 'E2', 41: 'F2', 42: 'Gb2', 43: 'G2', 44: 'Ab2',
     45: 'A2', 46: 'Bb2', 47: 'B2', 48: 'C3', 49: 'Db3', 50: 'D3', 51: 'Eb3', 52: 'E3', 53: 'F3', 54: 'Gb3', 55: 'G3', 56: 'Ab3',
@@ -9,7 +9,7 @@ export const noteMap = {
     105: 'A7', 106: 'Bb7', 107: 'B7', 108: 'C8', 109: 'Db8'
 };
 
-export const notePathMap = {
+export const notePathMap: {[key: number]: string} = {
     21: '/sounds/pianoSounds/A0.mp3', 22: '/sounds/pianoSounds/Bb0.mp3', 23: '/sounds/pianoSounds/B0.mp3', 
     24: '/sounds/pianoSounds/C1.mp3', 25: '/sounds/pianoSounds/Db1.mp3', 26: '/sounds/pianoSounds/D1.mp3',
     27: '/sounds/pianoSounds/Eb1.mp3', 28: '/sounds/pianoSounds/E1.mp3', 29: '/sounds/pianoSounds/F1.mp3',

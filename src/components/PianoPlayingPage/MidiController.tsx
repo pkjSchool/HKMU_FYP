@@ -1,5 +1,5 @@
 import { useEffect, useState, forwardRef, useImperativeHandle, useRef } from 'react';
-import { notePathMap } from '../Map.js';
+import { notePathMap } from '../../Map.js';
 
 export type MidiControllerRef = {
   playNote: (note: number, velocity: number) => void;
@@ -9,7 +9,7 @@ export type MidiControllerRef = {
 interface MIDIControllerProps {
   onNoteOn: (note: number) => void;
   onNoteOff: (note: number) => void;
-  audioVolume: number;
+  audioVolume?: number;
 }
 
 const MIDIController = (props: MIDIControllerProps, ref: React.Ref<MidiControllerRef>) => {
@@ -58,7 +58,9 @@ const MIDIController = (props: MIDIControllerProps, ref: React.Ref<MidiControlle
   }, [inputs]);
 
   useEffect(() => {
+    if (props.audioVolume) {
     setVolume(props.audioVolume);
+  }
   }, [props.audioVolume]);
 
   const preloadAudioBuffers = async () => {
@@ -110,7 +112,7 @@ const MIDIController = (props: MIDIControllerProps, ref: React.Ref<MidiControlle
   const playNote = async (note: number, velocity: number) => {
     if (!audioContextRef.current) return;
 
-    console.log("In playNote", note)
+    // console.log("In playNote", note)
 
     const audioBuffer = audioBuffers[note];
     if (audioBuffer) {

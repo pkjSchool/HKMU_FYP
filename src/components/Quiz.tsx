@@ -1,32 +1,94 @@
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
+
 import quizBackground from "../assets/quiz_background.jpg";
-import placeholderImage from "../assets/ERRORIMG.jpeg"; 
+import PianoRender from "./PianoPlayingPage/PianoRender";
+import { QuizProps } from "./quiz.types";
+import { user_lesson_save } from "../api_request/request";
+import { getLoginedUser } from "../access_control/user";
+import { IoStar, IoStarOutline } from "react-icons/io5";
+import { calcLessonStarNumber } from "../util/lessonStar";
+import MIDIController, {
+  MidiControllerRef,
+} from "../components/PianoPlayingPage/MidiController.js";
 
-interface AnswerOption {
-  answerText?: string;
-  isImage?: boolean;
-  imageSrc?: string;
-  isCorrect: boolean;
-}
+import PianoCharacter, {PianoCharacterRef} from "./Character/PianoCharacter";
 
-interface Question {
-  questionText: string;
-  imageSrc?: string;
-  answerOptions: AnswerOption[];
-}
-
-interface QuizProps {
-  title: string;
-  questions: Question[];
-  onExit?: () => void;
-}
-
-const Quiz: React.FC<QuizProps> = ({ title, questions, onExit }) => {
+const Quiz: React.FC<QuizProps> = ({ lesson_ref_id, chapter_ref_id, title, questions, onExit }) => {
+  const userInfo = getLoginedUser();
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [answered, setAnswered] = useState(false);
   const [selectedAnswer, setSelectedAnswer] = useState<number | null>(null);
   const [score, setScore] = useState(0);
   const [showScore, setShowScore] = useState(false);
+  const [activeNotes, setActiveNotes] = useState<number[]>([]);
+  const MIDIControllerRef = useRef<MidiControllerRef>(null);
+  const pianoCharacterRef = useRef<PianoCharacterRef>(null);
+
+  useEffect(() => {
+    if (questions[currentQuestion].isPianoQuestion) {
+      checkAnswer(activeNotes);
+    }
+  }, [activeNotes]);
+
+  useEffect(() => {
+    if (showScore){
+      const starsNumber = calcLessonStarNumber(score, questions.length)
+      pianoCharacterRef.current?.showCharacterHandler()
+      if (starsNumber === 3) {
+        pianoCharacterRef.current?.setMessageHandler("Well done! You're ready to take on more challenges. Keep up the great work")
+      } else if (starsNumber === 2) {
+        pianoCharacterRef.current?.setMessageHandler("You're on the right track! Keep exploring the keys, and soon you'll be playing your first song!")
+      } else {
+        pianoCharacterRef.current?.setMessageHandler("Learning piano is like learning a new language—it takes time! Keep practicing, and soon you'll master the fundamentals.")
+      }
+      pianoCharacterRef.current?.changePositionHandler({ right: '40%', bottom: '40%'})  
+    } 
+    
+  }, [showScore])
+
+  const getResultStar = (score:number, lessonMaxScore:number) => {
+    const starsNumber = calcLessonStarNumber(score, lessonMaxScore)
+    switch (starsNumber) {
+      case 2:
+        return <>
+          <IoStar className={starAnime} style={{...starSmall, ...starOrder1}} />
+          <IoStarOutline className={starAnime} style={{...starBig, ...starOrder2}} />
+          <IoStar className={starAnime} style={{...starSmall, ...starOrder3}} />
+        </>
+        break;
+      case 3:
+        return <>
+            <IoStar className={starAnime} style={{...starSmall, ...starOrder1}} />
+            <IoStar className={starAnime} style={{...starBig, ...starOrder2}} />
+            <IoStar className={starAnime} style={{...starSmall, ...starOrder3}} />
+          </>
+        break;
+      default:
+        return <>
+          <IoStar className={starAnime} style={{...starSmall, ...starOrder1}} />
+          <IoStarOutline className={starAnime} style={{...starBig, ...starOrder2}} />
+          <IoStarOutline className={starAnime} style={{...starSmall, ...starOrder3}} />
+        </>
+        break;
+    }
+  }
+
+  const checkAnswer = (notes: number[]) => {
+    if (answered) return;
+    const requiredNotes = questions[currentQuestion].requiredNotes || [];
+    const allRequiredNotesPressed =
+      requiredNotes.length > 0 &&
+      notes.length === requiredNotes.length &&
+      requiredNotes.every((requiredNote) => notes.includes(requiredNote));
+
+    if (allRequiredNotesPressed) {
+      console.log("Correct answer!");
+      setScore((prevScore) => prevScore + 1);
+      setTimeout(() => {
+        setAnswered(true);
+      }, 100);
+    }
+  };
 
   const handleAnswerButtonClick = (index: number, isCorrect: boolean) => {
     setAnswered(true);
@@ -36,20 +98,62 @@ const Quiz: React.FC<QuizProps> = ({ title, questions, onExit }) => {
     }
   };
 
+  const onNoteOn = (note: number) => {
+    const noteArrIdx = activeNotes.indexOf(note);
+    if (noteArrIdx < 0) {
+      setActiveNotes((prev) => [...prev, note]);
+
+      if (MIDIControllerRef.current) {
+        MIDIControllerRef.current.playNote(note, 50);
+      }
+    }
+  };
+
+  const onNoteOff = (note: number) => {
+    const noteArrIdx = activeNotes.indexOf(note);
+    setActiveNotes((prev) => prev.filter((n) => n !== note));
+
+    if (noteArrIdx >= 0) {
+      // setActiveNotes((prev) => prev.filter((n) => n !== note));
+      setActiveNotes((prev) => prev.splice(noteArrIdx, 1));
+
+      if (MIDIControllerRef.current) {
+        MIDIControllerRef.current.stopNote(note);
+      }
+    }
+  };
+
+  const autoPlayChord = () => {
+    const requiredNotes = questions[currentQuestion].requiredNotes || [];
+    setActiveNotes([]);
+    requiredNotes.forEach((note) => {
+      onNoteOn(note);
+    });
+    setTimeout(() => {
+      requiredNotes.forEach((note) => {
+        onNoteOff(note);
+      });
+    }, 1000);
+  };
+
   const handleNextQuestion = () => {
     setSelectedAnswer(null);
     setAnswered(false);
+    setActiveNotes([]);
     const nextQuestion = currentQuestion + 1;
     if (nextQuestion < questions.length) {
       setCurrentQuestion(nextQuestion);
     } else {
       setShowScore(true);
-    }
-  };
 
-  
-  const handleImageError = (e: React.SyntheticEvent<HTMLImageElement>) => {
-    e.currentTarget.src = placeholderImage; 
+      user_lesson_save(parseInt(userInfo.user_id), chapter_ref_id, lesson_ref_id, score).then((response) => {
+
+      }).catch(()=>{
+
+      })
+
+
+    }
   };
 
   return (
@@ -63,7 +167,9 @@ const Quiz: React.FC<QuizProps> = ({ title, questions, onExit }) => {
       }}
     >
       <div
-        className="card w-50 shadow"
+        className={`card shadow ${
+          questions[currentQuestion].isPianoQuestion ? "w-100 h-100" : "w-50"
+        }`}
         style={{
           backgroundColor: "rgba(255, 255, 255, 0.8)",
         }}
@@ -73,19 +179,35 @@ const Quiz: React.FC<QuizProps> = ({ title, questions, onExit }) => {
           <button
             className="btn btn-danger btn-sm"
             onClick={onExit}
-            style={{
-              padding: "2px 8px",
-            }}
+            style={{ padding: "2px 8px" }}
           >
             X
           </button>
         </div>
-        <div className="card-body">
+
+        <div
+          className="card-body"
+          style={
+            questions[currentQuestion].isPianoQuestion
+              ? {
+                  padding: 0,
+                  flex: "1 1 auto",
+                }
+              : {
+                  padding: "1rem",
+                  flex: "1 1 auto",
+                }
+          }
+        >
           {showScore ? (
-            <div className="card w-50 shadow">
-              <div className="card-header text-center fw-bold fs-4">
-                You scored {score} out of {questions.length}
+            <div className="text-center">
+              <div className="mt-3 mb-3" style={starWrapper}>
+                { getResultStar(score, questions.length) }
               </div>
+              <h4>Quiz completed!</h4>
+              <p>
+                Score: {score} out of {questions.length}
+              </p>
             </div>
           ) : (
             <>
@@ -95,8 +217,8 @@ const Quiz: React.FC<QuizProps> = ({ title, questions, onExit }) => {
                     src={questions[currentQuestion].imageSrc}
                     alt="Question"
                     className="img-fluid mb-3"
-                    style={{ maxHeight: "300px", objectFit: "contain" }}
-                    onError={handleImageError} 
+                    style={{maxWidth: '100%',
+                      maxHeight: '70%', objectFit: "contain" }}
                   />
                 )}
                 <p className="card-text fs-5">
@@ -104,63 +226,128 @@ const Quiz: React.FC<QuizProps> = ({ title, questions, onExit }) => {
                 </p>
               </div>
 
-              {questions[currentQuestion].answerOptions.map((option, index) => (
-                <button
-                  key={index}
-                  onClick={() =>
-                    handleAnswerButtonClick(index, option.isCorrect)
-                  }
-                  className={`btn w-100 my-2 ${
-                    answered
-                      ? option.isCorrect
-                        ? "btn-success text-white"
-                        : selectedAnswer === index
-                        ? "btn-danger text-white"
-                        : "btn-outline-secondary"
-                      : "btn-outline-secondary"
-                  } ${answered ? "disabled" : ""}`}
-                  style={{
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    padding: "10px",
-                  }}
-                >
-                  {option.isImage ? (
-                    <img
-                      src={option.imageSrc}
-                      alt={`Option ${index + 1}`}
-                      className="img-fluid"
-                      style={{
-                        maxHeight: "100px",
-                        maxWidth: "100%",
-                        objectFit: "contain",
-                      }}
-                      onError={handleImageError} 
+              {questions[currentQuestion].isPianoQuestion ? (
+                <>
+                  <div className="piano-question">
+                    <div className="d-flex justify-content-between align-items-center mb-3">
+                      <div className="note-indicators">
+                        {questions[currentQuestion].requiredNotes?.map(
+                          (note) => (
+                            <span
+                              key={note}
+                              className={`badge ${
+                                activeNotes.includes(note)
+                                  ? "bg-success"
+                                  : "bg-secondary"
+                              } me-2`}
+                            >
+                              Note {note}
+                            </span>
+                          )
+                        )}
+                      </div>
+
+                      {!answered && (
+                        <button
+                          className="btn btn-outline-primary btn-sm"
+                          onClick={autoPlayChord}
+                          style={{ marginRight: "1rem" }}
+                        >
+                          <i className="bi bi-play-fill"></i> Test Chord
+                        </button>
+                      )}
+                    </div>
+
+                    <MIDIController
+                      ref={MIDIControllerRef}
+                      onNoteOn={onNoteOn}
+                      onNoteOff={onNoteOff}
                     />
-                  ) : (
-                    option.answerText
+                    <PianoRender
+                      activeNote={activeNotes}
+                      onNoteOn={onNoteOn}
+                      onNoteOff={onNoteOff}
+                    />
+                  </div>
+                  <div>
+                    {answered && (
+                      <div className="alert alert-success mb-3">Correct!</div>
+                    )}
+                    {answered && (
+                      <button
+                        className="btn btn-primary w-100 mt-3"
+                        onClick={handleNextQuestion}
+                      >
+                        Next Question
+                      </button>
+                    )}
+                  </div>
+                </>
+              ) : (
+                <div>
+                  {questions[currentQuestion].answerOptions?.map(
+                    (option, index) => (
+                      <button
+                        key={index}
+                        onClick={() =>
+                          handleAnswerButtonClick(index, option.isCorrect)
+                        }
+                        className={`btn w-100 my-2 ${
+                          answered
+                            ? option.isCorrect
+                              ? "btn-success"
+                              : selectedAnswer === index
+                              ? "btn-danger"
+                              : "btn-outline-secondary"
+                            : "btn-outline-secondary"
+                        } ${answered ? "disabled" : ""}`}
+                      >
+                        {option.answerText}
+                      </button>
+                    )
                   )}
+                </div>
+              )}
+
+              {answered && !questions[currentQuestion].isPianoQuestion && (
+                <button
+                  className="btn btn-primary w-100 mt-3"
+                  onClick={handleNextQuestion}
+                >
+                  Next Question
                 </button>
-              ))}
-              <button
-                className={`block w-100 btn ${
-                  answered ? "btn-success" : "btn-outline-success"
-                }`}
-                onClick={handleNextQuestion}
-                disabled={!answered}
-              >
-                Next Question
-              </button>
-              <p className="text-center text-secondary w-100">
+              )}
+
+              <p className="text-center text-secondary mt-3">
                 Question {currentQuestion + 1} of {questions.length}
               </p>
             </>
           )}
         </div>
       </div>
+      <PianoCharacter ref={pianoCharacterRef}/>
     </div>
   );
 };
+
+const starOrder1 = { animationDelay: "0.5s" }
+
+const starOrder2 = { animationDelay: "0.8s" }
+
+const starOrder3 = { animationDelay: "1.1s" }
+
+const starWrapper:object = { display:"flex", justifyContent:"center", alignItems:"baseline" }
+
+const starSmall = {
+    fontSize:"60px",
+    color: "var(--bs-warning)"
+}
+
+const starBig = {
+    fontSize:"80px",
+    color: "var(--bs-warning)"  
+}
+
+const starAnime = "animate__animated animate__zoomIn animate__faster"
 
 export default Quiz;

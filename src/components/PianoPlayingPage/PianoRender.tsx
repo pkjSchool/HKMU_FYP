@@ -1,5 +1,5 @@
 import {useEffect, useState} from "react";
-import { isBlack } from "../util/utils.ts"; // Utility function for black keys
+import { isBlack } from "../../util/utils.ts"; // Utility function for black keys
 
 interface PianoRenderProps {
   activeNote: number[] | null;
@@ -75,7 +75,7 @@ const Piano = (props: PianoRenderProps) => {
                 left: `${(currentWhiteKeyIndex - 1) * whiteKeyWidthPercentage + whiteKeyWidthPercentage * 0.7}%`,
                 zIndex: 2,
               }}
-              onMouseDown={(event) => {console.log(event); props.onNoteOn(noteNumber)}}
+              onMouseDown={() => {props.onNoteOn(noteNumber)}}
               // onMouseOver={() => {onNoteOn(noteNumber)}}
               onMouseLeave={() => {props.onNoteOff(noteNumber)}}
               onMouseUp={() => {props.onNoteOff(noteNumber)}}
@@ -95,7 +95,7 @@ const Piano = (props: PianoRenderProps) => {
     }, [props.activeNote]);
  
     useEffect(() => {
-      console.log("note changed")
+      // console.log("note changed")
         const { whiteKeys, blackKeys } = renderKeys();
         setWhiteKeys(whiteKeys);
         setBlackKeys(blackKeys);
