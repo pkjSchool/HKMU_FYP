@@ -14,6 +14,7 @@ import "./css/login.css";
 import './css/LessonMap.css';
 import "./css/Sidebar.css";
 import "./css/taskProgress.css";
+import "./css/PianoPageTopNavBar.css";
 
 // @ts-ignore
 import store from './store/globalConfig.tsx'
@@ -32,6 +33,7 @@ import InitialPage from './pages/InitialPage.tsx';
 import PianoPlayingPage from './pages/PianoPlayingPage.tsx'
 import TaskPage from './pages/TaskPage.tsx'
 import LessonDetail from './pages/LessonDetail.tsx'
+import PlayingRecordPage from './pages/PlayingRecordPage.tsx'
 
 import { BrowserRouter, Route, Routes, Navigate } from "react-router-dom";
 
@@ -68,6 +70,7 @@ createRoot(document.getElementById('root')!).render(
               <Route path="/" element={ <AuthRequired><LessonPage /></AuthRequired> } />
               <Route path="/learning" element={ <AuthRequired><LearningPage /></AuthRequired> } />
               <Route path="/self-study" element={ <AuthRequired><Navigate to="/playing" replace={true} /></AuthRequired> } />
+              <Route path="/playing-record" element={ <AuthRequired><PlayingRecordPage /></AuthRequired> } />
               <Route path="/task" element={ <AuthRequired><TaskPage /></AuthRequired> } />
               <Route path="/profile" element={ <AuthRequired><ProfilePage /></AuthRequired> } /> 
               <Route path="/ai-generation" element={ <AuthRequired><AiGenerationPage /></AuthRequired> } />

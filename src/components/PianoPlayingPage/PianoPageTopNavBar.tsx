@@ -7,18 +7,23 @@ import { CiVolume, CiVolumeHigh } from "react-icons/ci";
 import { IoIosSettings } from "react-icons/io";
 import { formatTime } from "../../util/utils";
 import { Player, getPlayer } from "../MusicNotePlayer/player/Player.js";
+import { api_user_music_list } from "../../api_request/request.tsx";
+import { getLoginedUser } from "../../access_control/user";
 
 import "../../css/VolumeSlider.css";
 
 export type CollapsibleNavBarRef = {
   onPlayerTimeUpdated: (time: number, end: number, bpm: number) => void;
   handleUpdatePlayingTimestemp: (time: number) => void;
+  setSelectedStortedMusicId: React.Dispatch<React.SetStateAction<number>>;
+  updateUserMusicList: () => void;
 };
 
 interface CollapsibleNavBarProps {
   playCallback: () => void;
   pausingCallback: () => void;
   stopCallback: () => void;
+  getStortedMusicFromUser: (user_music_id: number) => void;
   menuCollapsedCallback: (isCollapsed: boolean) => void;
   progressCallback: (progress: number) => void;
   setMusicFile: React.Dispatch<React.SetStateAction<File | null>>;
@@ -30,12 +35,18 @@ interface CollapsibleNavBarProps {
 
 const CollapsibleNavBar = (props: CollapsibleNavBarProps,ref: React.Ref<CollapsibleNavBarRef>) => {
   const progressBarReadonly = false;
+  const userInfo = getLoginedUser();
 
   useImperativeHandle(ref, () => ({
+    setSelectedStortedMusicId,
     onPlayerTimeUpdated,
-    handleUpdatePlayingTimestemp,       
+    handleUpdatePlayingTimestemp,
+    updateUserMusicList,
   }));
 
+  const [selectedStortedMusicId, setSelectedStortedMusicId] = useState<number>(0);
+  const [userStortedMusicList, setUserStortedMusicList] = useState<any[]>([]);
+  const [isMusicListOpened, setIsMusicListOpened] = useState(false);
   const [isButtonHovered, setIsButtonHovered] = useState(false);
   const [hoveredButton, setHoveredButton] = useState<number>(-1);
   const [valProgress, setValProgress] = useState<number>(0);
@@ -59,6 +70,18 @@ const CollapsibleNavBar = (props: CollapsibleNavBarProps,ref: React.Ref<Collapsi
 
   const handleVolumeButtonOnClick = () => {
     // setVolume((prev) => (prev === 0 ? 1 : 0));
+  };
+
+  const toggleMusicListOpened = () => {
+    setIsMusicListOpened((prev) => !prev);
+  };
+
+  const closeMusicListOpened = () => {
+    setIsMusicListOpened(false);
+  };
+
+  const activeMusicListOpened = () => {
+    setIsMusicListOpened(true);
   };
 
   const toggleNavBar = () => {
@@ -106,213 +129,253 @@ const CollapsibleNavBar = (props: CollapsibleNavBarProps,ref: React.Ref<Collapsi
     setValBpm(bpm);
   };
 
+  const updateUserMusicList = () => {
+    setUserStortedMusicList([])
+    api_user_music_list(parseInt(userInfo.user_id)).then((response) => {
+      const result = response.data
+      const musicList = result.data;
+      setUserStortedMusicList(musicList);
+    });
+  }
+  
+  const selectStortedMusic = (user_music_id: number) => {
+    if(selectedStortedMusicId !== user_music_id) {
+      props.getStortedMusicFromUser(user_music_id)
+      closeMusicListOpened()
+    }
+  }
+
   useEffect(() => {
+    updateUserMusicList();
+
     setValPrePlay(getPlayer().startDelay);
     props.menuCollapsedCallback(props.isCollapsed);
   }, []);
 
   return (
-    <div style={styleFunctions.topNavBarContainer(props.isCollapsed)}>
-      <div
-        className="topnavbar-warrper"
-        style={{ ...styles.navbar, height: "100%" }}
-      >
-        <div className="container" style={styles.container}>
-          <div className="topContainer-1" style={styles.topContainer}>
-            <div className="btn-group-1" style={styles.btnGroup}>
-              <label
-                style={{
-                  ...buttonStyles.TopNavBarBtn(hoveredButton, 1),
-                  height: "45.69px",
-                  justifyContent: "center",
-                  alignItems: "center",
-                }}
-                onMouseEnter={() => handleMouseEnter(1)}
-                onMouseLeave={handleMouseLeave}
-              >
-                <div className="glyph">
-                  <FaRegFolderOpen size={25} />
-                </div>
-                <input
-                  type="file"
-                  accept=".midi, .mid, .wav"
-                  style={{ display: "none" }}
-                  onChange={(e) => handleFileChange(e)}
-                />
-                <span className="text" style={styles.text}>
-                  Open
-                </span>
-              </label>
-              <button
-                style={buttonStyles.TopNavBarBtn(hoveredButton, 2)}
-                onMouseEnter={() => handleMouseEnter(2)}
-                onMouseLeave={handleMouseLeave}
-              >
-                <div className="glyph">
-                  <MdAudiotrack size={25} />
-                </div>
-                <span className="text" style={styles.text}>
-                  Music
-                </span>
-              </button>
-            </div>
-          </div>
-
-          <div className="topContainer-2" style={styles.topContainer}>
-            <div
-              className="btn-group-2"
-              style={{ ...styles.btnGroup, flexDirection: "row" }}
-            >
-              <button
-                style={buttonStyles.TopNavBarBtn(hoveredButton, 3)}
-                onMouseEnter={() => handleMouseEnter(3)}
-                onMouseLeave={handleMouseLeave}
-                onClick={() => {
-                  clickPlay();
-                }}
-              >
-                <div className="glyph">
-                  <FaPlay size={40} color="white" />
-                </div>
-              </button>
-              <button
-                style={buttonStyles.TopNavBarBtn(hoveredButton, 4)}
-                onMouseEnter={() => handleMouseEnter(4)}
-                onMouseLeave={handleMouseLeave}
-                onClick={() => {
-                  clickPause();
-                }}
-              >
-                <div className="glyph">
-                  <FaPause size={40} color="white" />
-                </div>
-              </button>
-              <button
-                style={buttonStyles.TopNavBarBtn(hoveredButton, 5)}
-                onMouseEnter={() => handleMouseEnter(5)}
-                onMouseLeave={handleMouseLeave}
-                onClick={() => {
-                  clickStop();
-                }}
-              >
-                <div className="glyph">
-                  <FaStop size={40} color="white" />
-                </div>
-              </button>
-            </div>
-          </div>
-
-          <div className="topContainer-3" style={styles.topContainer}>
-            <div
-              className="btn-group-3"
-              style={{ ...styles.btnGroup, flexDirection: "row", gap: "50px" }}
-            >
-              <div className="left-group" style={styles.innerGroup}>
-                <div
-                  className="volume-container"
-                  style={{ ...styles.volumeContainer, width: "150px" }}
+    <>
+      <div style={styleFunctions.topNavBarContainer(props.isCollapsed)}>
+        <div
+          className="topnavbar-warrper"
+          style={{ ...styles.navbar, height: "100%" }}
+        >
+          <div className="container" style={styles.container}>
+            <div className="topContainer-1" style={styles.topContainer}>
+              <div className="btn-group-1" style={styles.btnGroup}>
+                <label
+                  style={{
+                    ...buttonStyles.TopNavBarBtn(hoveredButton, 1),
+                    height: "45.69px",
+                    justifyContent: "center",
+                    alignItems: "center",
+                  }}
+                  onMouseEnter={() => handleMouseEnter(1)}
+                  onMouseLeave={handleMouseLeave}
                 >
-                  <label style={styles.volumeLabel}>
-                    <span style={{ color: "white" }}>Volume</span>
-                    <button
-                      className="volume-btn"
-                      style={buttonStyles.TopNavBarBtn(hoveredButton, 6)}
-                      onMouseEnter={() => handleMouseEnter(6)}
-                      onMouseLeave={handleMouseLeave}
-                      onClick={handleVolumeButtonOnClick}
-                    >
-                      {props.volume === 0 ? (
-                        <CiVolume
-                          size={25}
-                          color="white"
-                          style={{ pointerEvents: "none" }}
-                        />
-                      ) : (
-                        <CiVolumeHigh
-                          size={25}
-                          color="white"
-                          style={{ pointerEvents: "none" }}
-                        />
-                      )}
-                    </button>
-                  </label>
+                  <div className="glyph">
+                    <FaRegFolderOpen size={25} />
+                  </div>
                   <input
-                    type="range"
-                    className="volume-slider"
-                    min={0}
-                    max={1}
-                    step={0.01}
-                    value={props.volume}
-                    style={styles.volumeSlider}
-                    onChange={(e) => {
-                      props.setVolume(parseFloat(e.target.value));
-                    }}
+                    type="file"
+                    accept=".midi, .mid, .wav"
+                    style={{ display: "none" }}
+                    onChange={(e) => handleFileChange(e)}
                   />
-                </div>
+                  <span className="text" style={styles.text}>
+                    Upload
+                  </span>
+                </label>
+                <button
+                  style={buttonStyles.TopNavBarBtn(hoveredButton, 2)}
+                  onMouseEnter={() => handleMouseEnter(2)}
+                  onMouseLeave={handleMouseLeave}
+                  onClick={activeMusicListOpened}
+                >
+                  <div className="glyph">
+                    <MdAudiotrack size={25} />
+                  </div>
+                  <span className="text" style={styles.text}>
+                    Music
+                  </span>
+                </button>
               </div>
-              <div className="right-group" style={{ ...styles.innerGroup }}>
-                <div>
-                  <NavLink to="/" style={{ color: "white" }}>
+            </div>
+
+            <div className="topContainer-2" style={styles.topContainer}>
+              <div
+                className="btn-group-2"
+                style={{ ...styles.btnGroup, flexDirection: "row" }}
+              >
+                <button
+                  style={buttonStyles.TopNavBarBtn(hoveredButton, 3)}
+                  onMouseEnter={() => handleMouseEnter(3)}
+                  onMouseLeave={handleMouseLeave}
+                  onClick={() => {
+                    clickPlay();
+                  }}
+                >
+                  <div className="glyph">
+                    <FaPlay size={40} color="white" />
+                  </div>
+                </button>
+                <button
+                  style={buttonStyles.TopNavBarBtn(hoveredButton, 4)}
+                  onMouseEnter={() => handleMouseEnter(4)}
+                  onMouseLeave={handleMouseLeave}
+                  onClick={() => {
+                    clickPause();
+                  }}
+                >
+                  <div className="glyph">
+                    <FaPause size={40} color="white" />
+                  </div>
+                </button>
+                <button
+                  style={buttonStyles.TopNavBarBtn(hoveredButton, 5)}
+                  onMouseEnter={() => handleMouseEnter(5)}
+                  onMouseLeave={handleMouseLeave}
+                  onClick={() => {
+                    clickStop();
+                  }}
+                >
+                  <div className="glyph">
+                    <FaStop size={40} color="white" />
+                  </div>
+                </button>
+              </div>
+            </div>
+
+            <div className="topContainer-3" style={styles.topContainer}>
+              <div
+                className="btn-group-3"
+                style={{ ...styles.btnGroup, flexDirection: "row", gap: "50px" }}
+              >
+                <div className="left-group" style={styles.innerGroup}>
+                  <div
+                    className="volume-container"
+                    style={{ ...styles.volumeContainer, width: "150px" }}
+                  >
+                    <label style={styles.volumeLabel}>
+                      <span style={{ color: "white" }}>Volume</span>
+                      <button
+                        className="volume-btn"
+                        style={buttonStyles.TopNavBarBtn(hoveredButton, 6)}
+                        onMouseEnter={() => handleMouseEnter(6)}
+                        onMouseLeave={handleMouseLeave}
+                        onClick={handleVolumeButtonOnClick}
+                      >
+                        {props.volume === 0 ? (
+                          <CiVolume
+                            size={25}
+                            color="white"
+                            style={{ pointerEvents: "none" }}
+                          />
+                        ) : (
+                          <CiVolumeHigh
+                            size={25}
+                            color="white"
+                            style={{ pointerEvents: "none" }}
+                          />
+                        )}
+                      </button>
+                    </label>
+                    <input
+                      type="range"
+                      className="volume-slider"
+                      min={0}
+                      max={1}
+                      step={0.01}
+                      value={props.volume}
+                      style={styles.volumeSlider}
+                      onChange={(e) => {
+                        props.setVolume(parseFloat(e.target.value));
+                      }}
+                    />
+                  </div>
+                </div>
+                <div className="right-group" style={{ ...styles.innerGroup }}>
+                  <div>
+                    <NavLink to="/" style={{ color: "white" }}>
+                      <button
+                        className="left-btn"
+                        style={buttonStyles.TopNavBarBtn(hoveredButton, 7)}
+                        onMouseEnter={() => handleMouseEnter(7)}
+                        onMouseLeave={handleMouseLeave}
+                      >
+                        <div className="glyph">
+                          <MdOutlineExitToApp size={25} />
+                        </div>
+                      </button>
+                    </NavLink>
                     <button
-                      className="left-btn"
-                      style={buttonStyles.TopNavBarBtn(hoveredButton, 7)}
-                      onMouseEnter={() => handleMouseEnter(7)}
+                      className="settings-btn"
+                      style={buttonStyles.TopNavBarBtn(hoveredButton, 8)}
+                      onMouseEnter={() => handleMouseEnter(8)}
                       onMouseLeave={handleMouseLeave}
                     >
                       <div className="glyph">
-                        <MdOutlineExitToApp size={25} />
+                        <IoIosSettings size={25} />
                       </div>
                     </button>
-                  </NavLink>
-                  <button
-                    className="settings-btn"
-                    style={buttonStyles.TopNavBarBtn(hoveredButton, 8)}
-                    onMouseEnter={() => handleMouseEnter(8)}
-                    onMouseLeave={handleMouseLeave}
-                  >
-                    <div className="glyph">
-                      <IoIosSettings size={25} />
-                    </div>
-                  </button>
+                  </div>
                 </div>
               </div>
             </div>
           </div>
         </div>
-      </div>
-      <div style={progressBarStyles}>
-        <input
-          type="range"
-          className="musicProgressBar"
-          name="valPrograss"
-          min={valPrePlay}
-          max={valSongEndSecond}
-          step="0.01"
-          value={valProgress}
-          disabled={progressBarReadonly}
-          onChange={(e) => {
-            progressChanged(parseFloat(e.target.value));
-          }}
-        />
-      </div>
-      <div style={statusBarStyles}>
-        <div>
-          {formatTime(valSongCurSecond)} / {formatTime(valSongEndSecond)} |{" "}
-          {valBpm} BPM | {formatTime(playingTimestemp)}
+        <div style={progressBarStyles}>
+          <input
+            type="range"
+            className="musicProgressBar"
+            name="valPrograss"
+            min={valPrePlay}
+            max={valSongEndSecond}
+            step="0.01"
+            value={valProgress}
+            disabled={progressBarReadonly}
+            onChange={(e) => {
+              progressChanged(parseFloat(e.target.value));
+            }}
+          />
         </div>
+        <div style={statusBarStyles}>
+          <div>
+            {formatTime(valSongCurSecond)} / {formatTime(valSongEndSecond)} |{" "}
+            {valBpm} BPM | {formatTime(playingTimestemp)}
+          </div>
+        </div>
+        <button
+          style={{
+            ...styleFunctions.floatingButton(props.isCollapsed),
+            opacity: isButtonHovered ? 1 : 0.1,
+          }}
+          onClick={toggleNavBar}
+          onMouseEnter={() => setIsButtonHovered(true)}
+          onMouseLeave={() => setIsButtonHovered(false)}
+        >
+          {props.isCollapsed ? "Expand" : "Collapse"}
+        </button>
       </div>
-      <button
-        style={{
-          ...styleFunctions.floatingButton(props.isCollapsed),
-          opacity: isButtonHovered ? 1 : 0.1,
-        }}
-        onClick={toggleNavBar}
-        onMouseEnter={() => setIsButtonHovered(true)}
-        onMouseLeave={() => setIsButtonHovered(false)}
-      >
-        {props.isCollapsed ? "Expand" : "Collapse"}
-      </button>
-    </div>
+      <div className="PianoPageTopNavBarMusicList-Wrapper" style={{ display: isMusicListOpened ? "flex" : "none" }}>
+        <div className="PianoPageTopNavBarMusicList-Container">
+          <div className="pb-0 text-end">
+            <button type="button" className="btn btn-danger text-center" style={{padding: "10px 18px", margin:"0"}} onClick={closeMusicListOpened}>X</button>
+          </div>
+          {userStortedMusicList.map((musicSheet, index) => (
+            <div 
+              key={index} 
+              className={(selectedStortedMusicId === musicSheet.user_music_id)?"PianoPageTopNavBarMusicList-Item active":"PianoPageTopNavBarMusicList-Item"} 
+              onClick={() => {selectStortedMusic(musicSheet.user_music_id)}}
+            >
+              <div className="PianoPageTopNavBarMusicList-Item-Title">{ musicSheet.filename }</div>
+              <div className="PianoPageTopNavBarMusicList-Item-Date">{ musicSheet.datetime }</div>
+            </div>
+          ))}
+          
+        </div>
+        <div className="PianoPageTopNavBarMusicList-Overlay" onClick={closeMusicListOpened}></div>
+      </div>
+    </>
   );
 };
 

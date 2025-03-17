@@ -1,0 +1,68 @@
+.PianoPageTopNavBarMusicList-Wrapper {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 9990;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.PianoPageTopNavBarMusicList-Overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: black;
+    opacity: 0.8;
+    z-index: 0;
+    cursor: pointer;
+}
+
+.PianoPageTopNavBarMusicList-Container {
+    position: relative;
+    width: 900px;
+    height: 80%;
+    max-width: 90%;
+    background-color: white;
+    z-index: 1;
+    padding: 10px;
+    overflow-x: hidden;
+    overflow-y: auto;
+}
+
+.PianoPageTopNavBarMusicList-Item {
+    width: 100%;
+    padding: 10px;
+    border-radius: 8px;
+    color: #000;
+    background-color: #b8c2d8;
+    box-shadow: 2px 2px 0 #999;
+    margin: 4px 0;
+}
+
+.PianoPageTopNavBarMusicList-Item.active {
+    background: #a3f49e;
+    color: #000;
+  }
+
+.PianoPageTopNavBarMusicList-Item:active {
+    box-shadow: Inset 2px 2px 0 #999;
+}
+
+.PianoPageTopNavBarMusicList-Item:not(.active):hover {
+    background: #c4d6ff;
+    color: #000;
+}
+
+.PianoPageTopNavBarMusicList-Item-Title {
+    font-size: 20px;
+}
+
+.PianoPageTopNavBarMusicList-Item-Date {
+    font-size: 14px;
+}

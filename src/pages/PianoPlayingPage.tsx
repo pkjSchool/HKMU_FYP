@@ -16,15 +16,30 @@ import {
   Player,
   getPlayer,
 } from "../components/MusicNotePlayer/player/Player.js";
+import { getLoginedUser } from "../access_control/user";
+import { api_fileWavToMidi, api_fileMidiToXml, api_user_music_upload, api_add_user_music_record, api_user_music_get } from "../api_request/request.tsx";
 import MusicSheetRender2, { RenderMusicSheetRef } from "../components/PianoPlayingPage/RenderMusicSheet2.js";
-import axios from "axios";
+import RenderResultMusicSheet, { RenderResultMusicSheetRef } from "../components/PianoPlayingPage/RenderResultMusicSheet.js";
 
 const ACCURATE_OFFSET = 150;
 
+interface playResult {
+  score: number;
+  name: string;
+  musicTime: string;
+  playTime: string;
+  totalNote: number;
+  noteEntered: number;
+  inputOnRange: number;
+}
+
 function App() {
   const [activeNotes, setActiveNotes] = useState<number[]>([]);
-  const [isShowResult, setIsShowResult] = useState(false);
-  const [playResult, setPlayResult] = useState({});
+  const userMusicId = useRef(0);
+  const [isShowResultBrief, setIsShowResultBrief] = useState(false);
+  const [isShowResultDetail, setIsShowResultDetail] = useState(false);
+  const playResult = useRef<playResult>();
+  const sheetResult = useRef<any[]>([]);
 
   const startTime = useRef(0);
   const endTime = useRef(0);
@@ -35,7 +50,9 @@ function App() {
   const MIDIControllerRef = useRef<MidiControllerRef>(null);
   const topNavBarRef = useRef<TopNavBarRef>(null);
   const musicSheetRenderRef = useRef<RenderMusicSheetRef>(null);
-  
+  const resultmusicSheetRef = useRef<RenderResultMusicSheetRef>(null);
+
+  const userInfo = getLoginedUser();
 
   const [volume, setVolume] = useState<number>(1);
   const [musicFile, setMusicFile] = useState<File | null>(null);
@@ -44,6 +61,9 @@ function App() {
   const [fileName, setFileName] = useState<string | null>(null);
   const [isMidi2XML, setIsMidi2XML] = useState<boolean>(false);
   const [isWav2Midi, setIsWav2Midi] = useState<boolean>(false);
+  const [isUploadToUser, setIsUploadToUser] = useState<boolean>(false);
+  const [isGetStortedMusicFromUser, setIsGetStortedMusicFromUser] = useState<boolean>(false);
+  const [isUploadMusicRecord, setIsUploadMusicRecord] = useState<boolean>(false);
   const [isFileLoaded, setIsFileLoaded] = useState<boolean>(false);
   const [isCollapsed, setIsCollapsed] = useState<boolean>(false);
 
@@ -150,6 +170,30 @@ function App() {
     return (isFinished.current = xx);
   };
 
+  const getUserMusicId = () => {
+    return userMusicId.current
+  };
+
+  const setUserMusicId = (id: number) => {
+    userMusicId.current = id;
+  };
+
+  const getPlayResult = () => {
+    return playResult.current
+  };
+
+  const setPlayResult = (id: playResult) => {
+    playResult.current = id;
+  };
+
+  const getSheetResult = () => {
+    return sheetResult.current
+  };
+
+  const setSheetResult = (id: any[]) => {
+    sheetResult.current = id;
+  };
+
   const againCallback = () => {
     handleReset();
   };
@@ -159,7 +203,8 @@ function App() {
     changeStartTime();
     resetPlayingTime();
     setIsFinished(false);
-    setIsShowResult(false);
+    setIsShowResultBrief(false);
+    setIsShowResultDetail(false);
     handleStop();
   };
 
@@ -168,7 +213,8 @@ function App() {
     changeStartTime();
     resetPlayingTime();
     setIsFinished(false);
-    setIsShowResult(false);
+    setIsShowResultBrief(false);
+    setIsShowResultDetail(false);
     handleStop();
     if (musicSheetRenderRef.current) musicSheetRenderRef.current.rerenderSheet();
   };
@@ -178,8 +224,10 @@ function App() {
     setIsFinished(true);
     changeEndTime();
     renderResult();
+    uploadMusicRecord()
     setTimeout(() => {
-      setIsShowResult(true);
+      setIsShowResultBrief(true);
+      setIsShowResultDetail(false);
     }, 100);
   };
 
@@ -223,6 +271,125 @@ function App() {
     console.log(result);
 
     setPlayResult(result);
+
+    let sheetResult = []
+    if (musicSheetRenderRef.current) 
+      sheetResult = musicSheetRenderRef.current.exportResult();
+    setSheetResult(sheetResult);
+  };
+
+  const handleOpenResultDetail = () => {
+    setIsShowResultDetail(true);
+  }
+
+  const handleCloseResultDetail = () => {
+    setIsShowResultDetail(false);
+  }
+
+  const uploadMusicRecord = () => {
+    const _playresult = getPlayResult()
+    if (musicSheetRenderRef.current && _playresult) {
+      setIsUploadMusicRecord(true)
+      api_add_user_music_record(
+        parseInt(userInfo.user_id),
+        getUserMusicId(),
+        _playresult.score,
+        _playresult.totalNote,
+        _playresult.noteEntered,
+        _playresult.inputOnRange,
+        getSheetResult()
+      ).then((response) => {
+        setIsUploadMusicRecord(false)
+      })
+    }
+  }
+
+  const fileWavToMidi = () => {
+    if (musicFile) {
+      if (musicFile.type === "audio/wav") {
+        console.log("wav file entered");
+        setIsWav2Midi(true);
+
+        const formData = new FormData();
+        formData.append("audio", musicFile);
+        console.log("start to parse wav file");
+
+        api_fileWavToMidi(formData).then((res) => {
+          const midiBlob = new Blob([res.data], { type: "audio/midi" });
+          // Convert Blob to File
+          const midiFile = new File([midiBlob], "transcribed.mid", { type: "audio/midi" });
+          console.log(midiFile.type);
+
+          setMusicFile(midiFile);
+          setIsWav2Midi(false);
+        });
+      }
+    }
+  };
+
+  const fileMidiToXml = (midi_file: any) => {
+    if (midi_file) {
+      if (midi_file.type === "audio/midi"  || midi_file.type === "audio/mid") {
+        getPlayer().loadSong(midi_file, "fileName", "fileName");
+
+        console.log("midi file entered");
+        setIsMidi2XML(true);
+
+        const formData = new FormData();
+        formData.append("midi", midi_file);
+        console.log("start to parse midi file");
+
+        api_fileMidiToXml(formData).then((res) => {
+          setMusicXML(res.data);
+          setIsMidi2XML(false);
+        });
+      }
+    }
+  };
+
+  const fileUploadToUser = () => {
+    if (musicFile) {
+      if (musicFile.type === "audio/midi" || musicFile.type === "audio/mid") {
+        setIsUploadToUser(true);
+
+        console.log("start to upload music file to user");
+
+        api_user_music_upload(
+          parseInt(userInfo.user_id),
+          musicFile
+        ).then((response) => {
+          const result = response.data
+          const res_data = result.data;
+
+          if(topNavBarRef.current) {
+            topNavBarRef.current.updateUserMusicList();
+          }
+          getStortedMusicFromUser(res_data.user_music_id)
+          setMusicFile(null);
+          setIsUploadToUser(false);
+        });
+      }
+    }
+  };
+
+  const getStortedMusicFromUser = (user_music_id: number) => {
+    setIsGetStortedMusicFromUser(true);
+
+    api_user_music_get(user_music_id).then((response) => {
+      const result = response.data
+
+      const midiBlob = new Blob([result], { type: "audio/midi" });
+      const midiFile = new File([midiBlob], "downloaded.mid", { type: "audio/midi" });
+
+      fileMidiToXml(midiFile);
+
+      setUserMusicId(user_music_id);
+      if(topNavBarRef.current) {
+        topNavBarRef.current.setSelectedStortedMusicId(user_music_id)
+      }
+
+      setIsGetStortedMusicFromUser(false);
+    });
   };
 
   useEffect(() => {
@@ -254,6 +421,7 @@ function App() {
         getPlayer().clearFinishListener();
         getPlayer().clearTimeUpdatedListener();
         getPlayer().clearNewSongCallback();
+        getPlayer().clearSong();
       }
 
       clearInterval(updatePlayingTime);
@@ -261,46 +429,31 @@ function App() {
   }, []);
 
   useEffect(() => {
-    console.log("music file changed");
+    console.log("music file opened");
     if (musicFile) {
-      if (musicFile.type === "audio/midi"  || musicFile.type === "audio/mid") {
-        getPlayer().loadSong(musicFile, "fileName", "fileName");
-        setIsMidi2XML(true);
-
-        const formData = new FormData();
-        formData.append("midi", musicFile);
-        console.log("start to parse midi file");
-        axios.post("http://localhost/musicfile/midi2mucicxml", formData).then((res) => {
-          setMusicXML(res.data);
-          setIsMidi2XML(false);
-        });
+      if (musicFile.type === "audio/midi" || musicFile.type === "audio/mid") {
+        fileUploadToUser();
       }
-
       if (musicFile.type === "audio/wav") {
-        setIsWav2Midi(true);
-
-        const formData = new FormData();
-        formData.append("audio", musicFile);
-        console.log("start to parse wav file");
-        axios.post("http://localhost/musicfile/transcribe", formData, {responseType: "arraybuffer", timeout: 180000}).then((res) => {
-          const midiBlob = new Blob([res.data], { type: "audio/midi" });
-
-          // Convert Blob to File
-          const midiFile = new File([midiBlob], "transcribed.mid", { type: "audio/midi" });
-          console.log(midiFile.type);
-          setMusicFile(midiFile);
-          setIsWav2Midi(false);
-        });
+        fileWavToMidi();
       }
+
       setIsFileLoaded(true);
     }
   }, [musicFile]);
 
   let resultComp = null;
+  let resultDetailComp = null;
 
-  if (isFinished && isShowResult) {
+  if (isFinished && isShowResultBrief) {
     resultComp = (
-      <PianoPlayingResult result={playResult} againCallback={againCallback} />
+      <PianoPlayingResult result={getPlayResult()} againCallback={againCallback} handleOpenResultDetail={handleOpenResultDetail} />
+    );
+  }
+
+  if ((isFinished && isShowResultDetail)) {
+    resultDetailComp = (
+      <RenderResultMusicSheet ref={resultmusicSheetRef} musicXML={musicXML} sheetResult={getSheetResult()} handleCloseResultDetail={handleCloseResultDetail} />
     );
   }
 
@@ -329,6 +482,7 @@ function App() {
         onNoteOff={onNoteOff}
       />
       {resultComp}
+      {resultDetailComp}
       <TopNavBar
         ref={topNavBarRef}
         playCallback={handlePlay}
@@ -341,6 +495,7 @@ function App() {
         setVolume={setVolume}
         isCollapsed={isCollapsed}
         setIsCollapsed={setIsCollapsed}
+        getStortedMusicFromUser={getStortedMusicFromUser}
       />
       <div
         style={{
@@ -365,6 +520,7 @@ function App() {
         onNoteOn={onNoteOn}
         onNoteOff={onNoteOff}
       />
+      {(isWav2Midi || isMidi2XML || isUploadToUser || isGetStortedMusicFromUser || isUploadMusicRecord) ? <div className="loader-wrapper"><div className="loader"></div></div> : null}
     </div>
   );
 }

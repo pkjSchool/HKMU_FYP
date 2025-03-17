@@ -511,7 +511,11 @@ export class Player {
 		this.inputSortedNotes = {}
 	}
 
-
+	clearSong() {
+		this.song = null
+		this.trackColors = {}
+		this.clearInputRecords()
+	}
 
 
 

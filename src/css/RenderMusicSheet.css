@@ -1,4 +1,8 @@
 .sheet-container img {
     height: revert-layer;
     width: revert-layer;
+
+    height: 130px;
+    width: revert-layer;
+    transform: translateY(-50px);
 }

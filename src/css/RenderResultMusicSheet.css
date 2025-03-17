@@ -1,0 +1,48 @@
+.resultSheet-Wrapper {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 9999;
+
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.resultSheet-Overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: black;
+    opacity: 0.8;
+    z-index: 0;
+    cursor: pointer;
+}
+
+.resultSheet-Container {
+    position: relative;
+    width: 1920px;
+    height: 80%;
+    max-width: 90%;
+    background-color: white;
+    z-index: 1;
+    padding: 10px;
+    overflow-x: hidden;
+    overflow-y: auto;
+}
+
+.noteEventButton {
+    border: 2px solid red;
+    width: 30px;
+    height: 60px;
+    cursor: pointer
+}
+
+.noteEventButton:hover {
+    background-color: rgba(255, 0, 0, 0.5);
+}
