@@ -383,6 +383,7 @@ function App() {
         getPlayer().clearFinishListener();
         getPlayer().clearTimeUpdatedListener();
         getPlayer().clearNewSongCallback();
+        getPlayer().clearSong();
       }
 
       clearInterval(updatePlayingTime);
