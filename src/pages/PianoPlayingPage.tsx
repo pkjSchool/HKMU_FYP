@@ -19,13 +19,16 @@ import {
 import { getLoginedUser } from "../access_control/user";
 import { api_fileWavToMidi, api_fileMidiToXml, api_user_music_upload, api_user_music_list, api_user_music_get } from "../api_request/request.tsx";
 import MusicSheetRender2, { RenderMusicSheetRef } from "../components/PianoPlayingPage/RenderMusicSheet2.js";
+import RenderResultMusicSheet, { RenderResultMusicSheetRef } from "../components/PianoPlayingPage/RenderResultMusicSheet.js";
 
 const ACCURATE_OFFSET = 150;
 
 function App() {
   const [activeNotes, setActiveNotes] = useState<number[]>([]);
-  const [isShowResult, setIsShowResult] = useState(false);
+  const [isShowResultBrief, setIsShowResultBrief] = useState(false);
+  const [isShowResultDetail, setIsShowResultDetail] = useState(false);
   const [playResult, setPlayResult] = useState({});
+  const [sheetResult, setSheetResult] = useState([]);
 
   const startTime = useRef(0);
   const endTime = useRef(0);
@@ -36,6 +39,7 @@ function App() {
   const MIDIControllerRef = useRef<MidiControllerRef>(null);
   const topNavBarRef = useRef<TopNavBarRef>(null);
   const musicSheetRenderRef = useRef<RenderMusicSheetRef>(null);
+  const resultmusicSheetRef = useRef<RenderResultMusicSheetRef>(null);
 
   const userInfo = getLoginedUser();
 
@@ -163,7 +167,8 @@ function App() {
     changeStartTime();
     resetPlayingTime();
     setIsFinished(false);
-    setIsShowResult(false);
+    setIsShowResultBrief(false);
+    setIsShowResultDetail(false);
     handleStop();
   };
 
@@ -172,7 +177,8 @@ function App() {
     changeStartTime();
     resetPlayingTime();
     setIsFinished(false);
-    setIsShowResult(false);
+    setIsShowResultBrief(false);
+    setIsShowResultDetail(false);
     handleStop();
     if (musicSheetRenderRef.current) musicSheetRenderRef.current.rerenderSheet();
   };
@@ -183,7 +189,8 @@ function App() {
     changeEndTime();
     renderResult();
     setTimeout(() => {
-      setIsShowResult(true);
+      setIsShowResultBrief(true);
+      setIsShowResultDetail(false);
     }, 100);
   };
 
@@ -227,7 +234,20 @@ function App() {
     console.log(result);
 
     setPlayResult(result);
+
+    let sheetResult = []
+    if (musicSheetRenderRef.current) 
+      sheetResult = musicSheetRenderRef.current.exportResult();
+    setSheetResult(sheetResult);
   };
+
+  const handleOpenResultDetail = () => {
+    setIsShowResultDetail(true);
+  }
+
+  const handleCloseResultDetail = () => {
+    setIsShowResultDetail(false);
+  }
 
   const fileWavToMidi = () => {
     if (musicFile) {
@@ -365,10 +385,17 @@ function App() {
   }, [musicFile]);
 
   let resultComp = null;
+  let resultDetailComp = null;
 
-  if (isFinished && isShowResult) {
+  if (isFinished && isShowResultBrief) {
     resultComp = (
-      <PianoPlayingResult result={playResult} againCallback={againCallback} />
+      <PianoPlayingResult result={playResult} againCallback={againCallback} handleOpenResultDetail={handleOpenResultDetail} />
+    );
+  }
+
+  if ((isFinished && isShowResultDetail)) {
+    resultDetailComp = (
+      <RenderResultMusicSheet ref={resultmusicSheetRef} musicXML={musicXML} sheetResult={sheetResult} handleCloseResultDetail={handleCloseResultDetail} />
     );
   }
 
@@ -397,6 +424,7 @@ function App() {
         onNoteOff={onNoteOff}
       />
       {resultComp}
+      {resultDetailComp}
       <TopNavBar
         ref={topNavBarRef}
         playCallback={handlePlay}

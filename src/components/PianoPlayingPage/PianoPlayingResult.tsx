@@ -34,7 +34,7 @@ function processStar() {
 }
 
 const PianoPlayingResult = (props:any) => {
-    const {againCallback, result} = props;
+    const {againCallback, handleOpenResultDetail, result} = props;
     
     useEffect(()=>{
         setTimeout(()=>{
@@ -53,6 +53,10 @@ const PianoPlayingResult = (props:any) => {
     const divisionHandle = (number1:number, number2:number) => {
         if (number1 == 0 && number2 == 0) return (0).toFixed(2)
         return (number1 / number2 * 100).toFixed(2)
+    }
+
+    const onClickDetail = () => {
+        (handleOpenResultDetail)?handleOpenResultDetail():null
     }
 
     return (
@@ -95,6 +99,10 @@ const PianoPlayingResult = (props:any) => {
                             <div style={itemText}>{getResultData("inputOnRange")} / {getResultData("noteEntered")}</div>
                             
                         </div>
+                    </div>
+
+                    <div className="pt-5 text-center">
+                        <button type="button" className="btn btn-warning text-center" style={{padding: "10px 60px", margin:"0 5px"}} onClick={onClickDetail}>Detail</button>
                     </div>
 
                     <div className="pt-5 text-center">
