@@ -30,8 +30,6 @@ const RenderStatisticsMusicSheet = (props: RenderStatisticsMusicSheetProps,ref: 
     const sheetHistory = useRef<any[]>([]);
     const sheetResult = useRef<any[]>([]);
 
-    const noteEventRef = useRef<HTMLDivElement[]>([]);
-
     const [musicSheet, setMusicSheet] = useState<string| null>(null);
     const [noteEventList, setNoteEventList] = useState<any[]>([]);
 
@@ -67,19 +65,21 @@ const RenderStatisticsMusicSheet = (props: RenderStatisticsMusicSheetProps,ref: 
         return sheetResult.current
     }
 
-    const setnoteEventRef = (_noteEventRef:any[]) => {
-        noteEventRef.current = _noteEventRef
-    }
-
-    const getNoteEventRef = () => {
-        return noteEventRef.current
-    }
-
     useEffect(() => {
         setMusicSheet(props.musicXML);
         if(props.sheetResult) {
             setSheetResult(props.sheetResult)
         }
+
+        const handleResize = () => {
+            setTimeout(fillNoteEvent, 500)
+        };
+
+        window.addEventListener("resize", handleResize);
+        return () => {
+            window.removeEventListener("resize", handleResize);
+        };
+
     }, []);
 
     useEffect(() => {
@@ -167,11 +167,11 @@ const RenderStatisticsMusicSheet = (props: RenderStatisticsMusicSheetProps,ref: 
     const fillNoteEvent = () => {
 
         if (resultOsmdRef.current) {
-            // const _noteEventRefList:HTMLDivElement[] = []
             const _noteEventList:any[] = []
             
-            let osmd = resultOsmdRef.current
-            let sourceMeasures = osmd.GraphicSheet.MeasureList
+            const osmd = resultOsmdRef.current
+            const sourceMeasures = osmd.GraphicSheet.MeasureList
+            const _noteStatistics = getNoteStatistics()
 
             for (let i=0; i<sourceMeasures.length; i++) {
 
@@ -184,14 +184,22 @@ const RenderStatisticsMusicSheet = (props: RenderStatisticsMusicSheetProps,ref: 
                             for (let m=0; m<sourceMeasures[i][j].staffEntries[k].graphicalVoiceEntries[l].notes.length; m++) {
 
                                 const bbox = sourceMeasures[i][j].staffEntries[k].graphicalVoiceEntries[l].notes[m].getSVGGElement().getBBox();
-                                // console.log(`pos: (${bbox.x}, ${bbox.y})`);
-                                // osmd.Drawer.DrawOverlayLine({x: bbox.x / 10, y: bbox.y / 10}, {x: bbox.x / 10 + 2, y: bbox.y / 10}, osmd.GraphicSheet.MusicPages[0])
+                                let _statistics = null
 
-                                // // const noteEventRef = document.createElement('div');
-                                // // _noteEventRefList.push(noteEventRef)
+                                try {
+                                    // group -> note -> 0 -> 0 -> 0
+                                    _statistics = _noteStatistics[i][k][0][0][0]
+                                } catch (error) {
+                                    _statistics = {
+                                        "yes": 0,
+                                        "no": 0
+                                    }
+                                }
+
                                 _noteEventList.push({
-                                    x: bbox.x,
-                                    y: bbox.y
+                                    x: bbox.x - 10,
+                                    y: bbox.y - 10,
+                                    statistics: _statistics
                                 })
                             }
 
@@ -201,18 +209,15 @@ const RenderStatisticsMusicSheet = (props: RenderStatisticsMusicSheetProps,ref: 
 
                 }
 
-                // const xxx = sourceMeasures[4][0].staffEntries[2].graphicalVoiceEntries[0].notes[0];
-                // xxx.sourceNote.noteheadColor = "#0000FF"
-                // const bbox = sourceMeasures[i][0].staffEntries[0].graphicalVoiceEntries[0].notes[0].getSVGGElement().getBBox();
-                // console.log(`pos: (${bbox.x}, ${bbox.y})`);
-                // osmd.Drawer.DrawOverlayLine({x: bbox.x / 10, y: bbox.y / 10}, {x: bbox.x / 10 + 2, y: bbox.y / 10}, osmd.GraphicSheet.MusicPages[0])
             }
-            // console.log(_noteEventRefList)
-            // setnoteEventRef(_noteEventRefList)
-            console.log(_noteEventList)
+
             setNoteEventList(_noteEventList)
 
             osmd.render();
+
+            console.log(_noteStatistics)
+            console.log(sourceMeasures)
+            console.log(_noteEventList)
         }
     }
 
@@ -244,22 +249,22 @@ const RenderStatisticsMusicSheet = (props: RenderStatisticsMusicSheetProps,ref: 
     }
 
     const formatNoteStatistics = (_formatedHistory: any) => {
-        let noteStatistics:any[] = []
+        let _noteStatistics:any[] = []
 
         if (resultOsmdRef.current) {
             let osmd = resultOsmdRef.current
             let sourceMeasures = osmd.Sheet.SourceMeasures
     
             for(const measure_idx in sourceMeasures) {
-                noteStatistics[measure_idx] = []
+                _noteStatistics[measure_idx] = []
                 for(const vsse_idx in sourceMeasures[measure_idx].VerticalSourceStaffEntryContainers) {
-                    noteStatistics[measure_idx][vsse_idx] = []
+                    _noteStatistics[measure_idx][vsse_idx] = []
                     for(const staEntrie_idx in sourceMeasures[measure_idx].VerticalSourceStaffEntryContainers[vsse_idx].StaffEntries) {
-                        noteStatistics[measure_idx][vsse_idx][staEntrie_idx] = []
+                        _noteStatistics[measure_idx][vsse_idx][staEntrie_idx] = []
                         for(const voiEntrie_idx in sourceMeasures[measure_idx].VerticalSourceStaffEntryContainers[vsse_idx].StaffEntries[staEntrie_idx].VoiceEntries) {
-                            noteStatistics[measure_idx][vsse_idx][staEntrie_idx][voiEntrie_idx] = []
+                            _noteStatistics[measure_idx][vsse_idx][staEntrie_idx][voiEntrie_idx] = []
                             for(const note_idx in sourceMeasures[measure_idx].VerticalSourceStaffEntryContainers[vsse_idx].StaffEntries[staEntrie_idx].VoiceEntries[voiEntrie_idx].Notes) {
-                                noteStatistics[measure_idx][vsse_idx][staEntrie_idx][voiEntrie_idx][note_idx] = {
+                                _noteStatistics[measure_idx][vsse_idx][staEntrie_idx][voiEntrie_idx][note_idx] = {
                                     "yes": 0,
                                     "no": 0
                                 }
@@ -273,12 +278,14 @@ const RenderStatisticsMusicSheet = (props: RenderStatisticsMusicSheetProps,ref: 
                                         const _NoteheadColor = dataEle.NoteheadColor
     
                                         if(_StemColorXml == "#00ff00"){
-                                            noteStatistics[measure_idx][vsse_idx][staEntrie_idx][voiEntrie_idx][note_idx]["yes"] += 1
+                                            _noteStatistics[measure_idx][vsse_idx][staEntrie_idx][voiEntrie_idx][note_idx]["yes"] += 1
                                         } else {
-                                            noteStatistics[measure_idx][vsse_idx][staEntrie_idx][voiEntrie_idx][note_idx]["no"] += 1
+                                            _noteStatistics[measure_idx][vsse_idx][staEntrie_idx][voiEntrie_idx][note_idx]["no"] += 1
                                         }
     
-                                    } catch (error) { }
+                                    } catch (error) {
+                                        console.log(error)
+                                    }
 
                                 }
     
@@ -293,7 +300,7 @@ const RenderStatisticsMusicSheet = (props: RenderStatisticsMusicSheetProps,ref: 
             }
         }
 
-        setNoteStatistics(noteStatistics)
+        setNoteStatistics(_noteStatistics)
     }
 
     const noteMark = (sourceNote:any) => {
@@ -315,7 +322,7 @@ const RenderStatisticsMusicSheet = (props: RenderStatisticsMusicSheetProps,ref: 
                     <div ref={resultOsmdContainerRef}></div>
                     { noteEventList.map((event, index) => (
                         <div key={index} className="noteEventButton" style={{ position: 'absolute', left: event.x, top: event.y }}>
-                            {/* Add any content or styling you need here */}
+                            {event.statistics.yes}<br/>{event.statistics.no}
                         </div>
                     )) }
                 </div>
