@@ -93,8 +93,13 @@ useEffect(() => {
                 const dataEle = _result[measure_idx][vsse_idx][staEntrie_idx][voiEntrie_idx][note_idx]
                 const targetEle = sourceMeasures[measure_idx].VerticalSourceStaffEntryContainers[vsse_idx].StaffEntries[staEntrie_idx].VoiceEntries[voiEntrie_idx].Notes[note_idx]
 
-                const _StemColorXml = dataEle.StemColorXml
-                const _NoteheadColor = dataEle.NoteheadColor
+                  let _StemColorXml = "#ff0000"
+                  let _NoteheadColor = "#ff0000"
+
+                if(dataEle.entered === true) {
+                  _StemColorXml = "#00ff00"
+                  _NoteheadColor = "#00ff00"
+                }
 
                 targetEle.StemColorXml = _StemColorXml;
                 targetEle.NoteheadColor = _NoteheadColor;
@@ -115,63 +120,12 @@ useEffect(() => {
     }
   }
 
-  const fillNoteEvent = () => {
-
-    if (resultOsmdRef.current) {
-      let osmd = resultOsmdRef.current
-      let sourceMeasures = osmd.GraphicSheet.MeasureList
-
-      for (let i=0; i<sourceMeasures.length; i++) {
-
-        // for (let j=0; j<sourceMeasures[i].length; j++) {
-
-        //   for (let k=0; k<sourceMeasures[i][j].staffEntries.length; k++) {
-
-        //     for (let l=0; l<sourceMeasures[i][j].staffEntries[k].graphicalVoiceEntries.length; l++) {
-
-        //       for (let m=0; m<sourceMeasures[i][j].staffEntries[k].graphicalVoiceEntries[l].notes.length; m++) {
-
-        //         sourceMeasures[i][j].staffEntries[k].graphicalVoiceEntries[l].notes[m].getSVGGElement().addEventListener("mouseover", function() {
-        //           console.log("asdasd")
-        //           noteMark(sourceMeasures[i][j].staffEntries[k].graphicalVoiceEntries[l].notes[m].sourceNote)
-        //         });
-
-        //       }
-
-        //     }
-
-        //   }
-
-        // }
-
-        // const xxx = sourceMeasures[4][0].staffEntries[2].graphicalVoiceEntries[0].notes[0];
-        // xxx.sourceNote.noteheadColor = "#0000FF"
-        // const bbox = sourceMeasures[i][0].staffEntries[0].graphicalVoiceEntries[0].notes[0].getSVGGElement().getBBox();
-        // console.log(`pos: (${bbox.x}, ${bbox.y})`);
-        // osmd.Drawer.DrawOverlayLine({x: bbox.x / 10, y: bbox.y / 10}, {x: bbox.x / 10 + 2, y: bbox.y / 10}, osmd.GraphicSheet.MusicPages[0])
-      }
-
-      osmd.render();
-    }
-  }
-
   const drawResult = () => {
-    // console.log(sheetResult)
-    // console.log(exportResult())
     fillNoteColor(sheetResult)
-    fillNoteEvent()
   }
 
   const closeThis = () => {
     props.handleCloseResultDetail();
-  }
-
-  const noteMark = (sourceNote:any) => {
-    sourceNote.StemColorXml = "#0000FF";
-    sourceNote.NoteheadColor = "#0000FF";
-    if (resultOsmdRef.current) {
-      resultOsmdRef.current.render();
-    }
   }
 
   return (

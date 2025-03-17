@@ -183,6 +183,7 @@ const RenderStatisticsMusicSheet = (props: RenderStatisticsMusicSheetProps,ref: 
 
                             for (let m=0; m<sourceMeasures[i][j].staffEntries[k].graphicalVoiceEntries[l].notes.length; m++) {
 
+                                // i=group -> j=line?? -> k=note -> 0 -> 0 -> 0
                                 const bbox = sourceMeasures[i][j].staffEntries[k].graphicalVoiceEntries[l].notes[m].getSVGGElement().getBBox();
                                 let _statistics = null
 
@@ -215,9 +216,9 @@ const RenderStatisticsMusicSheet = (props: RenderStatisticsMusicSheetProps,ref: 
 
             osmd.render();
 
-            console.log(_noteStatistics)
-            console.log(sourceMeasures)
-            console.log(_noteEventList)
+            // console.log(_noteStatistics)
+            // console.log(sourceMeasures)
+            // console.log(_noteEventList)
         }
     }
 
@@ -273,11 +274,9 @@ const RenderStatisticsMusicSheet = (props: RenderStatisticsMusicSheetProps,ref: 
 
                                     try {
                                         const dataEle = _his[measure_idx][vsse_idx][staEntrie_idx][voiEntrie_idx][note_idx]
+
     
-                                        const _StemColorXml = dataEle.StemColorXml
-                                        const _NoteheadColor = dataEle.NoteheadColor
-    
-                                        if(_StemColorXml == "#00ff00"){
+                                        if(dataEle.entered === true){
                                             _noteStatistics[measure_idx][vsse_idx][staEntrie_idx][voiEntrie_idx][note_idx]["yes"] += 1
                                         } else {
                                             _noteStatistics[measure_idx][vsse_idx][staEntrie_idx][voiEntrie_idx][note_idx]["no"] += 1
@@ -301,14 +300,6 @@ const RenderStatisticsMusicSheet = (props: RenderStatisticsMusicSheetProps,ref: 
         }
 
         setNoteStatistics(_noteStatistics)
-    }
-
-    const noteMark = (sourceNote:any) => {
-        sourceNote.StemColorXml = "#0000FF";
-        sourceNote.NoteheadColor = "#0000FF";
-        if (resultOsmdRef.current) {
-        resultOsmdRef.current.render();
-        }
     }
 
     return (

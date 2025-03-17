@@ -14,6 +14,9 @@ import {
 } from "opensheetmusicdisplay";
 import { set } from "react-hook-form";
 
+const TRUECOLOR = "#00ff00"
+const FALSECOLOR = "#ff0000"
+
 export type RenderMusicSheetRef = {
   cursorNext: () => void;
   cursorPrev: () => void;
@@ -153,7 +156,7 @@ const RenderMusicSheet = (props: RenderMusicSheetProps,ref: React.Ref<RenderMusi
             for(const voiEntrie of staEntrie.VoiceEntries) {
               let _voi = []
               for(const note of voiEntrie.Notes) {
-                _voi.push({ "StemColorXml": note.StemColorXml, "NoteheadColor": note.NoteheadColor })
+                _voi.push({ "entered": (note.StemColorXml === TRUECOLOR) })
               }
               _sta.push(_voi)
             }
@@ -374,17 +377,17 @@ const RenderMusicSheet = (props: RenderMusicSheetProps,ref: React.Ref<RenderMusi
   }
 
   const noteMarkRed = (sourceNote:any) => {
-    sourceNote.StemColorXml = "#00ff00";
-    sourceNote.NoteheadColor = "#00ff00";
+    sourceNote.StemColorXml = TRUECOLOR;
+    sourceNote.NoteheadColor = TRUECOLOR;
     if (osmdRef.current) {
       osmdRef.current.render();
     }
   }
 
   const noteMarkGreen = (sourceNote:any) => {
-    if (sourceNote.NoteheadColor != "#00ff00") {
-      sourceNote.StemColorXml = "#ff0000";
-      sourceNote.NoteheadColor = "#ff0000";
+    if (sourceNote.NoteheadColor != TRUECOLOR) {
+      sourceNote.StemColorXml = FALSECOLOR;
+      sourceNote.NoteheadColor = FALSECOLOR;
       if (osmdRef.current) {
         osmdRef.current.render();
       }
