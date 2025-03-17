@@ -25,17 +25,61 @@ const RenderStatisticsMusicSheet = (props: RenderStatisticsMusicSheetProps,ref: 
     const containerRef = useRef<HTMLDivElement>(null);
     const resultOsmdContainerRef = useRef<HTMLDivElement>(null);
     const resultOsmdRef = useRef<OpenSheetMusicDisplay | null>(null);
+    const formatedHistory = useRef<any[]>([]);
+    const noteStatistics = useRef<any[]>([]);
+    const sheetHistory = useRef<any[]>([]);
+    const sheetResult = useRef<any[]>([]);
+
+    const noteEventRef = useRef<HTMLDivElement[]>([]);
+
     const [musicSheet, setMusicSheet] = useState<string| null>(null);
-    const [sheetResult, setSheetResult] = useState<any[] | null>([]);
-    const [sheetHistory, setSheetHistory] = useState<any[] | null>([]);
-    const [formatedHistory, setFormatedHistory] = useState<any[] | null>([]);
+    const [noteEventList, setNoteEventList] = useState<any[]>([]);
+
+    const setFormatedHistory = (_formatedHistory:any[]) => {
+        formatedHistory.current = _formatedHistory
+    }
+
+    const getFormatedHistory = () => {
+        return formatedHistory.current
+    }
+
+    const setNoteStatistics = (_noteStatistics:any[]) => {
+        noteStatistics.current = _noteStatistics
+    }
+
+    const getNoteStatistics = () => {
+        return noteStatistics.current
+    }
+
+    const setSheetHistory = (_sheetHistory:any[]) => {
+        sheetHistory.current = _sheetHistory
+    }
+
+    const getSheetHistory = () => {
+        return sheetHistory.current
+    }
+
+    const setSheetResult = (_sheetResult:any[]) => {
+        sheetResult.current = _sheetResult
+    }
+
+    const getSheetResult = () => {
+        return sheetResult.current
+    }
+
+    const setnoteEventRef = (_noteEventRef:any[]) => {
+        noteEventRef.current = _noteEventRef
+    }
+
+    const getNoteEventRef = () => {
+        return noteEventRef.current
+    }
 
     useEffect(() => {
         setMusicSheet(props.musicXML);
         if(props.sheetResult) {
             setSheetResult(props.sheetResult)
         }
-        getUserHistory()
     }, []);
 
     useEffect(() => {
@@ -70,7 +114,8 @@ const RenderStatisticsMusicSheet = (props: RenderStatisticsMusicSheetProps,ref: 
             //   resultOsmdRef.current!.EngravingRules.RenderSingleHorizontalStaffline = true;
             resultOsmdRef.current!.render();
 
-            drawResult();
+            getUserHistory()
+            // drawResult();
 
             }).catch((e) => {
             console.error(e);
@@ -79,30 +124,32 @@ const RenderStatisticsMusicSheet = (props: RenderStatisticsMusicSheetProps,ref: 
     }
 
     const fillNoteColor = (_result: any[]) => {
-        if (resultOsmdRef.current) {
-        let osmd = resultOsmdRef.current
-        let sourceMeasures = osmd.Sheet.SourceMeasures
+        if (resultOsmdRef.current && _result) {
+            let osmd = resultOsmdRef.current
+            let sourceMeasures = osmd.Sheet.SourceMeasures
 
-        for(const measure_idx in sourceMeasures) {
+            for(const measure_idx in sourceMeasures) {
 
-            for(const vsse_idx in sourceMeasures[measure_idx].VerticalSourceStaffEntryContainers) {
+                for(const vsse_idx in sourceMeasures[measure_idx].VerticalSourceStaffEntryContainers) {
 
-                for(const staEntrie_idx in sourceMeasures[measure_idx].VerticalSourceStaffEntryContainers[vsse_idx].StaffEntries) {
+                    for(const staEntrie_idx in sourceMeasures[measure_idx].VerticalSourceStaffEntryContainers[vsse_idx].StaffEntries) {
 
-                    for(const voiEntrie_idx in sourceMeasures[measure_idx].VerticalSourceStaffEntryContainers[vsse_idx].StaffEntries[staEntrie_idx].VoiceEntries) {
+                        for(const voiEntrie_idx in sourceMeasures[measure_idx].VerticalSourceStaffEntryContainers[vsse_idx].StaffEntries[staEntrie_idx].VoiceEntries) {
 
-                        for(const note_idx in sourceMeasures[measure_idx].VerticalSourceStaffEntryContainers[vsse_idx].StaffEntries[staEntrie_idx].VoiceEntries[voiEntrie_idx].Notes) {
+                            for(const note_idx in sourceMeasures[measure_idx].VerticalSourceStaffEntryContainers[vsse_idx].StaffEntries[staEntrie_idx].VoiceEntries[voiEntrie_idx].Notes) {
 
-                            try {
-                                const dataEle = _result[measure_idx][vsse_idx][staEntrie_idx][voiEntrie_idx][note_idx]
-                                const targetEle = sourceMeasures[measure_idx].VerticalSourceStaffEntryContainers[vsse_idx].StaffEntries[staEntrie_idx].VoiceEntries[voiEntrie_idx].Notes[note_idx]
+                                try {
+                                    const dataEle = _result[measure_idx][vsse_idx][staEntrie_idx][voiEntrie_idx][note_idx]
+                                    const targetEle = sourceMeasures[measure_idx].VerticalSourceStaffEntryContainers[vsse_idx].StaffEntries[staEntrie_idx].VoiceEntries[voiEntrie_idx].Notes[note_idx]
 
-                                const _StemColorXml = dataEle.StemColorXml
-                                const _NoteheadColor = dataEle.NoteheadColor
+                                    const _StemColorXml = dataEle.StemColorXml
+                                    const _NoteheadColor = dataEle.NoteheadColor
 
-                                targetEle.StemColorXml = _StemColorXml;
-                                targetEle.NoteheadColor = _NoteheadColor;
-                            } catch (error) { }
+                                    targetEle.StemColorXml = _StemColorXml;
+                                    targetEle.NoteheadColor = _NoteheadColor;
+                                } catch (error) { }
+
+                            }
 
                         }
 
@@ -112,9 +159,7 @@ const RenderStatisticsMusicSheet = (props: RenderStatisticsMusicSheetProps,ref: 
 
             }
 
-        }
-
-        osmd.render();
+            osmd.render();
 
         }
     }
@@ -122,49 +167,58 @@ const RenderStatisticsMusicSheet = (props: RenderStatisticsMusicSheetProps,ref: 
     const fillNoteEvent = () => {
 
         if (resultOsmdRef.current) {
-        let osmd = resultOsmdRef.current
-        let sourceMeasures = osmd.GraphicSheet.MeasureList
+            // const _noteEventRefList:HTMLDivElement[] = []
+            const _noteEventList:any[] = []
+            
+            let osmd = resultOsmdRef.current
+            let sourceMeasures = osmd.GraphicSheet.MeasureList
 
-        for (let i=0; i<sourceMeasures.length; i++) {
+            for (let i=0; i<sourceMeasures.length; i++) {
 
-            // for (let j=0; j<sourceMeasures[i].length; j++) {
+                for (let j=0; j<sourceMeasures[i].length; j++) {
 
-            //   for (let k=0; k<sourceMeasures[i][j].staffEntries.length; k++) {
+                    for (let k=0; k<sourceMeasures[i][j].staffEntries.length; k++) {
 
-            //     for (let l=0; l<sourceMeasures[i][j].staffEntries[k].graphicalVoiceEntries.length; l++) {
+                        for (let l=0; l<sourceMeasures[i][j].staffEntries[k].graphicalVoiceEntries.length; l++) {
 
-            //       for (let m=0; m<sourceMeasures[i][j].staffEntries[k].graphicalVoiceEntries[l].notes.length; m++) {
+                            for (let m=0; m<sourceMeasures[i][j].staffEntries[k].graphicalVoiceEntries[l].notes.length; m++) {
 
-            //         sourceMeasures[i][j].staffEntries[k].graphicalVoiceEntries[l].notes[m].getSVGGElement().addEventListener("mouseover", function() {
-            //           console.log("asdasd")
-            //           noteMark(sourceMeasures[i][j].staffEntries[k].graphicalVoiceEntries[l].notes[m].sourceNote)
-            //         });
+                                const bbox = sourceMeasures[i][j].staffEntries[k].graphicalVoiceEntries[l].notes[m].getSVGGElement().getBBox();
+                                // console.log(`pos: (${bbox.x}, ${bbox.y})`);
+                                // osmd.Drawer.DrawOverlayLine({x: bbox.x / 10, y: bbox.y / 10}, {x: bbox.x / 10 + 2, y: bbox.y / 10}, osmd.GraphicSheet.MusicPages[0])
 
-            //       }
+                                // // const noteEventRef = document.createElement('div');
+                                // // _noteEventRefList.push(noteEventRef)
+                                _noteEventList.push({
+                                    x: bbox.x,
+                                    y: bbox.y
+                                })
+                            }
 
-            //     }
+                        }
 
-            //   }
+                    }
 
-            // }
+                }
 
-            // const xxx = sourceMeasures[4][0].staffEntries[2].graphicalVoiceEntries[0].notes[0];
-            // xxx.sourceNote.noteheadColor = "#0000FF"
-            // const bbox = sourceMeasures[i][0].staffEntries[0].graphicalVoiceEntries[0].notes[0].getSVGGElement().getBBox();
-            // console.log(`pos: (${bbox.x}, ${bbox.y})`);
-            // osmd.Drawer.DrawOverlayLine({x: bbox.x / 10, y: bbox.y / 10}, {x: bbox.x / 10 + 2, y: bbox.y / 10}, osmd.GraphicSheet.MusicPages[0])
-        }
+                // const xxx = sourceMeasures[4][0].staffEntries[2].graphicalVoiceEntries[0].notes[0];
+                // xxx.sourceNote.noteheadColor = "#0000FF"
+                // const bbox = sourceMeasures[i][0].staffEntries[0].graphicalVoiceEntries[0].notes[0].getSVGGElement().getBBox();
+                // console.log(`pos: (${bbox.x}, ${bbox.y})`);
+                // osmd.Drawer.DrawOverlayLine({x: bbox.x / 10, y: bbox.y / 10}, {x: bbox.x / 10 + 2, y: bbox.y / 10}, osmd.GraphicSheet.MusicPages[0])
+            }
+            // console.log(_noteEventRefList)
+            // setnoteEventRef(_noteEventRefList)
+            console.log(_noteEventList)
+            setNoteEventList(_noteEventList)
 
-        osmd.render();
+            osmd.render();
         }
     }
 
-    const drawResult = () => {
-        if(sheetResult) {
-            fillNoteColor(sheetResult)
-        }
-        fillNoteEvent()
-    }
+    // const drawResult = () => {
+    //     fillNoteColor(getSheetResult())
+    // }
 
     const closeThis = () => {
         props.handleCloseResultDetail();
@@ -174,13 +228,72 @@ const RenderStatisticsMusicSheet = (props: RenderStatisticsMusicSheetProps,ref: 
         api_get_user_music_record(props.userId, props.userMusicId).then((response) => {
             const result = response.data
             setSheetHistory(result.data);
-            console.log(result.data)
             formatUserHistory(result.data);
+            fillNoteEvent();
         });
     }
 
-    const formatUserHistory = (record: any) => {
-        setFormatedHistory([])
+    const formatUserHistory = (_history: any) => {
+        let _formatedHistory = []
+        for (let i=0; i<_history.length; i++) {
+            let item = _history[i]
+            _formatedHistory.push(JSON.parse(item["noteDetail"]))
+        }
+        setFormatedHistory(_formatedHistory)
+        formatNoteStatistics(getFormatedHistory())
+    }
+
+    const formatNoteStatistics = (_formatedHistory: any) => {
+        let noteStatistics:any[] = []
+
+        if (resultOsmdRef.current) {
+            let osmd = resultOsmdRef.current
+            let sourceMeasures = osmd.Sheet.SourceMeasures
+    
+            for(const measure_idx in sourceMeasures) {
+                noteStatistics[measure_idx] = []
+                for(const vsse_idx in sourceMeasures[measure_idx].VerticalSourceStaffEntryContainers) {
+                    noteStatistics[measure_idx][vsse_idx] = []
+                    for(const staEntrie_idx in sourceMeasures[measure_idx].VerticalSourceStaffEntryContainers[vsse_idx].StaffEntries) {
+                        noteStatistics[measure_idx][vsse_idx][staEntrie_idx] = []
+                        for(const voiEntrie_idx in sourceMeasures[measure_idx].VerticalSourceStaffEntryContainers[vsse_idx].StaffEntries[staEntrie_idx].VoiceEntries) {
+                            noteStatistics[measure_idx][vsse_idx][staEntrie_idx][voiEntrie_idx] = []
+                            for(const note_idx in sourceMeasures[measure_idx].VerticalSourceStaffEntryContainers[vsse_idx].StaffEntries[staEntrie_idx].VoiceEntries[voiEntrie_idx].Notes) {
+                                noteStatistics[measure_idx][vsse_idx][staEntrie_idx][voiEntrie_idx][note_idx] = {
+                                    "yes": 0,
+                                    "no": 0
+                                }
+
+                                for(let _his of _formatedHistory) {
+
+                                    try {
+                                        const dataEle = _his[measure_idx][vsse_idx][staEntrie_idx][voiEntrie_idx][note_idx]
+    
+                                        const _StemColorXml = dataEle.StemColorXml
+                                        const _NoteheadColor = dataEle.NoteheadColor
+    
+                                        if(_StemColorXml == "#00ff00"){
+                                            noteStatistics[measure_idx][vsse_idx][staEntrie_idx][voiEntrie_idx][note_idx]["yes"] += 1
+                                        } else {
+                                            noteStatistics[measure_idx][vsse_idx][staEntrie_idx][voiEntrie_idx][note_idx]["no"] += 1
+                                        }
+    
+                                    } catch (error) { }
+
+                                }
+    
+                            }
+    
+                        }
+    
+                    }
+    
+                }
+    
+            }
+        }
+
+        setNoteStatistics(noteStatistics)
     }
 
     const noteMark = (sourceNote:any) => {
@@ -195,10 +308,17 @@ const RenderStatisticsMusicSheet = (props: RenderStatisticsMusicSheetProps,ref: 
         <div className="resultSheet-Wrapper">
             <div className="resultSheet-Overlay" onClick={closeThis}></div>
             <div className="resultSheet-Container" ref={containerRef}>
-            <div className="pb-0 text-end">
-                <button type="button" className="btn btn-danger text-center" style={{padding: "10px 18px", margin:"0"}} onClick={closeThis}>X</button>
-            </div>
-            <div ref={resultOsmdContainerRef} ></div>
+                <div className="pb-0 text-end">
+                    <button type="button" className="btn btn-danger text-center" style={{padding: "10px 18px", margin:"0"}} onClick={closeThis}>X</button>
+                </div>
+                <div style={{position: "relative"}}>
+                    <div ref={resultOsmdContainerRef}></div>
+                    { noteEventList.map((event, index) => (
+                        <div key={index} className="noteEventButton" style={{ position: 'absolute', left: event.x, top: event.y }}>
+                            {/* Add any content or styling you need here */}
+                        </div>
+                    )) }
+                </div>
             </div>
         </div>
 

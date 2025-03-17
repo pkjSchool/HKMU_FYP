@@ -35,3 +35,14 @@
     overflow-x: hidden;
     overflow-y: auto;
 }
+
+.noteEventButton {
+    border: 2px solid red;
+    width: 30px;
+    height: 40px;
+    cursor: pointer
+}
+
+.noteEventButton:hover {
+    background-color: rgba(255, 0, 0, 0.5);
+}
