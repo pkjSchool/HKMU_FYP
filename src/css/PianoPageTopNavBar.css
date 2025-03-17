@@ -5,6 +5,10 @@
     right: 0;
     bottom: 0;
     z-index: 9990;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 .PianoPageTopNavBarMusicList-Overlay {
@@ -20,14 +24,15 @@
 }
 
 .PianoPageTopNavBarMusicList-Container {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 500px;
-    height: 100vh;
+    position: relative;
+    width: 900px;
+    height: 80%;
+    max-width: 90%;
     background-color: white;
     z-index: 1;
     padding: 10px;
+    overflow-x: hidden;
+    overflow-y: auto;
 }
 
 .PianoPageTopNavBarMusicList-Item {

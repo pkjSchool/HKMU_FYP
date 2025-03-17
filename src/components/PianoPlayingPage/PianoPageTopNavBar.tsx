@@ -189,7 +189,7 @@ const CollapsibleNavBar = (props: CollapsibleNavBarProps,ref: React.Ref<Collapsi
                   style={buttonStyles.TopNavBarBtn(hoveredButton, 2)}
                   onMouseEnter={() => handleMouseEnter(2)}
                   onMouseLeave={handleMouseLeave}
-                  onClick={toggleMusicListOpened}
+                  onClick={activeMusicListOpened}
                 >
                   <div className="glyph">
                     <MdAudiotrack size={25} />
@@ -356,8 +356,11 @@ const CollapsibleNavBar = (props: CollapsibleNavBarProps,ref: React.Ref<Collapsi
           {props.isCollapsed ? "Expand" : "Collapse"}
         </button>
       </div>
-      <div className="PianoPageTopNavBarMusicList-Wrapper" style={{ display: isMusicListOpened ? "block" : "none" }}>
+      <div className="PianoPageTopNavBarMusicList-Wrapper" style={{ display: isMusicListOpened ? "flex" : "none" }}>
         <div className="PianoPageTopNavBarMusicList-Container">
+          <div className="pb-0 text-end">
+            <button type="button" className="btn btn-danger text-center" style={{padding: "10px 18px", margin:"0"}} onClick={closeMusicListOpened}>X</button>
+          </div>
           {userStortedMusicList.map((musicSheet, index) => (
             <div 
               key={index} 
@@ -370,7 +373,7 @@ const CollapsibleNavBar = (props: CollapsibleNavBarProps,ref: React.Ref<Collapsi
           ))}
           
         </div>
-        <div className="PianoPageTopNavBarMusicList-Overlay" onClick={toggleMusicListOpened}></div>
+        <div className="PianoPageTopNavBarMusicList-Overlay" onClick={closeMusicListOpened}></div>
       </div>
     </>
   );
