@@ -89,13 +89,17 @@ useEffect(() => {
 
               for(const note_idx in sourceMeasures[measure_idx].VerticalSourceStaffEntryContainers[vsse_idx].StaffEntries[staEntrie_idx].VoiceEntries[voiEntrie_idx].Notes) {
 
-                const _StemColorXml = _result[measure_idx][vsse_idx][staEntrie_idx][voiEntrie_idx][note_idx].StemColorXml
-                const _NoteheadColor = _result[measure_idx][vsse_idx][staEntrie_idx][voiEntrie_idx][note_idx].NoteheadColor
-                
-                // console.log(sourceMeasures[measure_idx].VerticalSourceStaffEntryContainers[vsse_idx].StaffEntries[staEntrie_idx].VoiceEntries[voiEntrie_idx].Notes[note_idx])
+              try {
+                const dataEle = _result[measure_idx][vsse_idx][staEntrie_idx][voiEntrie_idx][note_idx]
+                const targetEle = sourceMeasures[measure_idx].VerticalSourceStaffEntryContainers[vsse_idx].StaffEntries[staEntrie_idx].VoiceEntries[voiEntrie_idx].Notes[note_idx]
 
-                sourceMeasures[measure_idx].VerticalSourceStaffEntryContainers[vsse_idx].StaffEntries[staEntrie_idx].VoiceEntries[voiEntrie_idx].Notes[note_idx].StemColorXml = _StemColorXml;
-                sourceMeasures[measure_idx].VerticalSourceStaffEntryContainers[vsse_idx].StaffEntries[staEntrie_idx].VoiceEntries[voiEntrie_idx].Notes[note_idx].NoteheadColor = _NoteheadColor;
+                const _StemColorXml = dataEle.StemColorXml
+                const _NoteheadColor = dataEle.NoteheadColor
+
+                targetEle.StemColorXml = _StemColorXml;
+                targetEle.NoteheadColor = _NoteheadColor;
+              } catch (error) { }
+
               }
 
             }

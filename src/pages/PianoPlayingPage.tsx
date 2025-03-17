@@ -17,19 +17,29 @@ import {
   getPlayer,
 } from "../components/MusicNotePlayer/player/Player.js";
 import { getLoginedUser } from "../access_control/user";
-import { api_fileWavToMidi, api_fileMidiToXml, api_user_music_upload, api_user_music_record, api_user_music_get } from "../api_request/request.tsx";
+import { api_fileWavToMidi, api_fileMidiToXml, api_user_music_upload, api_add_user_music_record, api_user_music_get } from "../api_request/request.tsx";
 import MusicSheetRender2, { RenderMusicSheetRef } from "../components/PianoPlayingPage/RenderMusicSheet2.js";
 import RenderResultMusicSheet, { RenderResultMusicSheetRef } from "../components/PianoPlayingPage/RenderResultMusicSheet.js";
 
 const ACCURATE_OFFSET = 150;
 
+interface playResult {
+  score: number;
+  name: string;
+  musicTime: string;
+  playTime: string;
+  totalNote: number;
+  noteEntered: number;
+  inputOnRange: number;
+}
+
 function App() {
   const [activeNotes, setActiveNotes] = useState<number[]>([]);
-  const [userMusicId, setUserMusicId] = useState<number>(0);
+  const userMusicId = useRef(0);
   const [isShowResultBrief, setIsShowResultBrief] = useState(false);
   const [isShowResultDetail, setIsShowResultDetail] = useState(false);
-  const [playResult, setPlayResult] = useState({});
-  const [sheetResult, setSheetResult] = useState([]);
+  const playResult = useRef<playResult>();
+  const sheetResult = useRef<any[]>([]);
 
   const startTime = useRef(0);
   const endTime = useRef(0);
@@ -160,6 +170,30 @@ function App() {
     return (isFinished.current = xx);
   };
 
+  const getUserMusicId = () => {
+    return userMusicId.current
+  };
+
+  const setUserMusicId = (id: number) => {
+    userMusicId.current = id;
+  };
+
+  const getPlayResult = () => {
+    return playResult.current
+  };
+
+  const setPlayResult = (id: playResult) => {
+    playResult.current = id;
+  };
+
+  const getSheetResult = () => {
+    return sheetResult.current
+  };
+
+  const setSheetResult = (id: any[]) => {
+    sheetResult.current = id;
+  };
+
   const againCallback = () => {
     handleReset();
   };
@@ -253,13 +287,17 @@ function App() {
   }
 
   const uploadMusicRecord = () => {
-    if (musicSheetRenderRef.current) {
+    const _playresult = getPlayResult()
+    if (musicSheetRenderRef.current && _playresult) {
       setIsUploadMusicRecord(true)
-      const sheetResult = musicSheetRenderRef.current.exportResult();
-      api_user_music_record(
+      api_add_user_music_record(
         parseInt(userInfo.user_id),
-        userMusicId,
-        sheetResult
+        getUserMusicId(),
+        _playresult.score,
+        _playresult.totalNote,
+        _playresult.noteEntered,
+        _playresult.inputOnRange,
+        getSheetResult()
       ).then((response) => {
         setIsUploadMusicRecord(false)
       })
@@ -409,13 +447,13 @@ function App() {
 
   if (isFinished && isShowResultBrief) {
     resultComp = (
-      <PianoPlayingResult result={playResult} againCallback={againCallback} handleOpenResultDetail={handleOpenResultDetail} />
+      <PianoPlayingResult result={getPlayResult()} againCallback={againCallback} handleOpenResultDetail={handleOpenResultDetail} />
     );
   }
 
   if ((isFinished && isShowResultDetail)) {
     resultDetailComp = (
-      <RenderResultMusicSheet ref={resultmusicSheetRef} musicXML={musicXML} sheetResult={sheetResult} handleCloseResultDetail={handleCloseResultDetail} />
+      <RenderResultMusicSheet ref={resultmusicSheetRef} musicXML={musicXML} sheetResult={getSheetResult()} handleCloseResultDetail={handleCloseResultDetail} />
     );
   }
 

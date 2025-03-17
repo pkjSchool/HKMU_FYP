@@ -73,15 +73,32 @@ export function user_task_get(
     });
 }
 
-export function api_user_music_record(
+export function api_add_user_music_record(
     user_id:number,
     user_music_id:number,
-    score:string
+    score:number,
+    totalNote:number,
+    noteEntered:number,
+    inputOnRange:number,
+    noteDetail:any[]
 ) {
     return axios.post(`${baseURL}/user_music_record`, {
         user_id: user_id,
         user_music_id: user_music_id,
-        score: JSON.stringify(score)
+        score: score,
+        totalNote: totalNote,
+        noteEntered: noteEntered,
+        inputOnRange: inputOnRange,
+        noteDetail: JSON.stringify(noteDetail)
+    });
+}
+
+export function api_get_user_music_record(
+    user_id:number,
+    user_music_id:number,
+) {
+    return axios.get(`${baseURL}/user_music_record/${user_id}/${user_music_id}`, {
+
     });
 }
 
