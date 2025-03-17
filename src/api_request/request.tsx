@@ -1,6 +1,7 @@
 import axios from "axios";
 
 const baseURL = "http://localhost/api";
+const musicfileURL = "http://localhost/musicfile";
 
 export function login(
                     login_id:number, 
@@ -70,4 +71,37 @@ export function user_task_get(
     return axios.get(`${baseURL}/user_task/${user_id}`, {
 
     });
+}
+
+export function api_user_music_list(
+    user_id:number
+) {
+    return axios.get(`${baseURL}/user_music_list/${user_id}`, {
+
+    });
+}
+
+export function api_user_music_get(
+    user_music_id:number
+) {
+    return axios.get(`${baseURL}/user_music_get/${user_music_id}`, {responseType: "arraybuffer", timeout: 180000});
+}
+
+export function api_fileWavToMidi(formData: FormData) {
+    return axios.post(`${musicfileURL}/transcribe`, formData, {responseType: "arraybuffer", timeout: 180000});
+}
+
+export function api_fileMidiToXml(formData: FormData) {
+    return axios.post(`${musicfileURL}/midi2mucicxml`, formData, {timeout: 180000});
+}
+
+export function api_user_music_upload(
+    user_id:number,
+    musicFile: any
+) {
+    const formData = new FormData();
+    formData.append("user_id", user_id.toString());
+    formData.append("midi", musicFile);
+
+    return axios.post(`${baseURL}/user_music_upload`, formData);
 }

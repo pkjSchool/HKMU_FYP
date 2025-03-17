@@ -16,8 +16,9 @@ import {
   Player,
   getPlayer,
 } from "../components/MusicNotePlayer/player/Player.js";
+import { getLoginedUser } from "../access_control/user";
+import { api_fileWavToMidi, api_fileMidiToXml, api_user_music_upload, api_user_music_list, api_user_music_get } from "../api_request/request.tsx";
 import MusicSheetRender2, { RenderMusicSheetRef } from "../components/PianoPlayingPage/RenderMusicSheet2.js";
-import axios from "axios";
 
 const ACCURATE_OFFSET = 150;
 
@@ -35,7 +36,8 @@ function App() {
   const MIDIControllerRef = useRef<MidiControllerRef>(null);
   const topNavBarRef = useRef<TopNavBarRef>(null);
   const musicSheetRenderRef = useRef<RenderMusicSheetRef>(null);
-  
+
+  const userInfo = getLoginedUser();
 
   const [volume, setVolume] = useState<number>(1);
   const [musicFile, setMusicFile] = useState<File | null>(null);
@@ -44,6 +46,8 @@ function App() {
   const [fileName, setFileName] = useState<string | null>(null);
   const [isMidi2XML, setIsMidi2XML] = useState<boolean>(false);
   const [isWav2Midi, setIsWav2Midi] = useState<boolean>(false);
+  const [isUploadToUser, setIsUploadToUser] = useState<boolean>(false);
+  const [isGetStortedMusicFromUser, setIsGetStortedMusicFromUser] = useState<boolean>(false);
   const [isFileLoaded, setIsFileLoaded] = useState<boolean>(false);
   const [isCollapsed, setIsCollapsed] = useState<boolean>(false);
 
@@ -225,6 +229,92 @@ function App() {
     setPlayResult(result);
   };
 
+  const fileWavToMidi = () => {
+    if (musicFile) {
+      if (musicFile.type === "audio/wav") {
+        console.log("wav file entered");
+        setIsWav2Midi(true);
+
+        const formData = new FormData();
+        formData.append("audio", musicFile);
+        console.log("start to parse wav file");
+
+        api_fileWavToMidi(formData).then((res) => {
+          const midiBlob = new Blob([res.data], { type: "audio/midi" });
+          // Convert Blob to File
+          const midiFile = new File([midiBlob], "transcribed.mid", { type: "audio/midi" });
+          console.log(midiFile.type);
+
+          setMusicFile(midiFile);
+          setIsWav2Midi(false);
+        });
+      }
+    }
+  };
+
+  const fileMidiToXml = (midi_file: any) => {
+    if (midi_file) {
+      if (midi_file.type === "audio/midi"  || midi_file.type === "audio/mid") {
+        getPlayer().loadSong(midi_file, "fileName", "fileName");
+
+        console.log("midi file entered");
+        setIsMidi2XML(true);
+
+        const formData = new FormData();
+        formData.append("midi", midi_file);
+        console.log("start to parse midi file");
+
+        api_fileMidiToXml(formData).then((res) => {
+          setMusicXML(res.data);
+          setIsMidi2XML(false);
+        });
+      }
+    }
+  };
+
+  const fileUploadToUser = () => {
+    if (musicFile) {
+      if (musicFile.type === "audio/midi" || musicFile.type === "audio/mid") {
+        setIsUploadToUser(true);
+
+        console.log("start to upload music file to user");
+
+        api_user_music_upload(
+          parseInt(userInfo.user_id),
+          musicFile
+        ).then((response) => {
+          const result = response.data
+          const res_data = result.data;
+
+          if(topNavBarRef.current) {
+            topNavBarRef.current.updateUserMusicList();
+          }
+          getStortedMusicFromUser(res_data.user_music_id)
+          setMusicFile(null);
+          setIsUploadToUser(false);
+        });
+      }
+    }
+  };
+
+  const getStortedMusicFromUser = (user_music_id: number) => {
+    setIsGetStortedMusicFromUser(true);
+
+    api_user_music_get(user_music_id).then((response) => {
+      const result = response.data
+
+      const midiBlob = new Blob([result], { type: "audio/midi" });
+      const midiFile = new File([midiBlob], "downloaded.mid", { type: "audio/midi" });
+
+      fileMidiToXml(midiFile);
+
+      if(topNavBarRef.current)
+        topNavBarRef.current.setSelectedStortedMusicId(user_music_id)
+
+      setIsGetStortedMusicFromUser(false);
+    });
+  };
+
   useEffect(() => {
     const notePlayerRefCtx = notePlayerRef.current;
 
@@ -261,37 +351,15 @@ function App() {
   }, []);
 
   useEffect(() => {
-    console.log("music file changed");
+    console.log("music file opened");
     if (musicFile) {
-      if (musicFile.type === "audio/midi"  || musicFile.type === "audio/mid") {
-        getPlayer().loadSong(musicFile, "fileName", "fileName");
-        setIsMidi2XML(true);
-
-        const formData = new FormData();
-        formData.append("midi", musicFile);
-        console.log("start to parse midi file");
-        axios.post("http://localhost/musicfile/midi2mucicxml", formData).then((res) => {
-          setMusicXML(res.data);
-          setIsMidi2XML(false);
-        });
+      if (musicFile.type === "audio/midi" || musicFile.type === "audio/mid") {
+        fileUploadToUser();
       }
-
       if (musicFile.type === "audio/wav") {
-        setIsWav2Midi(true);
-
-        const formData = new FormData();
-        formData.append("audio", musicFile);
-        console.log("start to parse wav file");
-        axios.post("http://localhost/musicfile/transcribe", formData, {responseType: "arraybuffer", timeout: 180000}).then((res) => {
-          const midiBlob = new Blob([res.data], { type: "audio/midi" });
-
-          // Convert Blob to File
-          const midiFile = new File([midiBlob], "transcribed.mid", { type: "audio/midi" });
-          console.log(midiFile.type);
-          setMusicFile(midiFile);
-          setIsWav2Midi(false);
-        });
+        fileWavToMidi();
       }
+
       setIsFileLoaded(true);
     }
   }, [musicFile]);
@@ -341,6 +409,7 @@ function App() {
         setVolume={setVolume}
         isCollapsed={isCollapsed}
         setIsCollapsed={setIsCollapsed}
+        getStortedMusicFromUser={getStortedMusicFromUser}
       />
       <div
         style={{
@@ -365,6 +434,7 @@ function App() {
         onNoteOn={onNoteOn}
         onNoteOff={onNoteOff}
       />
+      {(isWav2Midi || isMidi2XML || isUploadToUser || isGetStortedMusicFromUser) ? <div className="loader-wrapper"><div className="loader"></div></div> : null}
     </div>
   );
 }
