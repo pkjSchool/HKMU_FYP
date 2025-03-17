@@ -17,7 +17,7 @@ import {
   getPlayer,
 } from "../components/MusicNotePlayer/player/Player.js";
 import { getLoginedUser } from "../access_control/user";
-import { api_fileWavToMidi, api_fileMidiToXml, api_user_music_upload, api_user_music_list, api_user_music_get } from "../api_request/request.tsx";
+import { api_fileWavToMidi, api_fileMidiToXml, api_user_music_upload, api_user_music_record, api_user_music_get } from "../api_request/request.tsx";
 import MusicSheetRender2, { RenderMusicSheetRef } from "../components/PianoPlayingPage/RenderMusicSheet2.js";
 import RenderResultMusicSheet, { RenderResultMusicSheetRef } from "../components/PianoPlayingPage/RenderResultMusicSheet.js";
 
@@ -25,6 +25,7 @@ const ACCURATE_OFFSET = 150;
 
 function App() {
   const [activeNotes, setActiveNotes] = useState<number[]>([]);
+  const [userMusicId, setUserMusicId] = useState<number>(0);
   const [isShowResultBrief, setIsShowResultBrief] = useState(false);
   const [isShowResultDetail, setIsShowResultDetail] = useState(false);
   const [playResult, setPlayResult] = useState({});
@@ -52,6 +53,7 @@ function App() {
   const [isWav2Midi, setIsWav2Midi] = useState<boolean>(false);
   const [isUploadToUser, setIsUploadToUser] = useState<boolean>(false);
   const [isGetStortedMusicFromUser, setIsGetStortedMusicFromUser] = useState<boolean>(false);
+  const [isUploadMusicRecord, setIsUploadMusicRecord] = useState<boolean>(false);
   const [isFileLoaded, setIsFileLoaded] = useState<boolean>(false);
   const [isCollapsed, setIsCollapsed] = useState<boolean>(false);
 
@@ -188,6 +190,7 @@ function App() {
     setIsFinished(true);
     changeEndTime();
     renderResult();
+    uploadMusicRecord()
     setTimeout(() => {
       setIsShowResultBrief(true);
       setIsShowResultDetail(false);
@@ -247,6 +250,20 @@ function App() {
 
   const handleCloseResultDetail = () => {
     setIsShowResultDetail(false);
+  }
+
+  const uploadMusicRecord = () => {
+    if (musicSheetRenderRef.current) {
+      setIsUploadMusicRecord(true)
+      const sheetResult = musicSheetRenderRef.current.exportResult();
+      api_user_music_record(
+        parseInt(userInfo.user_id),
+        userMusicId,
+        sheetResult
+      ).then((response) => {
+        setIsUploadMusicRecord(false)
+      })
+    }
   }
 
   const fileWavToMidi = () => {
@@ -328,8 +345,10 @@ function App() {
 
       fileMidiToXml(midiFile);
 
-      if(topNavBarRef.current)
+      setUserMusicId(user_music_id);
+      if(topNavBarRef.current) {
         topNavBarRef.current.setSelectedStortedMusicId(user_music_id)
+      }
 
       setIsGetStortedMusicFromUser(false);
     });
@@ -462,7 +481,7 @@ function App() {
         onNoteOn={onNoteOn}
         onNoteOff={onNoteOff}
       />
-      {(isWav2Midi || isMidi2XML || isUploadToUser || isGetStortedMusicFromUser) ? <div className="loader-wrapper"><div className="loader"></div></div> : null}
+      {(isWav2Midi || isMidi2XML || isUploadToUser || isGetStortedMusicFromUser || isUploadMusicRecord) ? <div className="loader-wrapper"><div className="loader"></div></div> : null}
     </div>
   );
 }

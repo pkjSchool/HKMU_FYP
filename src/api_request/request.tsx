@@ -73,6 +73,18 @@ export function user_task_get(
     });
 }
 
+export function api_user_music_record(
+    user_id:number,
+    user_music_id:number,
+    score:string
+) {
+    return axios.post(`${baseURL}/user_music_record`, {
+        user_id: user_id,
+        user_music_id: user_music_id,
+        score: JSON.stringify(score)
+    });
+}
+
 export function api_user_music_list(
     user_id:number
 ) {
