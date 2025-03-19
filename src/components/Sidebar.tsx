@@ -8,6 +8,7 @@ import {
   FaEllipsisH, 
   FaHistory
 } from "react-icons/fa";
+import { ImStatsDots } from "react-icons/im";
 import { GrTasks } from "react-icons/gr";
 import { NavLink } from "react-router-dom";
 import { getLoginedUser } from "../access_control/user";
@@ -26,7 +27,7 @@ const items: SidebarItem[] = [
   { name: "Task", icon: <GrTasks />, link: "/task" },
   { name: "profile", icon: <FaUser />, link: "/profile" },
   { name: "ai generation", icon: <FaRobot />, link: "/ai-generation" },
-  // { name: "more", icon: <FaEllipsisH />, link: "/more" },
+  // { name: "Statistics", icon: <ImStatsDots />, link: "/statistics" },
   { name: "logout", icon: <FaEllipsisH />, link: "/logout" }
 ];
 

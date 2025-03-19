@@ -74,7 +74,7 @@ createRoot(document.getElementById('root')!).render(
               <Route path="/task" element={ <AuthRequired><TaskPage /></AuthRequired> } />
               <Route path="/profile" element={ <AuthRequired><ProfilePage /></AuthRequired> } /> 
               <Route path="/ai-generation" element={ <AuthRequired><AiGenerationPage /></AuthRequired> } />
-              <Route path="/more" element={ <AuthRequired><MorePage /></AuthRequired> } />
+              <Route path="/statistics" element={ <AuthRequired><MorePage /></AuthRequired> } />
             </Route>
             <Route path="/music-player" element={ <AuthRequired><SelfStudyPage /></AuthRequired> } />
             <Route path="/playing" element={ <AuthRequired><PianoPlayingPage /></AuthRequired> } />
