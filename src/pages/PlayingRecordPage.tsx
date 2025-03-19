@@ -89,9 +89,9 @@ function PlayingRecordPage() {
 
                 {userMusicList.map((musicSheet, index) => (
                     <div 
-                    key={index} 
-                    className="PianoPageTopNavBarMusicList-Item"
-                    onClick={() => {selectStortedMusic(musicSheet.user_music_id)}}
+                        key={index} 
+                        className="PianoPageTopNavBarMusicList-Item"
+                        onClick={() => {selectStortedMusic(musicSheet.user_music_id)}}
                     >
                     <div className="PianoPageTopNavBarMusicList-Item-Title">{ musicSheet.filename }</div>
                     <div className="PianoPageTopNavBarMusicList-Item-Date">{ musicSheet.datetime }</div>

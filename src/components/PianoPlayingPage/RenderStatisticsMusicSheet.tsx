@@ -3,6 +3,9 @@ import { api_get_user_music_record } from "../../api_request/request.tsx";
 import {
   OpenSheetMusicDisplay,
 } from "opensheetmusicdisplay";
+import { formatTime } from "../../util/utils.js";
+
+import RenderResultMusicSheet, { HistorySummary } from "./RenderResultMusicSheet.js";
 
 export type RenderStatisticsMusicSheetRef = {
   setMusicSheet: (musicSheet: string) => void;
@@ -25,13 +28,133 @@ const RenderStatisticsMusicSheet = (props: RenderStatisticsMusicSheetProps,ref: 
     const containerRef = useRef<HTMLDivElement>(null);
     const resultOsmdContainerRef = useRef<HTMLDivElement>(null);
     const resultOsmdRef = useRef<OpenSheetMusicDisplay | null>(null);
-    const formatedHistory = useRef<any[]>([]);
-    const noteStatistics = useRef<any[]>([]);
+
     const sheetHistory = useRef<any[]>([]);
     const sheetResult = useRef<any[]>([]);
 
+    const formatedHistory = useRef<any[]>([]);
+    const noteStatistics = useRef<any[]>([]);
+
+    const formatedScore = useRef<any[]>([]);
+    const formatedNoteEntered = useRef<any[]>([]);
+    const formatedTotalNote = useRef<any[]>([]);
+    const formatedMusicTime = useRef<any[]>([]);
+
+    const historySummary = useRef<HistorySummary|null>(null);
+
     const [musicSheet, setMusicSheet] = useState<string| null>(null);
     const [noteEventList, setNoteEventList] = useState<any[]>([]);
+
+    const [isLoading, setIsLoading] = useState<boolean>(false);
+    const [isShowResultDetail, setIsShowResultDetail] = useState(false);
+
+    const setFormatedScore = (_formatedScore:any[]) => {
+        formatedScore.current = _formatedScore
+    }
+
+    const getFormatedScore = () => {
+        return formatedScore.current
+    }
+
+    const getAverageScore = () => {
+        let _t = getFormatedScore().length
+        let _count = 0
+        if(_t == 0){
+            return 0
+        } else {
+            for(let x of getFormatedScore()){
+                _count += x
+            }
+
+            return (_count / _t).toFixed(2)
+        }
+    }
+
+    const getMaxScore = () => {
+        let _t = getFormatedScore().length
+        let _count = 0
+        if(_t == 0){
+            return 0
+        } else {
+            return Math.max(...getFormatedScore())
+        }
+    }
+
+    const getMinScore = () => {
+        let _t = getFormatedScore().length
+        let _count = 0
+        if(_t == 0){
+            return 0
+        } else {
+            return Math.min(...getFormatedScore())
+        }
+    }
+
+    const setFormatedNoteEntered = (_formatedNoteEntered:any[]) => {
+        formatedNoteEntered.current = _formatedNoteEntered
+    }
+
+    const getFormatedNoteEntered = () => {
+        return formatedNoteEntered.current
+    }
+
+    const getAverageNoteEntered = () => {
+        let _t = getFormatedNoteEntered().length
+        let _count = 0
+        if(_t == 0){
+            return 0
+        } else {
+            for(let x of getFormatedNoteEntered()){
+                _count += x
+            }
+
+            return (_count / _t).toFixed(2)
+        }
+    }
+
+    const getMaxNoteEntered = () => {
+        let _t = getFormatedNoteEntered().length
+        let _count = 0
+        if(_t == 0){
+            return 0
+        } else {
+            return Math.max(...getFormatedNoteEntered())
+        }
+    }
+
+    const getMinNoteEntered = () => {
+        let _t = getFormatedNoteEntered().length
+        let _count = 0
+        if(_t == 0){
+            return 0
+        } else {
+            return Math.min(...getFormatedNoteEntered())
+        }
+    }
+
+    const setFormatedTotalNote = (_formatedTotalNote:any[]) => {
+        formatedTotalNote.current = _formatedTotalNote
+    }
+
+    const getFormatedTotalNote = () => {
+        if(formatedTotalNote.current.length > 0){
+            return formatedTotalNote.current[0]
+        } else {
+            return null
+        }
+    }
+
+    const setFormatedMusicTime = (_formatedMusicTime:any[]) => {
+        formatedMusicTime.current = _formatedMusicTime
+    }
+
+    const getFormatedMusicTime = () => {
+        if(formatedMusicTime.current.length > 0){
+            return formatTime(formatedMusicTime.current[0])
+        } else {
+            return null
+        }
+    }
 
     const setFormatedHistory = (_formatedHistory:any[]) => {
         formatedHistory.current = _formatedHistory
@@ -57,6 +180,10 @@ const RenderStatisticsMusicSheet = (props: RenderStatisticsMusicSheetProps,ref: 
         return sheetHistory.current
     }
 
+    const countSheetHistory = () => {
+        return getSheetHistory().length
+    }
+
     const setSheetResult = (_sheetResult:any[]) => {
         sheetResult.current = _sheetResult
     }
@@ -65,11 +192,20 @@ const RenderStatisticsMusicSheet = (props: RenderStatisticsMusicSheetProps,ref: 
         return sheetResult.current
     }
 
+    const setHistorySummary = (_historySummary:HistorySummary) => {
+        historySummary.current = _historySummary
+    }
+
+    const getHistorySummary = () => {
+        return historySummary.current
+    }
+
     useEffect(() => {
-        setMusicSheet(props.musicXML);
         if(props.sheetResult) {
             setSheetResult(props.sheetResult)
         }
+
+        setMusicSheet(props.musicXML);
 
         const handleResize = () => {
             setTimeout(fillNoteEvent, 500)
@@ -83,12 +219,14 @@ const RenderStatisticsMusicSheet = (props: RenderStatisticsMusicSheetProps,ref: 
     }, []);
 
     useEffect(() => {
-        rerenderSheet(musicSheet);
+        if (resultOsmdContainerRef.current && musicSheet) {
+            getUserHistory()
+        }
     }, [musicSheet]);
 
     const rerenderSheet = (_musicSheet: any) => {
         if (resultOsmdContainerRef.current && _musicSheet) {
-            console.log("ResultMusicSheet: musicXML");
+        console.log("ResultMusicSheet: musicXML");
         resultOsmdContainerRef.current.innerHTML = "";
 
         // Initialize OpenSheetMusicDisplay
@@ -114,9 +252,8 @@ const RenderStatisticsMusicSheet = (props: RenderStatisticsMusicSheetProps,ref: 
             //   resultOsmdRef.current!.EngravingRules.RenderSingleHorizontalStaffline = true;
             resultOsmdRef.current!.render();
 
-            getUserHistory()
-            // drawResult();
-
+            setIsLoading(false)
+            drawResult();
             }).catch((e) => {
             console.error(e);
             });
@@ -222,31 +359,49 @@ const RenderStatisticsMusicSheet = (props: RenderStatisticsMusicSheetProps,ref: 
         }
     }
 
-    // const drawResult = () => {
-    //     fillNoteColor(getSheetResult())
-    // }
+    const drawResult = () => {
+        // fillNoteColor(getSheetResult())
+        if(countSheetHistory() > 0){
+            formatUserHistory(getSheetHistory())
+            formatNoteStatistics(getFormatedHistory())
+
+            fillNoteEvent();
+        }
+    }
 
     const closeThis = () => {
         props.handleCloseResultDetail();
     }
 
     const getUserHistory = () => {
+        setIsLoading(true)
         api_get_user_music_record(props.userId, props.userMusicId).then((response) => {
             const result = response.data
             setSheetHistory(result.data);
-            formatUserHistory(result.data);
-            fillNoteEvent();
+            rerenderSheet(musicSheet);
         });
     }
 
     const formatUserHistory = (_history: any) => {
         let _formatedHistory = []
+        let _formatedScore = []
+        let _formatedNoteEntered = []
+        let _formatedTotalNote = []
+        let _formatedMusicTime = []
+
         for (let i=0; i<_history.length; i++) {
             let item = _history[i]
             _formatedHistory.push(JSON.parse(item["noteDetail"]))
+            _formatedScore.push(item["score"])
+            _formatedNoteEntered.push(item["noteEntered"])
+            _formatedTotalNote.push(item["totalNote"])
+            _formatedMusicTime.push(item["musicTime"])
         }
         setFormatedHistory(_formatedHistory)
-        formatNoteStatistics(getFormatedHistory())
+        setFormatedScore(_formatedScore)
+        setFormatedNoteEntered(_formatedNoteEntered)
+        setFormatedTotalNote(_formatedTotalNote)
+        setFormatedMusicTime(_formatedMusicTime)
     }
 
     const formatNoteStatistics = (_formatedHistory: any) => {
@@ -302,24 +457,95 @@ const RenderStatisticsMusicSheet = (props: RenderStatisticsMusicSheetProps,ref: 
         setNoteStatistics(_noteStatistics)
     }
 
-    return (
-        <div className="resultSheet-Wrapper">
-            <div className="resultSheet-Overlay" onClick={closeThis}></div>
-            <div className="resultSheet-Container" ref={containerRef}>
-                <div className="pb-0 text-end">
-                    <button type="button" className="btn btn-danger text-center" style={{padding: "10px 18px", margin:"0"}} onClick={closeThis}>X</button>
-                </div>
-                <div style={{position: "relative"}}>
-                    <div ref={resultOsmdContainerRef}></div>
-                    { noteEventList.map((event, index) => (
-                        <div key={index} className="noteEventButton" style={{ position: 'absolute', left: event.x, top: event.y }}>
-                            {event.statistics.yes}<br/>{event.statistics.no}
-                        </div>
-                    )) }
-                </div>
-            </div>
-        </div>
+    const getNoteEventButtonClassName = (statistics:any) => {
+        const probility = getEnteredProbability(statistics)
+        const classList = ["noteEvent-button"]
+        if(probility >= 0.75){
+            classList.push("green")
+        } else if(probility >= 0.5){
+            classList.push("yellow")
+        } else {
+            classList.push("red")
+        }
+        return classList.join(" ")
+    }
 
+    const getEnteredProbability = (statistics:any) => {
+        const total = (statistics.yes + statistics.no)
+        if(total <= 0) {
+            return 0
+        } else {
+            return statistics.yes / (statistics.yes + statistics.no)
+        }
+    }
+    
+    const openSheetResultDetail = (_history:any) => {
+        setSheetResult(JSON.parse(_history["noteDetail"]))
+
+        setHistorySummary({
+            musicTime: _history["musicTime"],
+            score: _history["score"],
+            noteEntered: _history["noteEntered"],
+            totalNote: _history["totalNote"],
+            datetime: _history["datetime"],
+        })
+
+        handleOpenResultDetail()
+    }
+
+    const handleOpenResultDetail = () => {
+        setIsShowResultDetail(true);
+      }
+    
+      const handleCloseResultDetail = () => {
+        setIsShowResultDetail(false);
+      }
+
+      let resultDetailComp = null
+
+      if ((isShowResultDetail)) {
+        resultDetailComp = (
+          <RenderResultMusicSheet musicXML={musicSheet} historySummary={getHistorySummary()} sheetResult={getSheetResult()} handleCloseResultDetail={handleCloseResultDetail} />
+        );
+      }
+
+    return (
+        <>
+            <div className="resultSheet-Wrapper">
+                <div className="resultSheet-Overlay" onClick={closeThis}></div>
+                <div className="resultSheet-Container" ref={containerRef}>
+                    <div className="pb-0 text-end">
+                        <button type="button" className="btn btn-danger text-center" style={{padding: "10px 18px", margin:"0"}} onClick={closeThis}>X</button>
+                    </div>
+                    <div>Total History: {countSheetHistory()}</div>
+                    <div>
+                    { getSheetHistory().map((history, index)=> (
+                        <button key={index} onClick={() => openSheetResultDetail(history)} style={{margin: 4}}>{ index + 1 } | { history.datetime }</button>
+                    )) }
+                    </div>
+
+                    <div>Total Note: {getFormatedTotalNote()}</div>
+                    <div>Music Time: {getFormatedMusicTime()}</div>
+
+                    <div>Score | Average: {getAverageScore()} | Max: {getMaxScore()} | Min: {getMinScore()}</div>
+                    <div>Note Entered | Average: {getAverageNoteEntered()} | Max: {getMaxNoteEntered()} | Min: {getMinNoteEntered()}</div>
+
+                    <div style={{position: "relative"}}>
+                        <div ref={resultOsmdContainerRef}></div>
+                        { noteEventList.map((event, index) => (
+                            <div key={index} className="noteEvent-wrapper" style={{ position: 'absolute', left: event.x, top: event.y }}>
+                                <div className={getNoteEventButtonClassName(event.statistics)}></div>
+                                <div className="noteEvent-popper">
+                                    True : {event.statistics.yes}<br/>False : {event.statistics.no}<hr/>Entered : {(getEnteredProbability(event.statistics) * 100).toFixed(2)}%
+                                </div>
+                            </div>
+                        )) }
+                    </div>
+                </div>
+                {(isLoading) ? <div className="loader-wrapper"><div className="loader"></div></div> : null}
+            </div>
+            {resultDetailComp}
+        </>
     );
 };
 

@@ -88,17 +88,16 @@ const PianoPlayingResult = (props:any) => {
                     </div>
 
                     <div className="row mt-3" style={itemRow}>
-                        <div className="col-6" style={itemWrapper}>
+                        <div className="col-12" style={itemWrapper}>
                             <div style={itemLabel}>Note Entered</div>
                             <div style={itemText}>{divisionHandle(getResultData("noteEntered"), getResultData("totalNote"))}%</div>
                             <div style={itemText}>{getResultData("noteEntered")} / {getResultData("totalNote")}</div>
                         </div>
-                        <div className="col-6" style={itemWrapper}>
+                        {/* <div className="col-6" style={itemWrapper}>
                             <div style={itemLabel}>Accurate Input</div>
                             <div style={itemText}>{divisionHandle(getResultData("inputOnRange"), getResultData("noteEntered"))}%</div>
                             <div style={itemText}>{getResultData("inputOnRange")} / {getResultData("noteEntered")}</div>
-                            
-                        </div>
+                        </div> */}
                     </div>
 
                     <div className="pt-5 text-center">

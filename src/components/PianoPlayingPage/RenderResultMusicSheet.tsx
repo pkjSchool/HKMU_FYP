@@ -1,6 +1,7 @@
 import { forwardRef, useImperativeHandle, useEffect, useRef, useState } from "react";
 import { CSSProperties } from "styled-components";
 import "../../css/RenderResultMusicSheet.css";
+import { formatTime } from "../../util/utils.js";
 
 import {
   OpenSheetMusicDisplay,
@@ -12,9 +13,18 @@ export type RenderResultMusicSheetRef = {
 };
 
 interface RenderResultMusicSheetProps {
-    handleCloseResultDetail: () => void;
-    musicXML: string | null;
-    sheetResult: any[] | null;
+  handleCloseResultDetail: () => void;
+  musicXML: string | null;
+  sheetResult: any[] | null;
+  historySummary: HistorySummary | null;
+}
+
+export interface HistorySummary {
+  musicTime: number | null;
+  score: number | null;
+  noteEntered: number | null;
+  totalNote: number | null;
+  datetime: any | null;
 }
 
 const RenderResultMusicSheet = (props: RenderResultMusicSheetProps,ref: React.Ref<RenderResultMusicSheetRef>) => {
@@ -28,15 +38,59 @@ const RenderResultMusicSheet = (props: RenderResultMusicSheetProps,ref: React.Re
   const [musicSheet, setMusicSheet] = useState<string| null>(null);
   const [sheetResult, setSheetResult] = useState<any[]>([]);
 
-useEffect(() => {
+  useEffect(() => {
     setMusicSheet(props.musicXML);
     if(props.sheetResult) 
       setSheetResult(props.sheetResult)
-}, []);
+  }, []);
 
   useEffect(() => {
     rerenderSheet(musicSheet);
   }, [musicSheet]);
+
+  const isHistorySummaryExist = () => {
+    return props.historySummary !== undefined && props.historySummary !== null
+  }
+
+  const formatDatetime = () => {
+    if(isHistorySummaryExist() && props.historySummary) {
+      return props.historySummary.datetime
+    } else {
+      return null
+    }
+  }
+
+  const formatMusicTime = () => {
+    if(isHistorySummaryExist() && props.historySummary && props.historySummary.musicTime) {
+      return formatTime(props.historySummary.musicTime)
+    } else {
+      return null
+    }
+  }
+
+  const formatScore = () => {
+    if(isHistorySummaryExist() && props.historySummary) {
+      return props.historySummary.score
+    } else {
+      return null
+    }
+  }
+
+  const formatNoteEntered = () => {
+    if(isHistorySummaryExist() && props.historySummary) {
+      return props.historySummary.noteEntered
+    } else {
+      return null
+    }
+  }
+
+  const formatTotalNote = () => {
+    if(isHistorySummaryExist() && props.historySummary) {
+      return props.historySummary.totalNote
+    } else {
+      return null
+    }
+  }
 
   const rerenderSheet = (_musicSheet: any) => {
     if (resultOsmdContainerRef.current && _musicSheet) {
@@ -128,6 +182,15 @@ useEffect(() => {
     props.handleCloseResultDetail();
   }
 
+  let xxx = null
+  if(isHistorySummaryExist()){
+    xxx = <><h2 className="text-center">{ formatDatetime() }</h2>
+    <div>Total Note: {formatTotalNote()}</div>
+    <div>Music Time: {formatMusicTime()}</div>
+    <div>Score: {formatScore()}</div>
+    <div>Note Entered: {formatNoteEntered()}</div></>
+  }
+
   return (
     <div className="resultSheet-Wrapper">
         <div className="resultSheet-Overlay" onClick={closeThis}></div>
@@ -135,6 +198,7 @@ useEffect(() => {
           <div className="pb-0 text-end">
             <button type="button" className="btn btn-danger text-center" style={{padding: "10px 18px", margin:"0"}} onClick={closeThis}>X</button>
           </div>
+          { xxx }
         <div ref={resultOsmdContainerRef} ></div>
         </div>
     </div>

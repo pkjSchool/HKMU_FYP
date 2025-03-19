@@ -76,6 +76,8 @@ export function user_task_get(
 export function api_add_user_music_record(
     user_id:number,
     user_music_id:number,
+    musicTime:number,
+    playTime:number,
     score:number,
     totalNote:number,
     noteEntered:number,
@@ -85,6 +87,8 @@ export function api_add_user_music_record(
     return axios.post(`${baseURL}/user_music_record`, {
         user_id: user_id,
         user_music_id: user_music_id,
+        musicTime: musicTime,
+        playTime: playTime,
         score: score,
         totalNote: totalNote,
         noteEntered: noteEntered,

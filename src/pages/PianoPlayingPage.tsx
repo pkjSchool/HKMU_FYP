@@ -236,23 +236,41 @@ function App() {
       ? getPlayer().getPlayerState()
       : {};
 
+    let sheetResult = []
+    if (musicSheetRenderRef.current) 
+      sheetResult = musicSheetRenderRef.current.exportResult();
+
     let inputOnRange = 0;
     let totalNote = 0;
     let noteEntered = 0;
 
-    for (let track of playerStatus.song.activeTracks) {
-      for (let note of track.notes) {
-        totalNote++;
-        if (note.isEntered) {
-          noteEntered++;
-        }
-        if (note.isInputAccurate) {
-          inputOnRange++;
+    // // loop by bar
+    // for (let track of playerStatus.song.activeTracks) {
+    //   for (let note of track.notes) {
+    //     totalNote++;
+    //     if (note.isEntered) {
+    //       noteEntered++;
+    //     }
+    //     if (note.isInputAccurate) {
+    //       inputOnRange++;
+    //     }
+    //   }
+    // }
+
+    for (let measure of sheetResult) {
+      for (let vsse of measure) {
+        for (let staEntrie of vsse) {
+          for (let voiEntrie of staEntrie) {
+            for (let note of voiEntrie) {
+              totalNote++;
+              if(note.entered === true) {
+                noteEntered++;
+              }
+            }
+          }
         }
       }
     }
-
-    // console.log(new Date(startTime.current), new Date(endTime.current))
 
     let score = 0;
     score += noteEntered * 50;
@@ -263,18 +281,19 @@ function App() {
       name: playerStatus.song.name,
       musicTime: formatTime(playerStatus.end / 1000),
       playTime: formatTime(playingTime.current),
+
+      musicTimeRaw: (playerStatus.end / 1000),
+      playTimeRaw: (playingTime.current),
+
       totalNote: totalNote,
       noteEntered: noteEntered,
       inputOnRange: inputOnRange,
     };
 
     console.log(result);
+    console.log(sheetResult);
 
     setPlayResult(result);
-
-    let sheetResult = []
-    if (musicSheetRenderRef.current) 
-      sheetResult = musicSheetRenderRef.current.exportResult();
     setSheetResult(sheetResult);
   };
 
@@ -293,6 +312,10 @@ function App() {
       api_add_user_music_record(
         parseInt(userInfo.user_id),
         getUserMusicId(),
+
+        _playresult.musicTimeRaw,
+        _playresult.playTimeRaw,
+
         _playresult.score,
         _playresult.totalNote,
         _playresult.noteEntered,
