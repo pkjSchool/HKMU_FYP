@@ -4,6 +4,7 @@ import {
   OpenSheetMusicDisplay,
 } from "opensheetmusicdisplay";
 import { formatTime } from "../../util/utils.js";
+import { FaAnglesUp, FaAnglesDown } from "react-icons/fa6";
 
 import RenderResultMusicSheet, { HistorySummary } from "./RenderResultMusicSheet.js";
 
@@ -47,6 +48,7 @@ const RenderStatisticsMusicSheet = (props: RenderStatisticsMusicSheetProps,ref: 
 
     const [isLoading, setIsLoading] = useState<boolean>(false);
     const [isShowResultDetail, setIsShowResultDetail] = useState(false);
+    const [isShowHistoryButton, setIsShowHistoryButton] = useState(false);
 
     const setFormatedScore = (_formatedScore:any[]) => {
         formatedScore.current = _formatedScore
@@ -497,17 +499,21 @@ const RenderStatisticsMusicSheet = (props: RenderStatisticsMusicSheetProps,ref: 
         setIsShowResultDetail(true);
       }
     
-      const handleCloseResultDetail = () => {
+    const handleCloseResultDetail = () => {
         setIsShowResultDetail(false);
-      }
+    }
 
-      let resultDetailComp = null
+    const toggleShowHistoryButton = () => {
+        setIsShowHistoryButton((prev) => !prev);
+    }
 
-      if ((isShowResultDetail)) {
+    let resultDetailComp = null
+
+    if ((isShowResultDetail)) {
         resultDetailComp = (
-          <RenderResultMusicSheet musicXML={musicSheet} historySummary={getHistorySummary()} sheetResult={getSheetResult()} handleCloseResultDetail={handleCloseResultDetail} />
+        <RenderResultMusicSheet musicXML={musicSheet} historySummary={getHistorySummary()} sheetResult={getSheetResult()} handleCloseResultDetail={handleCloseResultDetail} />
         );
-      }
+    }
 
     return (
         <>
@@ -517,13 +523,16 @@ const RenderStatisticsMusicSheet = (props: RenderStatisticsMusicSheetProps,ref: 
                     <div className="pb-0 text-end">
                         <button type="button" className="btn btn-danger text-center" style={{padding: "10px 18px", margin:"0"}} onClick={closeThis}>X</button>
                     </div>
-                    <div>Total History: {countSheetHistory()}</div>
                     <div>
                     { getSheetHistory().map((history, index)=> (
-                        <button key={index} onClick={() => openSheetResultDetail(history)} style={{margin: 4}}>{ index + 1 } | { history.datetime }</button>
+                        (isShowHistoryButton || index < 6) ? 
+                            <button key={index} className="btn btn-primary btn-sm" onClick={() => openSheetResultDetail(history)} style={{margin: 1}}>{ index + 1 } | { history.datetime }</button>
+                        :null
                     )) }
                     </div>
-
+                    {countSheetHistory() > 6?<button className="btn btn-secondary btn-sm w-100" onClick={toggleShowHistoryButton}>{isShowHistoryButton?<FaAnglesUp/>:<FaAnglesDown/>}</button>:null}
+                    <div>Total History: {countSheetHistory()}</div>
+                    <hr/>
                     <div>Total Note: {getFormatedTotalNote()}</div>
                     <div>Music Time: {getFormatedMusicTime()}</div>
 

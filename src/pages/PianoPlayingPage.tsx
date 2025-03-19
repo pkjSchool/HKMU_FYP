@@ -476,7 +476,7 @@ function App() {
 
   if ((isFinished && isShowResultDetail)) {
     resultDetailComp = (
-      <RenderResultMusicSheet ref={resultmusicSheetRef} musicXML={musicXML} sheetResult={getSheetResult()} handleCloseResultDetail={handleCloseResultDetail} />
+      <RenderResultMusicSheet ref={resultmusicSheetRef} musicXML={musicXML} historySummary={null} sheetResult={getSheetResult()} handleCloseResultDetail={handleCloseResultDetail} />
     );
   }
 
