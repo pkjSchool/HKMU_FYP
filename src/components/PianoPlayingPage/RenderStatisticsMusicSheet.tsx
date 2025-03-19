@@ -209,10 +209,6 @@ const RenderStatisticsMusicSheet = (props: RenderStatisticsMusicSheetProps,ref: 
 
         setMusicSheet(props.musicXML);
 
-        const handleResize = () => {
-            setTimeout(fillNoteEvent, 500)
-        };
-
         window.addEventListener("resize", handleResize);
         return () => {
             window.removeEventListener("resize", handleResize);
@@ -367,9 +363,13 @@ const RenderStatisticsMusicSheet = (props: RenderStatisticsMusicSheetProps,ref: 
             formatUserHistory(getSheetHistory())
             formatNoteStatistics(getFormatedHistory())
 
-            fillNoteEvent();
+            setTimeout(fillNoteEvent, 100)
         }
     }
+
+    const handleResize = () => {
+        setTimeout(fillNoteEvent, 500)
+    };
 
     const closeThis = () => {
         props.handleCloseResultDetail();
