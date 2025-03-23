@@ -1,18 +1,23 @@
-import React, { useState } from "react";
-import MemoBeforeQuiz from "../../components/MemoBeforeQuiz.tsx";
-import { useNavigate } from "react-router-dom";
-import Quiz from "../../components/Quiz";
-import ANote from "../../assets/baseImg/A.jpg";
-import BNote from "../../assets/baseImg/B.jpg";
-import CNote from "../../assets/baseImg/C.jpg";
-import DNote from "../../assets/baseImg/D.jpg";
-import ENote from "../../assets/baseImg/E.jpg";
-import FNote from "../../assets/baseImg/F.jpg";
-import GNote from "../../assets/baseImg/G.jpg";
+import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import VideoBeforeQuiz from '../../components/VideoBeforeQuiz';
+import MemoBeforeQuiz from '../../components/MemoBeforeQuiz';
+import Quiz from '../../components/Quiz';
+import quiz_video from '../../assets/quiz_video/test.mp4';
+import quiz8Q from "../../assets/quiz_img/quiz_1/pianoQuizC.jpg"
+import quiz9Q from "../../assets/quiz_img/quiz_1/pianoQuizD.jpg"
+import treble_clef from "../../assets/quiz_img/quiz_2/treble_clef.png"
+import c5_key from "../../assets/quiz_img/quiz_2/c5_key.jpg"
+import interval_CEG from "../../assets/quiz_img/quiz_2/interval_CEG.jpg"
+import scaleDirectionImg from "../../assets/quiz_img/quiz_2/scaleDirectionImg.jpg"
+// import scaleStepsImg from "../../assets/quiz_img/quiz_2/scale_steps.png"
+import chordDemoImg from "../../assets/quiz_img/quiz_2/chordDemoImg.png"
+import CMajor from "../../assets/quiz_img/quiz_2/CMajor.jpg"
+// import scaleDemoImg from "../../assets/quiz_img/quiz_2/scale_demo.png"
 
 
 // 章節測驗題目
-const questionsCh1_2 = [
+export const questionsCh1_2 = [
   {
     questionText: "What is the name of this key?",
     imageSrc: c5_key,
@@ -85,7 +90,8 @@ const tutorialCards = [
     imageSrc: scaleDirectionImg
   }
 ];
-
+const chapter_ref_id = 1
+const lesson_ref_id = 2
 function Ch1_2() {
   const [currentStep, setCurrentStep] = useState<'video' | 'memo' | 'quiz'>('video');
   const navigate = useNavigate();
@@ -124,11 +130,13 @@ function Ch1_2() {
       case 'quiz':
         return (
           <Quiz
-            title="Lesson 2: 和弦與音階"
+            lesson_ref_id={lesson_ref_id}
+            chapter_ref_id={chapter_ref_id}
+            title="Lesson 2: Chords and Scales"
             questions={questionsCh1_2}
             onExit={handleExitQuiz}
           />
-        );
+          );
       default:
         return null;
     }
