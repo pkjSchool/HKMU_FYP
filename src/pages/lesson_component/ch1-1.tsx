@@ -5,7 +5,7 @@ import { useNavigate } from "react-router-dom";
 import VideoBeforeQuiz from "../../components/VideoBeforeQuiz.tsx";
 import MemoBeforeQuiz from "../../components/MemoBeforeQuiz.tsx";
 import quiz_video from "../../assets/quiz_video/test.mp4";
-import question1 from "../../assets/quiz_img/quiz_1/quiz1_1piano.png";
+// import question1 from "../../assets/quiz_img/quiz_1/quiz1_1piano.png";
 import question2_ans1 from "../../assets/quiz_img/quiz_1/quiz1_2.jpg";
 import question2_ans2 from "../../assets/quiz_img/quiz_1/quiz1_2_1.png";
 import question2_ans3 from "../../assets/quiz_img/quiz_1/quiz1_2_2.png";
@@ -23,10 +23,10 @@ import quiz7Q from "../../assets/quiz_img/quiz_1/quiz7Q.jpg"
 import quiz8Q from "../../assets/quiz_img/quiz_1/pianoQuizC.jpg"
 import quiz9Q from "../../assets/quiz_img/quiz_1/pianoQuizD.jpg"
 import quiz10Q from "../../assets/quiz_img/quiz_1/pianoQuizE.jpg"
-import quiz11Q from "../../assets/quiz_img/quiz_1/pianoQuizF.jpg"
-import quiz12Q from "../../assets/quiz_img/quiz_1/pianoQuizG.jpg"
-import quiz13Q from "../../assets/quiz_img/quiz_1/pianoQuizA.jpg"
-import quiz14Q from "../../assets/quiz_img/quiz_1/pianoQuizB.jpg"
+// import quiz11Q from "../../assets/quiz_img/quiz_1/pianoQuizF.jpg"
+// import quiz12Q from "../../assets/quiz_img/quiz_1/pianoQuizG.jpg"
+// import quiz13Q from "../../assets/quiz_img/quiz_1/pianoQuizA.jpg"
+// import quiz14Q from "../../assets/quiz_img/quiz_1/pianoQuizB.jpg"
 
 const questionsCh1_1 = [
   // Multiple choice question
