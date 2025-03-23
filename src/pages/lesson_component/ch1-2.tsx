@@ -10,120 +10,135 @@ import ENote from "../../assets/baseImg/E.jpg";
 import FNote from "../../assets/baseImg/F.jpg";
 import GNote from "../../assets/baseImg/G.jpg";
 
-const chapter_ref_id = 1
-const lesson_ref_id = 2
 
-export const questionsCh1_2 = [
+// 章節測驗題目
+const questionsCh1_2 = [
   {
-    questionText: "Where is the F key?",
+    questionText: "What is the name of this key?",
+    imageSrc: c5_key,
     answerOptions: [
-      { isImage: true, imageSrc: ANote, isCorrect: false },
-      { isImage: true, imageSrc: CNote, isCorrect: false },
-      { isImage: true, imageSrc: FNote, isCorrect: true },
-      { isImage: true, imageSrc: GNote, isCorrect: false },
-    ],
+      { answerText: "C4", isCorrect: false },
+      { answerText: "C5", isCorrect: true },
+      { answerText: "G4", isCorrect: false }
+    ]
   },
   {
-    questionText: "Where is the A key?",
+    questionText: "Is this a treble clef?",
+    imageSrc: treble_clef,
     answerOptions: [
-      { isImage: true, imageSrc: BNote, isCorrect: false },
-      { isImage: true, imageSrc: ANote, isCorrect: true },
-      { isImage: true, imageSrc: ENote, isCorrect: false },
-      { isImage: true, imageSrc: FNote, isCorrect: false },
-    ],
+      { answerText: "Yes", isCorrect: true },
+      { answerText: "No", isCorrect: false }
+    ]
   },
   {
-    questionText: "Where is the C key?",
+    questionText: "What is this musical element?",
+    imageSrc: interval_CEG,
     answerOptions: [
-      { isImage: true, imageSrc: DNote, isCorrect: false },
-      { isImage: true, imageSrc: FNote, isCorrect: false },
-      { isImage: true, imageSrc: CNote, isCorrect: true },
-      { isImage: true, imageSrc: FNote, isCorrect: false },
-    ],
+      { answerText: "Third", isCorrect: false },
+      { answerText: "Chord", isCorrect: true },
+      { answerText: "Fifth", isCorrect: false }
+    ]
   },
   {
-    questionText: "Where is the G key?",
-    answerOptions: [
-      { isImage: true, imageSrc: CNote, isCorrect: false },
-      { isImage: true, imageSrc: GNote, isCorrect: true },
-      { isImage: true, imageSrc: FNote, isCorrect: false },
-      { isImage: true, imageSrc: DNote, isCorrect: false },
-    ],
+    questionText: "Please play the note",
+    imageSrc: quiz8Q,
+    isPianoQuestion: true,
+    requiredNotes: [60]
   },
   {
-    questionText: "Where is the B key?",
-    answerOptions: [
-      { isImage: true, imageSrc: FNote, isCorrect: false },
-      { isImage: true, imageSrc: DNote, isCorrect: false },
-      { isImage: true, imageSrc: BNote, isCorrect: true },
-      { isImage: true, imageSrc: CNote, isCorrect: false },
-    ],
+    questionText: "Please play the note",
+    imageSrc: quiz9Q,
+    isPianoQuestion: true,
+    requiredNotes: [62] 
   },
   {
-    questionText: "Where is the D key?",
-    answerOptions: [
-      { isImage: true, imageSrc: CNote, isCorrect: false },
-      { isImage: true, imageSrc: BNote, isCorrect: false },
-      { isImage: true, imageSrc: DNote, isCorrect: true },
-      { isImage: true, imageSrc: ANote, isCorrect: false },
-    ],
+    questionText: "Please play the C chord",
+    imageSrc: CMajor,
+    isPianoQuestion: true,
+    requiredNotes: [60, 64, 67],
+    showNoteNames: true
   },
   {
-    questionText: "Where is the E key?",
+    questionText: "Is this scale ascending or descending?",
+    imageSrc: scaleDirectionImg,
     answerOptions: [
-      { isImage: true, imageSrc: DNote, isCorrect: false },
-      { isImage: true, imageSrc: CNote, isCorrect: false },
-      { isImage: true, imageSrc: ENote, isCorrect: true },
-      { isImage: true, imageSrc: BNote, isCorrect: false },
-    ],
-  },
+      { answerText: "Ascending", isCorrect: true },
+      { answerText: "Descending", isCorrect: false }
+    ]
+  }
 ];
+
+// Tutorial content
 const tutorialCards = [
   {
-    title: "Step 1",
-    content: "This is the first step of Chapter 1 - Lesson 2.",
-    imageSrc: "https://via.placeholder.com/300",
+    title: "What is a chord?",
+    content: "A chord is three notes played simultaneously, like building blocks",
   },
   {
-    title: "Step 2",
-    content: "This is the second step of Chapter 1 - Lesson 2.",
-    imageSrc: "https://via.placeholder.com/300",
+    title: "Chord Example",
+    content: "The C chord consists of C, E, and G notes",
+    imageSrc: CMajor
   },
   {
-    title: "Step 3",
-    content: "You've completed Chapter 1 - Lesson 2!",
-    imageSrc: "https://via.placeholder.com/300",
-  },
+    title: "Scale Direction",
+    content: "Playing from left to right is ascending, like climbing stairs",
+    imageSrc: scaleDirectionImg
+  }
 ];
-const Ch1_2 = () => {
-  const navigate = useNavigate();
-  const [showMemo, setshowMemo] = useState(true);
-  
 
-  const handleComplete = () => {
-    setshowMemo(false);
+function Ch1_2() {
+  const [currentStep, setCurrentStep] = useState<'video' | 'memo' | 'quiz'>('video');
+  const navigate = useNavigate();
+
+  const handleVideoEnd = () => {
+    setCurrentStep('memo');
+  };
+
+  const handleMemoComplete = () => {
+    setCurrentStep('quiz');
   };
 
   const handleExitQuiz = () => {
-    console.log("handleExitQuiz");
+    console.log("Quiz exited!");
     navigate("/");
   };
 
+  const renderStep = () => {
+    switch (currentStep) {
+      case 'video':
+        return (
+          <VideoBeforeQuiz
+            videoSrc={quiz_video}
+            onVideoEnd={handleVideoEnd}
+            autoPlay={true}
+            controls={true}
+          />
+        );
+      case 'memo':
+        return (
+          <MemoBeforeQuiz
+            cards={tutorialCards}
+            onComplete={handleMemoComplete}
+          />
+        );
+      case 'quiz':
+        return (
+          <Quiz
+            title="Lesson 2: 和弦與音階"
+            questions={questionsCh1_2}
+            onExit={handleExitQuiz}
+          />
+        );
+      default:
+        return null;
+    }
+  };
+
   return (
-    <div>
-      {showMemo ? (
-        <MemoBeforeQuiz cards={tutorialCards} onComplete={handleComplete} />
-      ) : (
-        <Quiz
-          chapter_ref_id={chapter_ref_id}
-          lesson_ref_id={lesson_ref_id}
-          title="Lesson 1: Piano Basics"
-          questions={questionsCh1_2}
-          onExit={handleExitQuiz}
-        />
-      )}
-    </div>
+    <>
+      {renderStep()}
+    </>
   );
-};
+}
 
 export default Ch1_2;
