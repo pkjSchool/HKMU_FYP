@@ -45,6 +45,14 @@ export const questionsCh1_2 = [
     ]
   },
   {
+    questionText: "Is this scale ascending or descending?",
+    imageSrc: scaleDirectionImg,
+    answerOptions: [
+      { answerText: "Ascending", isCorrect: true },
+      { answerText: "Descending", isCorrect: false }
+    ]
+  },
+  {
     questionText: "Please play the note",
     imageSrc: quiz8Q,
     isPianoQuestion: true,
@@ -63,14 +71,7 @@ export const questionsCh1_2 = [
     requiredNotes: [60, 64, 67],
     showNoteNames: true
   },
-  {
-    questionText: "Is this scale ascending or descending?",
-    imageSrc: scaleDirectionImg,
-    answerOptions: [
-      { answerText: "Ascending", isCorrect: true },
-      { answerText: "Descending", isCorrect: false }
-    ]
-  }
+  
 ];
 
 // Tutorial content
