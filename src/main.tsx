@@ -26,7 +26,7 @@ import LearningPage from './pages/LearningPage.tsx'
 import ProfilePage from './pages/ProfilePage.tsx'
 import SelfStudyPage from './pages/SelfStudyPage.tsx'
 import AiGenerationPage from './pages/AiGenerationPage.tsx'
-import MorePage from './pages/MorePage.tsx'
+import StatisticsPage from './pages/StatisticsPage.tsx'
 import LoginPage from './pages/LoginPage.tsx'
 import LogoutPage from './pages/LogoutPage.tsx'
 import InitialPage from './pages/InitialPage.tsx';
@@ -74,7 +74,7 @@ createRoot(document.getElementById('root')!).render(
               <Route path="/task" element={ <AuthRequired><TaskPage /></AuthRequired> } />
               <Route path="/profile" element={ <AuthRequired><ProfilePage /></AuthRequired> } /> 
               <Route path="/ai-generation" element={ <AuthRequired><AiGenerationPage /></AuthRequired> } />
-              <Route path="/statistics" element={ <AuthRequired><MorePage /></AuthRequired> } />
+              <Route path="/statistics" element={ <AuthRequired><StatisticsPage /></AuthRequired> } />
             </Route>
             <Route path="/music-player" element={ <AuthRequired><SelfStudyPage /></AuthRequired> } />
             <Route path="/playing" element={ <AuthRequired><PianoPlayingPage /></AuthRequired> } />

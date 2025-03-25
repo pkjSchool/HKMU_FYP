@@ -27,7 +27,7 @@ const items: SidebarItem[] = [
   { name: "Task", icon: <GrTasks />, link: "/task" },
   { name: "profile", icon: <FaUser />, link: "/profile" },
   { name: "ai generation", icon: <FaRobot />, link: "/ai-generation" },
-  // { name: "Statistics", icon: <ImStatsDots />, link: "/statistics" },
+  { name: "Statistics", icon: <ImStatsDots />, link: "/statistics" },
   { name: "logout", icon: <FaEllipsisH />, link: "/logout" }
 ];
 

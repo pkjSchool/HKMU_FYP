@@ -21,6 +21,30 @@ export function user_lesson_count(
     });
 }
 
+export function user_music_record_count(
+    user_id:number
+) {
+    return axios.get(`${baseURL}/user_music_record_count/${user_id}`, {
+
+    });
+}
+
+export function user_task_count(
+    user_id:number
+) {
+    return axios.get(`${baseURL}/user_task_count/${user_id}`, {
+
+    });
+}
+
+export function user_music_entered_count(
+    user_id:number
+) {
+    return axios.get(`${baseURL}/user_music_entered_count/${user_id}`, {
+
+    });
+}
+
 export function user_lesson_get(
     user_id:number
 ) {
