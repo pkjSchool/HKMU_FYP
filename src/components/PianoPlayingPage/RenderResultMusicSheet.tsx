@@ -3,6 +3,8 @@ import { CSSProperties } from "styled-components";
 import "../../css/RenderResultMusicSheet.css";
 import { formatTime } from "../../util/utils.js";
 
+import Chart from 'chart.js/auto';
+
 import {
   OpenSheetMusicDisplay,
 } from "opensheetmusicdisplay";
@@ -32,6 +34,8 @@ const RenderResultMusicSheet = (props: RenderResultMusicSheetProps,ref: React.Re
     setMusicSheet,
   }));
   
+  const chartRef_1 = useRef<HTMLCanvasElement>(null);
+
   const containerRef = useRef<HTMLDivElement>(null);
   const resultOsmdContainerRef = useRef<HTMLDivElement>(null);
   const resultOsmdRef = useRef<OpenSheetMusicDisplay | null>(null);
@@ -176,19 +180,74 @@ const RenderResultMusicSheet = (props: RenderResultMusicSheetProps,ref: React.Re
 
   const drawResult = () => {
     fillNoteColor(sheetResult)
+    initialChart()
   }
 
   const closeThis = () => {
     props.handleCloseResultDetail();
   }
 
+  const initialChart = () => {
+    if (isHistorySummaryExist() && chartRef_1.current) {
+        const data = [];
+
+        data.push({date: "Note Entered", value: formatNoteEntered()})
+        data.push({date: "Note Missed", value: (formatTotalNote() - formatNoteEntered())})
+    
+        const chart = Chart.getChart(chartRef_1.current);
+        if(chart !== undefined) {
+            chart.destroy();
+        }
+    
+        new Chart(
+            chartRef_1.current,
+            {
+            type: 'pie',
+            data: {
+                labels: data.map(row => row.date),
+                datasets: [
+                {
+                    data: data.map(row => row.value)
+                }
+                ]
+            },
+            options: {
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                    display: false
+                    },
+                    title: {
+                        display: true,
+                        text: "Note Entered",
+                        font: {
+                            size: 20
+                        }
+                    }
+                    
+                }
+            },
+            }
+        );
+    }
+  }
+
   let xxx = null
   if(isHistorySummaryExist()){
     xxx = <><h2 className="text-center">{ formatDatetime() }</h2>
-    <div>Total Note: {formatTotalNote()}</div>
-    <div>Music Time: {formatMusicTime()}</div>
-    <div>Score: {formatScore()}</div>
-    <div>Note Entered: {formatNoteEntered()}</div></>
+
+    <div className="row">
+      <div className="col-6">
+        <div style={{"position": "relative", "width": "100%", "maxWidth": "200px", "marginLeft": "auto", "paddingTop": "40px"}}>
+          <div>Total Note: {formatTotalNote()}</div>
+          <div>Music Time: {formatMusicTime()}</div>
+          <div>Score: {formatScore()}</div>
+          <div>Note Entered: {formatNoteEntered()}</div>
+        </div>
+      </div>
+      <div className="col-6"><div style={{"position": "relative", "width": "100%", "height": "200px", "maxWidth": "200px"}}><canvas ref={chartRef_1}></canvas></div></div>
+    </div>
+    </>
   }
 
   return (

@@ -5,6 +5,7 @@ import {
 } from "opensheetmusicdisplay";
 import { formatTime } from "../../util/utils.js";
 import { FaAnglesUp, FaAnglesDown } from "react-icons/fa6";
+import Chart from 'chart.js/auto';
 
 import RenderResultMusicSheet, { HistorySummary } from "./RenderResultMusicSheet.js";
 
@@ -25,6 +26,9 @@ const RenderStatisticsMusicSheet = (props: RenderStatisticsMusicSheetProps,ref: 
     useImperativeHandle(ref, () => ({
         setMusicSheet,
     }));
+
+    const chartRef_1 = useRef<HTMLCanvasElement>(null);
+    const chartRef_2 = useRef<HTMLCanvasElement>(null);
     
     const containerRef = useRef<HTMLDivElement>(null);
     const resultOsmdContainerRef = useRef<HTMLDivElement>(null);
@@ -363,7 +367,7 @@ const RenderStatisticsMusicSheet = (props: RenderStatisticsMusicSheetProps,ref: 
             formatUserHistory(getSheetHistory())
             formatNoteStatistics(getFormatedHistory())
 
-            setTimeout(fillNoteEvent, 100)
+            setTimeout(()=>{ fillNoteEvent(); initialChart() }, 100)
         }
     }
 
@@ -507,6 +511,105 @@ const RenderStatisticsMusicSheet = (props: RenderStatisticsMusicSheetProps,ref: 
         setIsShowHistoryButton((prev) => !prev);
     }
 
+    const initialChart = () => {
+        if (getFormatedNoteEntered() && chartRef_1.current) {
+            const data = [];
+        
+            console.log(getFormatedNoteEntered())
+            for (let index in getFormatedNoteEntered()) {    
+                data.push({date: (parseInt(index) + 1), value: getFormatedNoteEntered()[index]})
+            }
+        
+            const chart = Chart.getChart(chartRef_1.current);
+            if(chart !== undefined) {
+                chart.destroy();
+            }
+        
+            new Chart(
+                chartRef_1.current,
+                {
+                type: 'line',
+                data: {
+                    labels: data.map(row => row.date),
+                    datasets: [
+                    {
+                        // label: 'Complete Lessons',
+                        data: data.map(row => row.value)
+                    }
+                    ]
+                },
+                options: {
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                        display: false
+                        },
+                        title: {
+                            display: true,
+                            text: "Note Entered",
+                            font: {
+                                size: 20
+                            }
+                        }
+                        
+                    }
+                },
+                }
+            );
+        }
+
+        if (getFormatedScore() && chartRef_2.current) {
+            const data = [];
+        
+            console.log(getFormatedScore())
+            for (let index in getFormatedScore()) {    
+                data.push({date: (parseInt(index) + 1), value: getFormatedScore()[index]})
+            }
+        
+            const chart = Chart.getChart(chartRef_2.current);
+            if(chart !== undefined) {
+                chart.destroy();
+            }
+        
+            new Chart(
+                chartRef_2.current,
+                {
+                type: 'bar',
+                data: {
+                    labels: data.map(row => row.date),
+                    datasets: [
+                        {
+                            // label: 'Complete Lessons',
+                            data: data.map(row => row.value)
+                        }
+                        ]
+                },
+                options: {
+                    scales: {
+                        x: {
+                          type: 'category',
+                          position: 'bottom'
+                        }
+                    },
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                        display: false
+                        },
+                        title: {
+                            display: true,
+                            text: "Score",
+                            font: {
+                                size: 20
+                            }
+                        }
+                    }
+                },
+                }
+            );
+        }
+    }
+
     let resultDetailComp = null
 
     if ((isShowResultDetail)) {
@@ -533,11 +636,20 @@ const RenderStatisticsMusicSheet = (props: RenderStatisticsMusicSheetProps,ref: 
                     {countSheetHistory() > 6?<button className="btn btn-secondary btn-sm w-100" onClick={toggleShowHistoryButton}>{isShowHistoryButton?<FaAnglesUp/>:<FaAnglesDown/>}</button>:null}
                     <div>Total History: {countSheetHistory()}</div>
                     <hr/>
+                    {(countSheetHistory() > 0)?<>
                     <div>Total Note: {getFormatedTotalNote()}</div>
                     <div>Music Time: {getFormatedMusicTime()}</div>
 
                     <div>Score | Average: {getAverageScore()} | Max: {getMaxScore()} | Min: {getMinScore()}</div>
                     <div>Note Entered | Average: {getAverageNoteEntered()} | Max: {getMaxNoteEntered()} | Min: {getMinNoteEntered()}</div>
+
+                    <div className="row">
+                        <div className="col-6"><div style={{"position": "relative", "width": "100%", "height": "200px", "maxWidth": "100%"}}><canvas ref={chartRef_1}></canvas></div></div>
+                        <div className="col-6"><div style={{"position": "relative", "width": "100%", "height": "200px", "maxWidth": "100%"}}><canvas ref={chartRef_2}></canvas></div></div>
+                    </div>
+
+                    </>:null
+                    }
 
                     <div style={{position: "relative"}}>
                         <div ref={resultOsmdContainerRef}></div>
