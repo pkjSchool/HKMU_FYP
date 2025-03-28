@@ -75,6 +75,7 @@ const RenderMusicSheet = (props: RenderMusicSheetProps,ref: React.Ref<RenderMusi
       osmdRef.current.load(props.musicXML).then(() => {
           // Set the options to display only one system (row)
           osmdRef.current!.EngravingRules.RenderSingleHorizontalStaffline = true;
+          osmdRef.current!.zoom = 1.3;
           osmdRef.current!.render();
 
           // Add cursor
@@ -129,6 +130,7 @@ const RenderMusicSheet = (props: RenderMusicSheetProps,ref: React.Ref<RenderMusi
       osmdRef.current.load(musicSheet).then(() => {
           // Set the options to display only one system (row)
           osmdRef.current!.EngravingRules.RenderSingleHorizontalStaffline = true;
+          osmdRef.current!.zoom = 1.3;
           osmdRef.current!.render();
 
           // Add cursor
@@ -407,7 +409,7 @@ const RenderMusicSheet = (props: RenderMusicSheetProps,ref: React.Ref<RenderMusi
           : { visibility: "hidden" }
       }
     >
-      <div ref={osmdContainerRef} style={{ width: "100%", height: "200px" }} ></div>
+      <div ref={osmdContainerRef} style={{ width: "100%", height: "250px", marginTop: "-40px" }} ></div>
     </div>
   );
 };

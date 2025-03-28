@@ -122,6 +122,7 @@ const RenderResultMusicSheet = (props: RenderResultMusicSheetProps,ref: React.Re
       resultOsmdRef.current.load(_musicSheet).then(() => {
           // Set the options to display only one system (row)
         //   resultOsmdRef.current!.EngravingRules.RenderSingleHorizontalStaffline = true;
+          resultOsmdRef.current!.zoom = 1.3;
           resultOsmdRef.current!.render();
 
           drawResult();

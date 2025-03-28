@@ -252,6 +252,7 @@ const RenderStatisticsMusicSheet = (props: RenderStatisticsMusicSheetProps,ref: 
         resultOsmdRef.current.load(_musicSheet).then(() => {
             // Set the options to display only one system (row)
             //   resultOsmdRef.current!.EngravingRules.RenderSingleHorizontalStaffline = true;
+            resultOsmdRef.current!.zoom = 1.3;
             resultOsmdRef.current!.render();
 
             setIsLoading(false)
@@ -337,8 +338,8 @@ const RenderStatisticsMusicSheet = (props: RenderStatisticsMusicSheetProps,ref: 
                                 }
 
                                 _noteEventList.push({
-                                    x: bbox.x - 10,
-                                    y: bbox.y - 10,
+                                    x: (bbox.x * 1.3) - 5,
+                                    y: (bbox.y * 1.3) - 5,
                                     statistics: _statistics
                                 })
                             }
