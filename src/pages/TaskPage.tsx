@@ -32,7 +32,8 @@ function TaskPage() {
                                     <h3>{taskGroup.title}</h3>
                                     <ul className="list-group">
                                         {taskGroup.tasks.map((task:any, i:number) => {
-                                            return <li key={i} className="list-group-item animate__animated animate__fadeInRight" style={{"animationDelay": `${i*0.1}s`}}>
+                                            // animate__animated animate__fadeInRight
+                                            return <li key={i} className="list-group-item" style={{"animationDelay": `${i*0.1}s`}}>
                                                         <h5>{task.name}</h5>
                                                         <div style={{display: "flex", "alignItems": "center"}}>
                                                             <div className="progress" role="progressbar" style={{width: "calc(100% - 20px)"}}>

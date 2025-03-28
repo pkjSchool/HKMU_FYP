@@ -191,7 +191,7 @@ const RenderResultMusicSheet = (props: RenderResultMusicSheetProps,ref: React.Re
     if (isHistorySummaryExist() && chartRef_1.current) {
         const data = [];
 
-        data.push({date: "Note Entered", value: formatNoteEntered()})
+        data.push({date: "Note Played", value: formatNoteEntered()})
         data.push({date: "Note Missed", value: (formatTotalNote() - formatNoteEntered())})
     
         const chart = Chart.getChart(chartRef_1.current);
@@ -219,7 +219,7 @@ const RenderResultMusicSheet = (props: RenderResultMusicSheetProps,ref: React.Re
                     },
                     title: {
                         display: true,
-                        text: "Note Entered",
+                        text: "Note Played",
                         font: {
                             size: 20
                         }
@@ -242,7 +242,7 @@ const RenderResultMusicSheet = (props: RenderResultMusicSheetProps,ref: React.Re
           <div>Total Note: {formatTotalNote()}</div>
           <div>Music Time: {formatMusicTime()}</div>
           <div>Score: {formatScore()}</div>
-          <div>Note Entered: {formatNoteEntered()}</div>
+          <div>Note Played: {formatNoteEntered()}</div>
         </div>
       </div>
       <div className="col-6"><div style={{"position": "relative", "width": "100%", "height": "200px", "maxWidth": "200px"}}><canvas ref={chartRef_1}></canvas></div></div>

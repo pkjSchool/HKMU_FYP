@@ -530,7 +530,7 @@ const RenderStatisticsMusicSheet = (props: RenderStatisticsMusicSheetProps,ref: 
                 {
                 type: 'line',
                 data: {
-                    labels: data.map(row => row.date),
+                    labels: data.map(row => "History " + row.date),
                     datasets: [
                     {
                         // label: 'Complete Lessons',
@@ -546,7 +546,7 @@ const RenderStatisticsMusicSheet = (props: RenderStatisticsMusicSheetProps,ref: 
                         },
                         title: {
                             display: true,
-                            text: "Note Entered",
+                            text: "Note Played",
                             font: {
                                 size: 20
                             }
@@ -576,7 +576,7 @@ const RenderStatisticsMusicSheet = (props: RenderStatisticsMusicSheetProps,ref: 
                 {
                 type: 'bar',
                 data: {
-                    labels: data.map(row => row.date),
+                    labels: data.map(row => "History " + row.date),
                     datasets: [
                         {
                             // label: 'Complete Lessons',
@@ -641,7 +641,7 @@ const RenderStatisticsMusicSheet = (props: RenderStatisticsMusicSheetProps,ref: 
                     <div>Music Time: {getFormatedMusicTime()}</div>
 
                     <div>Score | Average: {getAverageScore()} | Max: {getMaxScore()} | Min: {getMinScore()}</div>
-                    <div>Note Entered | Average: {getAverageNoteEntered()} | Max: {getMaxNoteEntered()} | Min: {getMinNoteEntered()}</div>
+                    <div>Note Played | Average: {getAverageNoteEntered()} | Max: {getMaxNoteEntered()} | Min: {getMinNoteEntered()}</div>
 
                     <div className="row">
                         <div className="col-6"><div style={{"position": "relative", "width": "100%", "height": "200px", "maxWidth": "100%"}}><canvas ref={chartRef_1}></canvas></div></div>
@@ -657,7 +657,7 @@ const RenderStatisticsMusicSheet = (props: RenderStatisticsMusicSheetProps,ref: 
                             <div key={index} className="noteEvent-wrapper" style={{ position: 'absolute', left: event.x, top: event.y }}>
                                 <div className={getNoteEventButtonClassName(event.statistics)}></div>
                                 <div className="noteEvent-popper">
-                                    True : {event.statistics.yes}<br/>False : {event.statistics.no}<hr/>Entered : {(getEnteredProbability(event.statistics) * 100).toFixed(2)}%
+                                    True : {event.statistics.yes}<br/>False : {event.statistics.no}<hr/>Played : {(getEnteredProbability(event.statistics) * 100).toFixed(2)}%
                                 </div>
                             </div>
                         )) }

@@ -57,7 +57,7 @@ function StatisticsPage() {
                 legend: { display: false },
                 title: {
                     display: true, 
-                    text: "Lessons Completed Recently",
+                    text: "Number of lessons Completed Recently",
                     font: { size: 20 }
                 }
                 
@@ -107,7 +107,7 @@ function StatisticsPage() {
                 legend: { display: false },
                 title: {
                     display: true,
-                    text: "Music Played Recently",
+                    text: "Number of music Played Recently",
                     font: { size: 20 }
                 }
                 
@@ -155,7 +155,7 @@ function StatisticsPage() {
                 legend: { display: false },
                 title: {
                     display: true,
-                    text: "Task Finish Recently",
+                    text: "Number of task Finish Recently",
                     font: { size: 20 }
                 }
                 
@@ -172,7 +172,7 @@ function StatisticsPage() {
 
       console.log(userMusicEnteredSummary)
       for (let item in userMusicEnteredSummary) {
-        data.push({date: userMusicEnteredSummary[item]["filename"], value: userMusicEnteredSummary[item]["max"]})
+        data.push({date: userMusicEnteredSummary[item]["filename"], value: (userMusicEnteredSummary[item]["max"] / userMusicEnteredSummary[item]["totalNote"])*100})
       }
 
       const chart = Chart.getChart(chartRef_4.current);
@@ -197,7 +197,7 @@ function StatisticsPage() {
                 legend: { display: false },
                 title: {
                     display: true,
-                    text: "Max note entered accuracy per music",
+                    text: "Best note played accuracy per music (%)",
                     font: { size: 20 }
                 }
                 

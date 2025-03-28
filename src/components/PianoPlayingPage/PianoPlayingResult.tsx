@@ -89,7 +89,7 @@ const PianoPlayingResult = (props:any) => {
 
                     <div className="row mt-3" style={itemRow}>
                         <div className="col-12" style={itemWrapper}>
-                            <div style={itemLabel}>Note Entered</div>
+                            <div style={itemLabel}>Note Played</div>
                             <div style={itemText}>{divisionHandle(getResultData("noteEntered"), getResultData("totalNote"))}%</div>
                             <div style={itemText}>{getResultData("noteEntered")} / {getResultData("totalNote")}</div>
                         </div>
