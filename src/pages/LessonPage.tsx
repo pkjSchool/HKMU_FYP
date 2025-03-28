@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 
 import LessonMap from '../components/LessonMap';
 import TaskProgress from '../components/TaskProgress';
@@ -6,7 +6,7 @@ import PianoCharacter, {PianoCharacterRef} from '../components/Character/PianoCh
 
 import axios from 'axios';
 
-import { api_piano_transcribe, user_info_get } from '../api_request/request.tsx';
+import { api_piano_transcribe, user_info_get, user_lesson_get } from '../api_request/request.tsx';
 import { getStorageUser } from '../access_control/user.tsx';
 
 // import { showCharacter, hideCharater, setMessage, changePosition } from '../store/pianoCharacherSlice';
@@ -48,6 +48,31 @@ function App() {
 
   const pianoCharacterRef = useRef<PianoCharacterRef>(null);
 
+  const updateWeloomeMessage = useCallback(async () => {
+    console.log("updateWeloomeMessage")
+    const user = getStorageUser();
+    var message = 'Hello! Welcome back!';
+    if (user) {
+      const res = await user_lesson_get(parseInt(user));
+      if (res.data.status) {
+        const latestLesson = res.data.data.reduce((latest: Date, lesson: any) => {
+          const currentDate = new Date(lesson.datetime);
+          return currentDate > latest ? currentDate : latest;
+        }, new Date(0)); // Initialize with earliest possible date
+
+        const today = new Date();
+        const isToday = latestLesson.toDateString() === today.toDateString();
+        if (isToday) {
+          message = `Hello! Welcome back!`;
+        } else {
+          message = `Hello! You haven't completed any lessons today. Let's get started!`;
+        }
+        pianoCharacterRef.current?.setMessageHandler(message);
+  
+      }
+    }
+  }, []);
+
   useEffect(() => {
     const user = getStorageUser();
     var message = `Hello! Welcome back!`;
@@ -64,27 +89,16 @@ function App() {
 
       pianoCharacterRef.current?.showCharacterHandler();
       pianoCharacterRef.current?.changePositionHandler({ right: "50px", bottom: "0px" });
+
     }
   }, []);
 
+  useEffect(() => {
 
-  const testAPI = async () => {
-    // Fetch the file from the URL
-    const response = await fetch("http://localhost:5173/test.wav");
-    if (!response.ok) {
-      throw new Error(`Failed to fetch file: ${response.statusText}`);
-    }
+    const inervalId = setInterval(updateWeloomeMessage, 1000 * 60 * 5); // 5 minutes
 
-    // Convert the response to a Blob
-    const blob = await response.blob();
-
-    var formData = new FormData();
-    formData.append("audio", blob, "test.wav");
-
-    api_piano_transcribe(formData).then((response) => {
-      console.log(response);
-    });
-  }
+    return () => clearInterval(inervalId);
+  }, [updateWeloomeMessage]);
 
   return (
     <div className="lesson-index-container">
