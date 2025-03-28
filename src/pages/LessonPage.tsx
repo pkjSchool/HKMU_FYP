@@ -6,7 +6,8 @@ import PianoCharacter, {PianoCharacterRef} from '../components/Character/PianoCh
 
 import axios from 'axios';
 
-import { api_piano_transcribe } from '../api_request/request.tsx';
+import { api_piano_transcribe, user_info_get } from '../api_request/request.tsx';
+import { getStorageUser } from '../access_control/user.tsx';
 
 // import { showCharacter, hideCharater, setMessage, changePosition } from '../store/pianoCharacherSlice';
 // import { AppDispatch, RootState } from '../store/globalConfig';
@@ -48,9 +49,22 @@ function App() {
   const pianoCharacterRef = useRef<PianoCharacterRef>(null);
 
   useEffect(() => {
-    pianoCharacterRef.current?.setMessageHandler(`Hello! Welcome back!`);
-    pianoCharacterRef.current?.showCharacterHandler();
-    pianoCharacterRef.current?.changePositionHandler({ right: "50px", bottom: "0px" });
+    const user = getStorageUser();
+    var message = `Hello! Welcome back!`;
+    if (user) {
+      const res = user_info_get(parseInt(user))
+      res.then((response) => {
+        const name = response.data.data.name;
+        if (name) {
+          message = `Hello, ${name}! Welcome back!`;
+              
+          pianoCharacterRef.current?.setMessageHandler(message);
+        }
+      })
+
+      pianoCharacterRef.current?.showCharacterHandler();
+      pianoCharacterRef.current?.changePositionHandler({ right: "50px", bottom: "0px" });
+    }
   }, []);
 
 
