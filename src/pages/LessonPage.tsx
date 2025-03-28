@@ -1,13 +1,11 @@
-import { useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import Joyride, { CallBackProps, STATUS, Step } from "react-joyride";
 
 import LessonMap from '../components/LessonMap';
 import TaskProgress from '../components/TaskProgress';
 import PianoCharacter, {PianoCharacterRef} from '../components/Character/PianoCharacter.tsx';
 
-import axios from 'axios';
-
-import { api_piano_transcribe, user_info_get } from '../api_request/request.tsx';
+import { api_piano_transcribe, user_info_get, user_lesson_get } from '../api_request/request.tsx';
 import { getStorageUser } from '../access_control/user.tsx';
 
 export const sampleChapters = [
@@ -45,9 +43,9 @@ function App() {
   };
 
   const pianoCharacterRef = useRef<PianoCharacterRef>(null);
-
   const [runTour, setRunTour] = useState(false);
 
+  // Joyride steps
   const steps: Step[] = [
     {
       target: "body",
@@ -92,10 +90,33 @@ function App() {
     },
   ];
 
+  // Welcome message update logic
+  const updateWeloomeMessage = useCallback(async () => {
+    console.log("updateWeloomeMessage")
+    const user = getStorageUser();
+    var message = 'Hello! Welcome back!';
+    if (user) {
+      const res = await user_lesson_get(parseInt(user));
+      if (res.data.status) {
+        const latestLesson = res.data.data.reduce((latest: Date, lesson: any) => {
+          const currentDate = new Date(lesson.datetime);
+          return currentDate > latest ? currentDate : latest;
+        }, new Date(0));
+
+        const today = new Date();
+        const isToday = latestLesson.toDateString() === today.toDateString();
+        message = isToday 
+          ? `Hello! Welcome back!`
+          : `Hello! You haven't completed any lessons today. Let's get started!`;
+        
+        pianoCharacterRef.current?.setMessageHandler(message);
+      }
+    }
+  }, []);
+
+  // Joyride callback
   const handleJoyrideCallback = (data: CallBackProps) => {
-    const { action, index, status, type } = data;
-    
-    console.log('Joyride callback:', { action, index, status, type });
+    const { status } = data;
     
     if (status === STATUS.FINISHED || status === STATUS.SKIPPED) {
       console.log('Tour finished or skipped');
@@ -104,16 +125,15 @@ function App() {
     }
   };
 
+  // Initial setup effect
   useEffect(() => {
     const user = getStorageUser();
-    var message = `Hello! Welcome back!`;
     if (user) {
       const res = user_info_get(parseInt(user))
       res.then((response) => {
         const name = response.data.data.name;
         if (name) {
-          message = `Hello, ${name}! Welcome back!`;
-              
+          const message = `Hello, ${name}! Welcome back!`;
           pianoCharacterRef.current?.setMessageHandler(message);
         }
       })
@@ -122,42 +142,27 @@ function App() {
       pianoCharacterRef.current?.changePositionHandler({ right: "50px", bottom: "0px" });
     }
 
+    // Check and start tour
     const hasSeenTour = localStorage.getItem('hasSeenHomeTour');
     if (!hasSeenTour) {
       const timer = setTimeout(() => {
-        console.log('Starting tour...');
         setRunTour(true);
       }, 2000);
-      
       return () => clearTimeout(timer);
     }
   }, []);
 
+  // Welcome message update interval
+  useEffect(() => {
+    const intervalId = setInterval(updateWeloomeMessage, 1000 * 60 * 5); // 5 minutes
+    return () => clearInterval(intervalId);
+  }, [updateWeloomeMessage]);
+
   const resetTour = () => {
-    console.log('Resetting tour...');
     localStorage.removeItem('hasSeenHomeTour');
     setRunTour(false);
-    
-    setTimeout(() => {
-      setRunTour(true);
-    }, 50);
+    setTimeout(() => setRunTour(true), 50);
   };
-
-  const testAPI = async () => {
-    const response = await fetch("http://localhost:5173/test.wav");
-    if (!response.ok) {
-      throw new Error(`Failed to fetch file: ${response.statusText}`);
-    }
-
-    const blob = await response.blob();
-
-    var formData = new FormData();
-    formData.append("audio", blob, "test.wav");
-
-    api_piano_transcribe(formData).then((response) => {
-      console.log(response);
-    });
-  }
 
   return (
     <div className="lesson-index-container">
@@ -223,7 +228,11 @@ function App() {
       <button onClick={() => pianoCharacterRef.current?.showCharacterHandler()}>Show Character</button>
       <button onClick={() => pianoCharacterRef.current?.hideCharacterHandler()}>Hide Character</button>
       <button onClick={() => pianoCharacterRef.current?.setMessageHandler(`Hello, ${Math.random().toFixed(3)}! Welcome back!`)}>Set Message</button>
-      <button onClick={() => pianoCharacterRef.current?.changePositionHandler({ right: Math.floor(Math.random() * (100 - 1) + 1), bottom: Math.floor(Math.random() * (100 - 1) + 1) })}>Change Position</button>
+      <button onClick={() => pianoCharacterRef.current?.changePositionHandler({ 
+        right: `${Math.floor(Math.random() * (100 - 1) + 1)}px`, 
+        bottom: `${Math.floor(Math.random() * (100 - 1) + 1)}px` 
+      })}>Change Position</button>
+
       <input type="file" accept=".wav" onChange={(e) => {
         const file = e.target.files?.[0];
         if (file) {
@@ -234,6 +243,7 @@ function App() {
           });
         }
       }} />
+
       <LessonMap 
         chapters={sampleChapters.map(chapter => ({
           ...chapter,
