@@ -122,6 +122,7 @@ const RenderResultMusicSheet = (props: RenderResultMusicSheetProps,ref: React.Re
       resultOsmdRef.current.load(_musicSheet).then(() => {
           // Set the options to display only one system (row)
         //   resultOsmdRef.current!.EngravingRules.RenderSingleHorizontalStaffline = true;
+          resultOsmdRef.current!.zoom = 1.3;
           resultOsmdRef.current!.render();
 
           drawResult();
@@ -214,17 +215,12 @@ const RenderResultMusicSheet = (props: RenderResultMusicSheetProps,ref: React.Re
             options: {
                 maintainAspectRatio: false,
                 plugins: {
-                    legend: {
-                    display: false
-                    },
-                    title: {
-                        display: true,
-                        text: "Note Played",
-                        font: {
-                            size: 20
-                        }
-                    }
-                    
+                  legend: {
+                    display: true,
+                    labels: { font: { size: 16 } },
+                    onClick: () => {}
+                  },
+                  title: { display: true, text: "Note Played", font: { size: 20 } }
                 }
             },
             }
@@ -237,7 +233,7 @@ const RenderResultMusicSheet = (props: RenderResultMusicSheetProps,ref: React.Re
     xxx = <><h2 className="text-center">{ formatDatetime() }</h2>
 
     <div className="row">
-      <div className="col-6">
+      <div className="col-5">
         <div style={{"position": "relative", "width": "100%", "maxWidth": "200px", "marginLeft": "auto", "paddingTop": "40px"}}>
           <div>Total Note: {formatTotalNote()}</div>
           <div>Music Time: {formatMusicTime()}</div>
@@ -245,7 +241,7 @@ const RenderResultMusicSheet = (props: RenderResultMusicSheetProps,ref: React.Re
           <div>Note Played: {formatNoteEntered()}</div>
         </div>
       </div>
-      <div className="col-6"><div style={{"position": "relative", "width": "100%", "height": "200px", "maxWidth": "200px"}}><canvas ref={chartRef_1}></canvas></div></div>
+      <div className="col-7"><div style={{"position": "relative", "width": "100%", "height": "300px", "maxWidth": "350px"}}><canvas ref={chartRef_1}></canvas></div></div>
     </div>
     </>
   }

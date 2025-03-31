@@ -118,7 +118,7 @@ function App() {
   // Joyride callback
   const handleJoyrideCallback = (data: CallBackProps) => {
     const { status } = data;
-    
+    console.log(data)
     if (status === STATUS.FINISHED || status === STATUS.SKIPPED) {
       console.log('Tour finished or skipped');
       setRunTour(false);

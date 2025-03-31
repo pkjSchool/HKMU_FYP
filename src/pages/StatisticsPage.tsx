@@ -3,6 +3,26 @@ import { user_lesson_count, user_music_record_count, user_task_count, user_music
 import { getLoginedUser } from "../access_control/user";
 import Chart from 'chart.js/auto';
 
+const BACKGROUNDCOLOR = [
+  'rgba(255, 99, 132, 1)',
+  'rgba(255, 159, 64, 1)',
+  'rgba(255, 205, 86, 1)',
+  'rgba(75, 192, 192, 1)',
+  'rgba(54, 162, 235, 1)',
+  'rgba(153, 102, 255, 1)',
+  'rgba(201, 203, 207, 1)'
+];
+const BORDERCOLOR = [
+  'rgb(255, 99, 132)',
+  'rgb(255, 159, 64)',
+  'rgb(255, 205, 86)',
+  'rgb(75, 192, 192)',
+  'rgb(54, 162, 235)',
+  'rgb(153, 102, 255)',
+  'rgb(201, 203, 207)'
+];
+const BORDERWIDTH = 1
+
 function StatisticsPage() {
   const userInfo = getLoginedUser();
 
@@ -10,6 +30,11 @@ function StatisticsPage() {
   const chartRef_2 = useRef<HTMLCanvasElement | null>(null);
   const chartRef_3 = useRef<HTMLCanvasElement | null>(null);
   const chartRef_4 = useRef<HTMLCanvasElement | null>(null);
+  const chartRef_5 = useRef<HTMLCanvasElement | null>(null);
+
+  // const chartRef_1_2 = useRef<HTMLCanvasElement | null>(null);
+  // const chartRef_2_2 = useRef<HTMLCanvasElement | null>(null);
+  // const chartRef_3_2 = useRef<HTMLCanvasElement | null>(null);
 
   interface LessonSummary {
     [key: string]: { count: number };
@@ -40,31 +65,85 @@ function StatisticsPage() {
         chart.destroy();
       }
  
+      // new Chart(
+      //   chartRef_1.current,
+      //   {
+      //     type: 'line',
+      //     data: {
+      //       labels: data.map(row => row.date),
+      //       datasets: [{
+      //           label: 'Number of lessons',
+      //           data: data.map(row => row.value)
+      //       }]
+      //     },
+      //     options: {
+      //       maintainAspectRatio: false,
+      //       plugins: {
+      //         legend: {
+      //             display: true,
+      //             labels: { font: { size: 16 } },
+      //             onClick: () => {}
+      //         },
+      //         // title: {
+      //         //     display: true, 
+      //         //     text: "Number Of Lessons Completed Recently",
+      //         //     font: { size: 20 }
+      //         // }
+      //       },
+      //       scales: {
+      //         x: {
+      //             title: { display: true, text: 'Date', font: { size: 16 } },
+      //             ticks: { font: { size: 16 } }
+      //         },
+      //         y: {
+      //             title: { display: true, text: 'Times', font: { size: 16 } },
+      //             ticks: { font: { size: 16 }, stepSize: 1 }
+      //         }
+      //       }
+      //   },
+      //   }
+      // );
+ 
       new Chart(
         chartRef_1.current,
         {
-          type: 'line',
+          type: 'pie',
           data: {
             labels: data.map(row => row.date),
             datasets: [{
-                // label: 'Total Complete Lessons',
-                data: data.map(row => row.value)
+                label: 'Number of lessons',
+                data: data.map(row => row.value),
+                backgroundColor: BACKGROUNDCOLOR
             }]
           },
           options: {
             maintainAspectRatio: false,
             plugins: {
-                legend: { display: false },
-                title: {
-                    display: true, 
-                    text: "Number of lessons Completed Recently",
-                    font: { size: 20 }
-                }
-                
-            }
+              legend: {
+                  display: true,
+                  labels: { font: { size: 16 } },
+                  onClick: () => {}
+              },
+              title: {
+                  display: true, 
+                  text: "Number Of Lessons Completed Recently",
+                  font: { size: 20 }
+              }
+            },
+            // scales: {
+            //   x: {
+            //       title: { display: true, text: 'Date', font: { size: 16 } },
+            //       ticks: { font: { size: 16 } }
+            //   },
+            //   y: {
+            //       title: { display: true, text: 'Times', font: { size: 16 } },
+            //       ticks: { font: { size: 16 }, stepSize: 1 }
+            //   }
+            // }
         },
         }
       );
+
     }
   }
 
@@ -88,33 +167,85 @@ function StatisticsPage() {
         chart.destroy();
       }
  
+      // new Chart(
+      //   chartRef_2.current,
+      //   {
+      //     type: 'line',
+      //     data: {
+      //       labels: data.map(row => row.date),
+      //       datasets: [{
+      //           label: 'Number of music',
+      //           data: data.map(row => row.value)
+      //       }]
+      //     },
+      //     options: {
+      //       maintainAspectRatio: false,
+      //       plugins: {
+      //         legend: {
+      //             display: true,
+      //             labels: { font: { size: 16 } },
+      //             onClick: () => {}
+      //         },
+      //         // title: {
+      //         //     display: true,
+      //         //     text: "Number Of Music Played Recently",
+      //         //     font: { size: 20 }
+      //         // }
+      //       },
+      //       scales: {
+      //         x: {
+      //             title: { display: true, text: 'Date', font: { size: 16 } },
+      //             ticks: { font: { size: 16 } }
+      //         },
+      //         y: {
+      //             title: { display: true, text: 'Times', font: { size: 16 } },
+      //             ticks: { font: { size: 16 }, stepSize: 1 }
+      //         }
+      //       }
+      //   },
+      //   }
+      // );
+
       new Chart(
         chartRef_2.current,
         {
-          type: 'line',
+          type: 'polarArea',
           data: {
             labels: data.map(row => row.date),
-            datasets: [
-              {
-                // label: 'Total Complete Lessons',
-                data: data.map(row => row.value)
-              }
-            ]
+            datasets: [{
+                label: 'Number of lessons',
+                data: data.map(row => row.value),
+                backgroundColor: BACKGROUNDCOLOR
+            }]
           },
           options: {
             maintainAspectRatio: false,
             plugins: {
-                legend: { display: false },
-                title: {
-                    display: true,
-                    text: "Number of music Played Recently",
-                    font: { size: 20 }
-                }
-                
-            }
+              legend: {
+                  display: true,
+                  labels: { font: { size: 16 } },
+                  onClick: () => {}
+              },
+              title: {
+                  display: true, 
+                  text: "Number Of Music Played Recently",
+                  font: { size: 20 }
+              }
+            },
+            // scales: {
+            //   x: {
+            //       title: { display: true, text: 'Date', font: { size: 16 } },
+            //       ticks: { font: { size: 16 } }
+            //   },
+            //   y: {
+            //       title: { display: true, text: 'Times', font: { size: 16 } },
+            //       ticks: { font: { size: 16 }, stepSize: 1 }
+            //   }
+            // }
         },
         }
       );
+
     }
   }
 
@@ -145,24 +276,38 @@ function StatisticsPage() {
           data: {
             labels: data.map(row => row.date),
             datasets: [{
-                // label: 'Day',
-                data: data.map(row => row.value)
+                label: 'Number of tasks',
+                data: data.map(row => row.value),
             }]
           },
           options: {
             maintainAspectRatio: false,
             plugins: {
-                legend: { display: false },
-                title: {
-                    display: true,
-                    text: "Number of task Finish Recently",
-                    font: { size: 20 }
-                }
-                
+              legend: {
+                display: true,
+                labels: { font: { size: 16 } },
+                onClick: () => {}
+              },
+              title: {
+                display: true,
+                text: "Number Of Task Finish Recently",
+                font: { size: 20 }
+              }
+            },
+            scales: {
+              x: {
+                  title: { display: true, text: 'Date', font: { size: 16 } },
+                  ticks: { font: { size: 16 } }
+              },
+              y: {
+                  title: { display: true, text: 'Times', font: { size: 16 } },
+                  ticks: { font: { size: 16 }, stepSize: 1 }
+              }
             }
         },
         }
       );
+
     }
   }
 
@@ -172,7 +317,10 @@ function StatisticsPage() {
 
       console.log(userMusicEnteredSummary)
       for (let item in userMusicEnteredSummary) {
-        data.push({date: userMusicEnteredSummary[item]["filename"], value: (userMusicEnteredSummary[item]["max"] / userMusicEnteredSummary[item]["totalNote"])*100})
+        data.push({
+          date: userMusicEnteredSummary[item]["filename"], 
+          value: (userMusicEnteredSummary[item]["max"] / userMusicEnteredSummary[item]["totalNote"]) * 100
+        })
       }
 
       const chart = Chart.getChart(chartRef_4.current);
@@ -180,6 +328,14 @@ function StatisticsPage() {
         chart.destroy();
       }
  
+      // data: {
+      //   labels: ["File Name"],
+      //   datasets: data.map(row => ({
+      //       label: row.date,
+      //       data: [row.value]
+      //   }))
+      // },
+
       new Chart(
         chartRef_4.current,
         {
@@ -187,20 +343,37 @@ function StatisticsPage() {
           data: {
             labels: data.map(row => row.date),
             datasets: [{
-                // label: 'Day',
-                data: data.map(row => row.value)
+                label: 'Accuracy',
+                data: data.map(row => row.value),
+                backgroundColor: BACKGROUNDCOLOR,
+                borderColor: BORDERCOLOR,
+                borderWidth: BORDERWIDTH
             }]
           },
           options: {
             maintainAspectRatio: false,
             plugins: {
-                legend: { display: false },
-                title: {
-                    display: true,
-                    text: "Best note played accuracy per music (%)",
-                    font: { size: 20 }
-                }
-                
+              legend: {
+                display: true,
+                labels: { font: { size: 16 } },
+                onClick: () => {}
+              },
+              title: {
+                  display: true,
+                  text: "Best note played accuracy per music (%)",
+                  font: { size: 20 }
+              }
+            },
+            scales: {
+              x: {
+                  title: { display: true, text: 'Music Filename', font: { size: 16 } },
+                  ticks: { font: { size: 16 } }
+              },
+              y: {
+                  min: 0, max: 100, 
+                  title: { display: true, text: '(%)', font: { size: 16 } },
+                  ticks: { font: { size: 16 } }
+              }
             }
         },
         }
@@ -208,16 +381,87 @@ function StatisticsPage() {
     }
   }
 
+  const initialChart_5 = () => {
+    if (userTaskSummary && userMusicRecordSummary && userLessonSummary && chartRef_5.current) {
+      const data = [];
+
+      let today = new Date();
+      for (let index = 0; index < 7; index++) {
+        const datestr = today.toISOString().substring(0, 10)
+        const taskItem = userTaskSummary[datestr]
+        const taskVal = (taskItem)?taskItem.count:0
+
+        const musicItem = userMusicRecordSummary[datestr]
+        const musicVal = (musicItem)?musicItem.count:0
+
+        const lessonItem = userLessonSummary[datestr]
+        const lessonVal = (lessonItem)?lessonItem.count:0
+
+        data.unshift({date: datestr, taskvalue: taskVal, musicvalue: musicVal, lessonvalue: lessonVal})
+        today.setDate(today.getDate() - 1)
+      }
+
+      const chart = Chart.getChart(chartRef_5.current);
+      if(chart !== undefined) {
+        chart.destroy();
+      }
+ 
+      new Chart(
+        chartRef_5.current,
+        {
+          type: 'radar',
+          data: {
+            labels: data.map(row => row.date),
+            datasets: [
+              { label: 'Number of tasks', data: data.map(row => row.taskvalue) },
+              { label: 'Number of music', data: data.map(row => row.musicvalue) },
+              { label: 'Number of lessons', data: data.map(row => row.lessonvalue) },
+            ]
+          },
+          options: {
+            maintainAspectRatio: false,
+            plugins: {
+              legend: {
+                display: true,
+                labels: { font: { size: 16 } },
+                onClick: () => {}
+              },
+              title: {
+                display: true,
+                text: "Compare Number Of Lessons, Music Played and Task Finish",
+                font: { size: 20 }
+              }
+            },
+            // scales: {
+            //   x: {
+            //       title: { display: true, text: 'Date', font: { size: 16 } },
+            //       ticks: { font: { size: 16 } }
+            //   },
+            //   y: {
+            //       title: { display: true, text: 'Times', font: { size: 16 } },
+            //       ticks: { font: { size: 16 }, stepSize: 1 }
+            //   }
+            // }
+        },
+        }
+      );
+
+    }
+  }
+
   useEffect(() => {
     initialChart_1()
+    initialChart_5()
   }, [userLessonSummary]);
 
   useEffect(() => {
     initialChart_2()
+    initialChart_5()
   }, [userMusicRecordSummary]);
   
   useEffect(() => {
     initialChart_3()
+    initialChart_5()
   }, [userTaskSummary]);
 
   useEffect(() => {
@@ -270,16 +514,19 @@ function StatisticsPage() {
     <>
       <div className="card">
           <div className="card-body">
-            <div className="row">
+            <div className="row mb-5">
               <div className="col-6"><div style={{"position": "relative", "width": "100%", "height": "450px", "maxWidth": "100%"}}><canvas ref={chartRef_1}></canvas></div></div>
               <div className="col-6"><div style={{"position": "relative", "width": "100%", "height": "450px", "maxWidth": "100%"}}><canvas ref={chartRef_2}></canvas></div></div>
             </div>
-            <div className="row">
+            <div className="row mb-5">
               <div className="col-6"><div style={{"position": "relative", "width": "100%", "height": "450px", "maxWidth": "100%"}}><canvas ref={chartRef_3}></canvas></div></div>
-              <div className="col-6"><div style={{"position": "relative", "width": "100%", "height": "450px", "maxWidth": "100%"}}><canvas ref={chartRef_4}></canvas></div></div>
+              <div className="col-6"><div style={{"position": "relative", "width": "100%", "height": "600px", "maxWidth": "100%"}}><canvas ref={chartRef_5}></canvas></div></div>
+            </div>
+            <div className="row mb-5">
+              <div className="col-12"><div style={{"position": "relative", "width": "100%", "height": "600px", "maxWidth": "100%"}}><canvas ref={chartRef_4}></canvas></div></div>
             </div>
           </div>
-      </div>
+        </div>
     </>
   );
 }
