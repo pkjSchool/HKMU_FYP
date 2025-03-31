@@ -215,11 +215,11 @@ function StatisticsPage() {
             datasets: [{
                 label: 'Number of lessons',
                 data: data.map(row => row.value),
-                backgroundColor: BACKGROUNDCOLOR
+                // backgroundColor: BACKGROUNDCOLOR
             }]
           },
           options: {
-            maintainAspectRatio: false,
+            maintainAspectRatio: true,
             plugins: {
               legend: {
                   display: true,
@@ -231,6 +231,10 @@ function StatisticsPage() {
                   text: "Number Of Music Played Recently",
                   font: { size: 20 }
               }
+            },
+            scale: {
+              min: 0,
+              stepSize: 1,
             },
             // scales: {
             //   x: {
@@ -431,6 +435,10 @@ function StatisticsPage() {
                 text: "Compare Number Of Lessons, Music Played and Task Finish",
                 font: { size: 20 }
               }
+            },
+            scale: {
+              min: 0,
+              stepSize: 1,
             },
             // scales: {
             //   x: {

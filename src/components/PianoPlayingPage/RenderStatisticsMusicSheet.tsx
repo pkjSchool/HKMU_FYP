@@ -518,7 +518,7 @@ const RenderStatisticsMusicSheet = (props: RenderStatisticsMusicSheetProps,ref: 
         
             console.log(getFormatedNoteEntered())
             for (let index in getFormatedNoteEntered()) {    
-                data.push({date: (parseInt(index) + 1), value: (getFormatedNoteEntered()[index] / countSheetHistory()) * 100 })
+                data.push({date: (parseInt(index) + 1), value: (getFormatedNoteEntered()[index] / getFormatedTotalNote()) * 100 })
             }
         
             const chart = Chart.getChart(chartRef_1.current);
