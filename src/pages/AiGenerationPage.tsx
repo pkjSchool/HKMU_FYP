@@ -15,7 +15,7 @@ const AiGenerationPage = () => {
       component: <AddChordTab />
     },
     {
-      name: 'Format Convertion',
+      name: 'Wav to Midi Conversion',
       component: <FormatConvertionTab/>
     }
   ]
