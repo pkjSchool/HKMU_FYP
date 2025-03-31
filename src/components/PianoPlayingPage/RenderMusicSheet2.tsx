@@ -411,7 +411,7 @@ const RenderMusicSheet = (props: RenderMusicSheetProps,ref: React.Ref<RenderMusi
           : { visibility: "hidden" }
       }
     >
-      <div ref={osmdContainerRef} style={{ width: "100%", height: "250px", marginTop: "-40px" }} ></div>
+      <div ref={osmdContainerRef} style={{ width: "100%", marginTop: "-40px" }} ></div>
     </div>
   );
 };
