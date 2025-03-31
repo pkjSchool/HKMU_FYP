@@ -1,9 +1,15 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 import { api_add_chord } from '../../api_request/request';
+import RenderMusicSheet2 from '../PianoPlayingPage/RenderMusicSheet2';
+
+import { api_fileMidiToXml } from '../../api_request/request';
+import { Link } from 'react-router-dom';
 
 const AddChordTab = () => {
-    const [file, setFile] = useState<File | null>(null);
+    const [uploadFile, setUploadFile] = useState<File | null>(null);
+    const [respFile, setRespFile] = useState<File>();
+    const [xmlFile, setXmlFile] = useState<string>();
     const [formData, setFormData] = useState({
         file: null,
         key: 'C',
@@ -18,7 +24,7 @@ const AddChordTab = () => {
 
     const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         if (e.target.files && e.target.files[0]) {
-            setFile(e.target.files[0]);
+            setUploadFile(e.target.files[0]);
         }
     };
 
@@ -37,7 +43,7 @@ const AddChordTab = () => {
 
         try {
             const data = new FormData();
-            if (file) data.append('file', file);
+            if (uploadFile) data.append('file', uploadFile);
             data.append('key', formData.key);
             data.append('mode', formData.mode);
             data.append('progression', formData.progression);
@@ -46,7 +52,9 @@ const AddChordTab = () => {
 
             api_add_chord(data).then((response) => {
                 const blob = new Blob([response.data], { type: 'audio/midi' });
+                const midiFile = new File([blob], `${uploadFile?.name}_added_chord.mid`, { type: 'audio/midi' });
                 const url = URL.createObjectURL(blob);
+                setRespFile(midiFile);
                 setGeneratedMidi(url);
             });
 
@@ -57,6 +65,18 @@ const AddChordTab = () => {
             setIsLoading(false);
         }
     };
+
+    useEffect(() => {
+        if (respFile) {
+            const formData = new FormData();
+            formData.append('midi', respFile);
+            api_fileMidiToXml(formData).then((response) => {
+                setXmlFile(response.data);
+            }).catch((error) => {
+                console.error('Error converting MIDI to XML:', error);
+            });
+        }
+    }, [respFile]);
 
     return (
         <div className="container py-5">
@@ -168,15 +188,21 @@ const AddChordTab = () => {
                     {generatedMidi && (
                         <div className="mt-4 p-4 bg-light rounded border">
                             <h2 className="h5 mb-3">Your Generated MIDI</h2>
-                            <div className="d-flex align-items-center gap-3">
-                                <a
-                                    href={generatedMidi}
-                                    download="chord_progression.mid"
-                                    className="btn btn-success"
-                                >
-                                    Download MIDI
-                                </a>
+                            <div className="d-flex justify-content-between align-items-center mb-3">
+                                <div className="d-flex align-items-center gap-3">
+                                    <a
+                                        href={generatedMidi}
+                                        download="chord_progression.mid"
+                                        className="btn btn-success"
+                                    >
+                                        Download MIDI
+                                    </a>
+                                </div>
+                                <div>
+                                    <Link to='/playing' className="btn btn-secondary mt-3" state={{respFile: respFile}}>Play Music</Link>
+                                </div>
                             </div>
+                            <RenderMusicSheet2 musicXML={xmlFile} cssProps={{top: 0}}/>
                         </div>
                     )}
                 </div>

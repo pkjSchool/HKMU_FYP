@@ -20,6 +20,7 @@ import { getLoginedUser } from "../access_control/user";
 import { api_fileWavToMidi, api_fileMidiToXml, api_user_music_upload, api_add_user_music_record, api_user_music_get } from "../api_request/request.tsx";
 import MusicSheetRender2, { RenderMusicSheetRef } from "../components/PianoPlayingPage/RenderMusicSheet2.js";
 import RenderResultMusicSheet, { RenderResultMusicSheetRef } from "../components/PianoPlayingPage/RenderResultMusicSheet.js";
+import { useLocation } from "react-router-dom";
 
 const ACCURATE_OFFSET = 150;
 
@@ -38,6 +39,7 @@ function App() {
   const userMusicId = useRef(0);
   const [isShowResultBrief, setIsShowResultBrief] = useState(false);
   const [isShowResultDetail, setIsShowResultDetail] = useState(false);
+  const location = useLocation();
   const playResult = useRef<playResult>();
   const sheetResult = useRef<any[]>([]);
 
@@ -464,6 +466,14 @@ function App() {
       setIsFileLoaded(true);
     }
   }, [musicFile]);
+
+  useEffect(() => {
+    const state = location.state as any;
+    if (state?.respFile) {
+      const file = state.respFile as File;
+      setMusicFile(file);
+    }
+  }, [location]);
 
   let resultComp = null;
   let resultDetailComp = null;
