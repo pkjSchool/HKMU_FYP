@@ -29,6 +29,8 @@ interface playResult {
   name: string;
   musicTime: string;
   playTime: string;
+  musicTimeRaw: number;
+  playTimeRaw: number;
   totalNote: number;
   noteEntered: number;
   inputOnRange: number;
