@@ -19,7 +19,7 @@ import {
 import { getLoginedUser } from "../access_control/user";
 import { api_fileWavToMidi, api_fileMidiToXml, api_user_music_upload, api_add_user_music_record, api_user_music_get } from "../api_request/request.tsx";
 import MusicSheetRender2, { RenderMusicSheetRef } from "../components/PianoPlayingPage/RenderMusicSheet2.js";
-import RenderResultMusicSheet, { RenderResultMusicSheetRef } from "../components/PianoPlayingPage/RenderResultMusicSheet.js";
+import RenderResultMusicSheet, { RenderResultMusicSheetRef, HistorySummary } from "../components/PianoPlayingPage/RenderResultMusicSheet.js";
 import { useLocation } from "react-router-dom";
 
 const ACCURATE_OFFSET = 150;
@@ -55,6 +55,8 @@ function App() {
   const topNavBarRef = useRef<TopNavBarRef>(null);
   const musicSheetRenderRef = useRef<RenderMusicSheetRef>(null);
   const resultmusicSheetRef = useRef<RenderResultMusicSheetRef>(null);
+
+  const historySummary = useRef<HistorySummary|null>(null);
 
   const userInfo = getLoginedUser();
 
@@ -165,6 +167,14 @@ function App() {
     if (topNavBarRef.current)
       topNavBarRef.current.handleUpdatePlayingTimestemp(0);
   };
+
+  const setHistorySummary = (_historySummary:HistorySummary) => {
+    historySummary.current = _historySummary
+  }
+
+  const getHistorySummary = () => {
+      return historySummary.current
+  }
 
   const getIsFinished = () => {
     return isFinished.current;
@@ -302,6 +312,18 @@ function App() {
   };
 
   const handleOpenResultDetail = () => {
+    const result = getPlayResult()
+
+    if(result){
+      setHistorySummary({
+        musicTime: result["musicTimeRaw"],
+        score: result["score"],
+        noteEntered: result["noteEntered"],
+        totalNote: result["totalNote"],
+        datetime: "",
+      })
+    }
+
     setIsShowResultDetail(true);
   }
 
@@ -488,7 +510,7 @@ function App() {
 
   if ((isFinished && isShowResultDetail)) {
     resultDetailComp = (
-      <RenderResultMusicSheet ref={resultmusicSheetRef} musicXML={musicXML} historySummary={null} sheetResult={getSheetResult()} handleCloseResultDetail={handleCloseResultDetail} />
+      <RenderResultMusicSheet ref={resultmusicSheetRef} musicXML={musicXML} historySummary={getHistorySummary()} sheetResult={getSheetResult()} handleCloseResultDetail={handleCloseResultDetail} />
     );
   }
 
