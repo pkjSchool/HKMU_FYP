@@ -10,17 +10,20 @@ const AddChordTab = () => {
     const [uploadFile, setUploadFile] = useState<File | null>(null);
     const [respFile, setRespFile] = useState<File>();
     const [xmlFile, setXmlFile] = useState<string>();
+    const [progression, setProgression] = useState('1,2,5,3');
     const [formData, setFormData] = useState({
         file: null,
         key: 'C',
         mode: 'Major',
-        progression: '2,5,1,6',
+        progression: progression,
         time_sig: '4,4',
         tempo: '90'
     });
     const [generatedMidi, setGeneratedMidi] = useState<string>("");
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState('');
+    
+    const chordProgressionOptions = ['1,2,5,3', '1,5,4,5', '3,6,2,5', '2,5,1', '1,6,2,5']
 
     const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         if (e.target.files && e.target.files[0]) {
@@ -66,6 +69,15 @@ const AddChordTab = () => {
         }
     };
 
+    const handleProgressionChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const { value } = e.target;
+        setProgression(value);
+        setFormData(prev => ({
+            ...prev,
+            progression: value
+        }));
+    }
+
     useEffect(() => {
         if (respFile) {
             const formData = new FormData();
@@ -90,11 +102,74 @@ const AddChordTab = () => {
                             <div className="col-12">
                                 <label className="form-label">MIDI File (Optional)</label>
                                 <input 
-                                    type="file" 
+                                    type="file"
                                     onChange={handleFileChange}
                                     accept=".mid,.midi"
                                     className="form-control"
                                 />
+                            </div>
+
+                            {/* Chord Progression Options */}
+                            <div className="col-12">
+                                <label className="form-label">Default Progression Options</label>
+                                <div className="d-flex flex-wrap gap-2">
+                                    {chordProgressionOptions.map((option, index) => (
+                                        <div key={index} className="form-check form-check-inline">
+                                            <input
+                                                type="radio"
+                                                name="progression"
+                                                value={option}
+                                                checked={formData.progression === option}
+                                                onChange={handleProgressionChange}
+                                                className="form-check-input"
+                                                id={`option-${index}`}
+                                            />
+                                            <label htmlFor={`option-${index}`} className="form-check-label">{option}</label>
+                                            <button
+                                                type="button"
+                                                className="btn btn-info btn-sm ms-2"
+                                                onClick={() => {
+                                                    const dialog = document.createElement('dialog');
+                                                    dialog.style.padding = '20px';
+                                                    dialog.style.border = 'none';
+                                                    dialog.style.borderRadius = '8px';
+                                                    dialog.style.boxShadow = '0 4px 6px rgba(0, 0, 0, 0.1)';
+                                                    dialog.style.width = '80%';
+                                                    dialog.style.maxWidth = '600px';
+
+                                                    const img = document.createElement('img');
+                                                    img.src = `/images/progression-info-${index + 1}.png`;
+                                                    img.alt = `Progression Info ${index + 1}`;
+                                                    img.style.width = '100%';
+                                                    img.style.borderRadius = '8px';
+
+                                                    const closeButton = document.createElement('button');
+                                                    closeButton.textContent = 'Close';
+                                                    closeButton.style.marginTop = '10px';
+                                                    closeButton.style.padding = '10px 20px';
+                                                    closeButton.style.border = 'none';
+                                                    closeButton.style.borderRadius = '4px';
+                                                    closeButton.style.backgroundColor = '#007bff';
+                                                    closeButton.style.color = '#fff';
+                                                    closeButton.style.cursor = 'pointer';
+
+                                                    closeButton.onclick = () => dialog.close();
+
+                                                    dialog.appendChild(img);
+                                                    dialog.appendChild(closeButton);
+                                                    document.body.appendChild(dialog);
+                                                    dialog.showModal();
+
+                                                    dialog.addEventListener('close', () => {
+                                                        document.body.removeChild(dialog);
+                                                    });
+                                                }}
+                                            >
+                                                Info
+                                            </button>
+                                        </div>
+                                    ))}
+                                </div>
                             </div>
 
                             {/* Key */}
