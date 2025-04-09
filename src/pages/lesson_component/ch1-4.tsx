@@ -13,7 +13,7 @@ import dottedQuarterNote from "../../assets/quiz_img/quiz_4/dotted_quarter_note.
 import rest_quarter from "../../assets/quiz_img/quiz_4/rest_quarter.png";
 import rest_whole from "../../assets/quiz_img/quiz_4/rest_whole.png";
 import metronome from "../../assets/quiz_img/quiz_4/metronome.jpg";
-import rhythmPattern from "../../assets/quiz_img/quiz_4/rhythm_pattern.png";
+import rhythmPattern from "../../assets/quiz_img/quiz_3/middle_c_position.png";
 
 
 // 章節測驗題目
