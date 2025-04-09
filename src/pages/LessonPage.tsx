@@ -97,6 +97,7 @@ function App() {
     var message = 'Hello! Welcome back!';
     if (user) {
       const res = await user_lesson_get(parseInt(user));
+      const userRes = await user_info_get(parseInt(user));
       if (res.data.status) {
         const latestLesson = res.data.data.reduce((latest: Date, lesson: any) => {
           const currentDate = new Date(lesson.datetime);
@@ -117,7 +118,7 @@ function App() {
   // Joyride callback
   const handleJoyrideCallback = (data: CallBackProps) => {
     const { status } = data;
-    
+    console.log(data)
     if (status === STATUS.FINISHED || status === STATUS.SKIPPED) {
       console.log('Tour finished or skipped');
       setRunTour(false);
@@ -154,7 +155,7 @@ function App() {
 
   // Welcome message update interval
   useEffect(() => {
-    const intervalId = setInterval(updateWeloomeMessage, 1000 * 60 * 5); // 5 minutes
+    const intervalId = setInterval(updateWeloomeMessage, 1000 * 10); // 10 secs 
     return () => clearInterval(intervalId);
   }, [updateWeloomeMessage]);
 
@@ -225,15 +226,15 @@ function App() {
         Show Website Tour
       </button>
 
-      <button onClick={() => pianoCharacterRef.current?.showCharacterHandler()}>Show Character</button>
+      {/* <button onClick={() => pianoCharacterRef.current?.showCharacterHandler()}>Show Character</button>
       <button onClick={() => pianoCharacterRef.current?.hideCharacterHandler()}>Hide Character</button>
       <button onClick={() => pianoCharacterRef.current?.setMessageHandler(`Hello, ${Math.random().toFixed(3)}! Welcome back!`)}>Set Message</button>
       <button onClick={() => pianoCharacterRef.current?.changePositionHandler({ 
         right: `${Math.floor(Math.random() * (100 - 1) + 1)}px`, 
         bottom: `${Math.floor(Math.random() * (100 - 1) + 1)}px` 
-      })}>Change Position</button>
+      })}>Change Position</button> */}
 
-      <input type="file" accept=".wav" onChange={(e) => {
+      {/* <input type="file" accept=".wav" onChange={(e) => {
         const file = e.target.files?.[0];
         if (file) {
           var formData = new FormData();
@@ -242,7 +243,7 @@ function App() {
             console.log(response);
           });
         }
-      }} />
+      }} /> */}
 
       <LessonMap 
         chapters={sampleChapters.map(chapter => ({

@@ -1,24 +1,48 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 import { api_add_chord } from '../../api_request/request';
+import RenderMusicSheet2 from '../PianoPlayingPage/RenderMusicSheet2';
+
+import { api_fileMidiToXml } from '../../api_request/request';
+import { Link } from 'react-router-dom';
+
+import ChordProgressionInfoDialog from './ChordProgressionInfoDialog';
+import progression_info1 from '../../assets/chord_progression/progression_1_2_5_3.png'
+import progression_info2 from '../../assets/chord_progression/progression_1_5_4_5.png'
+import progression_info3 from '../../assets/chord_progression/progression_3_6_2_5.png'
+import progression_info4 from '../../assets/chord_progression/progression_2_5_1.png'
+import progression_info5 from '../../assets/chord_progression/progression_1_6_2_5.png'
 
 const AddChordTab = () => {
-    const [file, setFile] = useState<File | null>(null);
+    const [uploadFile, setUploadFile] = useState<File | null>(null);
+    const [respFile, setRespFile] = useState<File>();
+    const [xmlFile, setXmlFile] = useState<string>();
+    const [progression, setProgression] = useState('1,2,5,3');
     const [formData, setFormData] = useState({
         file: null,
         key: 'C',
         mode: 'Major',
-        progression: '2,5,1,6',
+        progression: progression,
         time_sig: '4,4',
         tempo: '90'
     });
     const [generatedMidi, setGeneratedMidi] = useState<string>("");
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState('');
+    
+    const chordProgressionOptions = ['1,2,5,3', '1,5,4,5', '3,6,2,5', '2,5,1', '1,6,2,5']
+    const chordProgressionInfo = [
+        progression_info1,
+        progression_info2,
+        progression_info3,
+        progression_info4,
+        progression_info5
+    ];
+
 
     const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         if (e.target.files && e.target.files[0]) {
-            setFile(e.target.files[0]);
+            setUploadFile(e.target.files[0]);
         }
     };
 
@@ -37,7 +61,7 @@ const AddChordTab = () => {
 
         try {
             const data = new FormData();
-            if (file) data.append('file', file);
+            if (uploadFile) data.append('file', uploadFile);
             data.append('key', formData.key);
             data.append('mode', formData.mode);
             data.append('progression', formData.progression);
@@ -46,7 +70,9 @@ const AddChordTab = () => {
 
             api_add_chord(data).then((response) => {
                 const blob = new Blob([response.data], { type: 'audio/midi' });
+                const midiFile = new File([blob], `${uploadFile?.name}_added_chord.mid`, { type: 'audio/midi' });
                 const url = URL.createObjectURL(blob);
+                setRespFile(midiFile);
                 setGeneratedMidi(url);
             });
 
@@ -57,6 +83,27 @@ const AddChordTab = () => {
             setIsLoading(false);
         }
     };
+
+    const handleProgressionChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const { value } = e.target;
+        setProgression(value);
+        setFormData(prev => ({
+            ...prev,
+            progression: value
+        }));
+    }
+
+    useEffect(() => {
+        if (respFile) {
+            const formData = new FormData();
+            formData.append('midi', respFile);
+            api_fileMidiToXml(formData).then((response) => {
+                setXmlFile(response.data);
+            }).catch((error) => {
+                console.error('Error converting MIDI to XML:', error);
+            });
+        }
+    }, [respFile]);
 
     return (
         <div className="container py-5">
@@ -70,11 +117,36 @@ const AddChordTab = () => {
                             <div className="col-12">
                                 <label className="form-label">MIDI File (Optional)</label>
                                 <input 
-                                    type="file" 
+                                    type="file"
                                     onChange={handleFileChange}
                                     accept=".mid,.midi"
                                     className="form-control"
                                 />
+                            </div>
+
+                            {/* Chord Progression Options */}
+                            <div className="col-12">
+                                <label className="form-label">Default Progression Options</label>
+                                <div className="d-flex flex-wrap gap-2">
+                                    {chordProgressionOptions.map((option, index) => (
+                                        <div key={index} className="form-check form-check-inline">
+                                            <input
+                                                type="radio"
+                                                name="progression"
+                                                value={option}
+                                                checked={formData.progression === option}
+                                                onChange={handleProgressionChange}
+                                                className="form-check-input"
+                                                id={`option-${index}`}
+                                            />
+                                            <label htmlFor={`option-${index}`} className="form-check-label">{option}</label>
+                                            <ChordProgressionInfoDialog
+                                                progressionIndex={index}
+                                                chordProgressionInfo={chordProgressionInfo}
+                                            />
+                                        </div>
+                                    ))}
+                                </div>
                             </div>
 
                             {/* Key */}
@@ -168,15 +240,21 @@ const AddChordTab = () => {
                     {generatedMidi && (
                         <div className="mt-4 p-4 bg-light rounded border">
                             <h2 className="h5 mb-3">Your Generated MIDI</h2>
-                            <div className="d-flex align-items-center gap-3">
-                                <a
-                                    href={generatedMidi}
-                                    download="chord_progression.mid"
-                                    className="btn btn-success"
-                                >
-                                    Download MIDI
-                                </a>
+                            <div className="d-flex justify-content-between align-items-center mb-3">
+                                <div className="d-flex align-items-center gap-3">
+                                    <a
+                                        href={generatedMidi}
+                                        download="chord_progression.mid"
+                                        className="btn btn-success"
+                                    >
+                                        Download MIDI
+                                    </a>
+                                </div>
+                                <div>
+                                    <Link to='/playing' className="btn btn-secondary mt-3" state={{respFile: respFile}}>Play Music</Link>
+                                </div>
                             </div>
+                            <RenderMusicSheet2 musicXML={xmlFile} cssProps={{top: 0}}/>
                         </div>
                     )}
                 </div>

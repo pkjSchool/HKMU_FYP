@@ -252,6 +252,7 @@ const RenderStatisticsMusicSheet = (props: RenderStatisticsMusicSheetProps,ref: 
         resultOsmdRef.current.load(_musicSheet).then(() => {
             // Set the options to display only one system (row)
             //   resultOsmdRef.current!.EngravingRules.RenderSingleHorizontalStaffline = true;
+            resultOsmdRef.current!.zoom = 1.3;
             resultOsmdRef.current!.render();
 
             setIsLoading(false)
@@ -337,8 +338,8 @@ const RenderStatisticsMusicSheet = (props: RenderStatisticsMusicSheetProps,ref: 
                                 }
 
                                 _noteEventList.push({
-                                    x: bbox.x - 10,
-                                    y: bbox.y - 10,
+                                    x: (bbox.x * 1.3) - 5,
+                                    y: (bbox.y * 1.3) - 5,
                                     statistics: _statistics
                                 })
                             }
@@ -517,7 +518,7 @@ const RenderStatisticsMusicSheet = (props: RenderStatisticsMusicSheetProps,ref: 
         
             console.log(getFormatedNoteEntered())
             for (let index in getFormatedNoteEntered()) {    
-                data.push({date: (parseInt(index) + 1), value: getFormatedNoteEntered()[index]})
+                data.push({date: (parseInt(index) + 1), value: (getFormatedNoteEntered()[index] / getFormatedTotalNote()) * 100 })
             }
         
             const chart = Chart.getChart(chartRef_1.current);
@@ -533,7 +534,7 @@ const RenderStatisticsMusicSheet = (props: RenderStatisticsMusicSheetProps,ref: 
                     labels: data.map(row => row.date),
                     datasets: [
                     {
-                        // label: 'Complete Lessons',
+                        label: 'Played (%)',
                         data: data.map(row => row.value)
                     }
                     ]
@@ -542,16 +543,28 @@ const RenderStatisticsMusicSheet = (props: RenderStatisticsMusicSheetProps,ref: 
                     maintainAspectRatio: false,
                     plugins: {
                         legend: {
-                        display: false
+                            display: true,
+                            labels: { font: { size: 16 } },
+                            onClick: () => {}
                         },
                         title: {
                             display: true,
-                            text: "Note Entered",
+                            text: "Note Played",
                             font: {
                                 size: 20
                             }
                         }
-                        
+                    },
+                    scales: {
+                        x: {
+                            title: { display: true, text: 'History', font: { size: 16 } },
+                            ticks: { font: { size: 16 } }
+                        },
+                        y: {
+                            min: 0, max: 100,
+                            title: { display: true, text: '(%)', font: { size: 16 } },
+                            ticks: { font: { size: 16 } }
+                        }
                     }
                 },
                 }
@@ -579,29 +592,33 @@ const RenderStatisticsMusicSheet = (props: RenderStatisticsMusicSheetProps,ref: 
                     labels: data.map(row => row.date),
                     datasets: [
                         {
-                            // label: 'Complete Lessons',
+                            label: 'Score',
                             data: data.map(row => row.value)
                         }
                         ]
                 },
                 options: {
-                    scales: {
-                        x: {
-                          type: 'category',
-                          position: 'bottom'
-                        }
-                    },
                     maintainAspectRatio: false,
                     plugins: {
                         legend: {
-                        display: false
+                            display: true,
+                            labels: { font: { size: 16 } },
+                            onClick: () => {}
                         },
                         title: {
                             display: true,
                             text: "Score",
-                            font: {
-                                size: 20
-                            }
+                            font: { size: 24 }
+                        }
+                    },
+                    scales: {
+                        x: {
+                            title: { display: true, text: 'History', font: { size: 16 } },
+                            ticks: { font: { size: 16 } }
+                        },
+                        y: {
+                            title: { display: true, text: 'Score', font: { size: 16 } },
+                            ticks: { font: { size: 16 } }
                         }
                     }
                 },
@@ -641,11 +658,11 @@ const RenderStatisticsMusicSheet = (props: RenderStatisticsMusicSheetProps,ref: 
                     <div>Music Time: {getFormatedMusicTime()}</div>
 
                     <div>Score | Average: {getAverageScore()} | Max: {getMaxScore()} | Min: {getMinScore()}</div>
-                    <div>Note Entered | Average: {getAverageNoteEntered()} | Max: {getMaxNoteEntered()} | Min: {getMinNoteEntered()}</div>
+                    <div>Note Played | Average: {getAverageNoteEntered()} | Max: {getMaxNoteEntered()} | Min: {getMinNoteEntered()}</div>
 
                     <div className="row">
-                        <div className="col-6"><div style={{"position": "relative", "width": "100%", "height": "200px", "maxWidth": "100%"}}><canvas ref={chartRef_1}></canvas></div></div>
-                        <div className="col-6"><div style={{"position": "relative", "width": "100%", "height": "200px", "maxWidth": "100%"}}><canvas ref={chartRef_2}></canvas></div></div>
+                        <div className="col-6"><div style={{"position": "relative", "width": "100%", "height": "400px", "maxWidth": "100%"}}><canvas ref={chartRef_1}></canvas></div></div>
+                        <div className="col-6"><div style={{"position": "relative", "width": "100%", "height": "400px", "maxWidth": "100%"}}><canvas ref={chartRef_2}></canvas></div></div>
                     </div>
 
                     </>:null
@@ -657,7 +674,7 @@ const RenderStatisticsMusicSheet = (props: RenderStatisticsMusicSheetProps,ref: 
                             <div key={index} className="noteEvent-wrapper" style={{ position: 'absolute', left: event.x, top: event.y }}>
                                 <div className={getNoteEventButtonClassName(event.statistics)}></div>
                                 <div className="noteEvent-popper">
-                                    True : {event.statistics.yes}<br/>False : {event.statistics.no}<hr/>Entered : {(getEnteredProbability(event.statistics) * 100).toFixed(2)}%
+                                    True : {event.statistics.yes}<br/>False : {event.statistics.no}<hr/>Played : {(getEnteredProbability(event.statistics) * 100).toFixed(2)}%
                                 </div>
                             </div>
                         )) }

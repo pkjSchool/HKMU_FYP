@@ -26,10 +26,11 @@ export type RenderMusicSheetRef = {
 };
 
 interface RenderMusicSheetProps {
-  musicXML: string | null;
-  isFileLoaded: boolean;
-  activeNotes: number[];
-  isCollapsed: boolean;
+  musicXML?: string | null;
+  isFileLoaded?: boolean;
+  activeNotes?: number[];
+  isCollapsed?: boolean;
+  cssProps?: CSSProperties;
 }
 
 const RenderMusicSheet = (props: RenderMusicSheetProps,ref: React.Ref<RenderMusicSheetRef>) => {
@@ -46,7 +47,7 @@ const RenderMusicSheet = (props: RenderMusicSheetProps,ref: React.Ref<RenderMusi
   const osmdRef = useRef<OpenSheetMusicDisplay | null>(null);
   const [localActiveNotes, setLocalActiveNotes] = useState<number[]>([]);
   const [scrollAmount, setScrollAmount] = useState<number>(0);
-  const [musicSheet, setMusicSheet] = useState<string| null>(null);
+  const [musicSheet, setMusicSheet] = useState<string | null>(null);
 
   useEffect(() => {
     console.log("RenderMusicSheet: musicXML");
@@ -75,6 +76,7 @@ const RenderMusicSheet = (props: RenderMusicSheetProps,ref: React.Ref<RenderMusi
       osmdRef.current.load(props.musicXML).then(() => {
           // Set the options to display only one system (row)
           osmdRef.current!.EngravingRules.RenderSingleHorizontalStaffline = true;
+          osmdRef.current!.zoom = 1.3;
           osmdRef.current!.render();
 
           // Add cursor
@@ -129,6 +131,7 @@ const RenderMusicSheet = (props: RenderMusicSheetProps,ref: React.Ref<RenderMusi
       osmdRef.current.load(musicSheet).then(() => {
           // Set the options to display only one system (row)
           osmdRef.current!.EngravingRules.RenderSingleHorizontalStaffline = true;
+          osmdRef.current!.zoom = 1.3;
           osmdRef.current!.render();
 
           // Add cursor
@@ -399,15 +402,16 @@ const RenderMusicSheet = (props: RenderMusicSheetProps,ref: React.Ref<RenderMusi
       className="sheet-container"
       ref={containerRef}
       style={
-        true
+        musicSheet && osmdContainerRef.current 
           ? {
               ...styles.sheetContainer,
               top: props.isCollapsed ? "-70px" : "60px",
+              ...props.cssProps,
             }
           : { visibility: "hidden" }
       }
     >
-      <div ref={osmdContainerRef} style={{ width: "100%", height: "200px" }} ></div>
+      <div ref={osmdContainerRef} style={{ width: "100%", marginTop: "-40px" }} ></div>
     </div>
   );
 };
