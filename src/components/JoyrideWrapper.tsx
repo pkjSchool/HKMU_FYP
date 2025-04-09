@@ -20,7 +20,6 @@ const JoyrideWrapper: React.FC<JoyrideWrapperProps> = ({ steps, tourName, childr
     }
   };
 
-  // Check if user has seen this tour
   useEffect(() => {
     const hasSeenTour = localStorage.getItem(`hasSeen${tourName}Tour`);
     if (!hasSeenTour) {
@@ -63,7 +62,17 @@ const JoyrideWrapper: React.FC<JoyrideWrapperProps> = ({ steps, tourName, childr
             color: '#5cb7b7',
           },
           spotlight: {
-            backgroundColor: 'transparent',
+            backgroundColor: 'rgba(135, 206, 235, 0.7)',
+          },
+          beacon: {
+            animation: 'pulse 1.5s infinite',
+          },
+          beaconInner: {
+            backgroundColor: '#5cb7b7',
+          },
+          beaconOuter: {
+            backgroundColor: 'rgba(92, 183, 183, 0.4)',
+            border: '2px solid rgba(92, 183, 183, 0.8)'
           }
         }}
         locale={{
@@ -74,7 +83,24 @@ const JoyrideWrapper: React.FC<JoyrideWrapperProps> = ({ steps, tourName, childr
           skip: 'Skip'
         }}
       />
-      
+            <style>
+        {`
+          @keyframes pulse {
+            0% {
+              transform: scale(1);
+              opacity: 1;
+            }
+            50% {
+              transform: scale(1.1);
+              opacity: 0.8;
+            }
+            100% {
+              transform: scale(1);
+              opacity: 1;
+            }
+          }
+        `}
+      </style>
       
       {children}
     </>

@@ -25,46 +25,46 @@ const TaskProgress: React.FC = () => {
       })
     }, []);
 
-    // 定義TaskProgress的導覽步驟
+    // Define TaskProgress tour steps
     const steps: Step[] = [
       {
         target: ".task-progress",
-        content: "這是您的任務進度區域，顯示您需要完成的各種學習任務。",
+        content: "This is your task progress area, showing various learning tasks you need to complete.",
         placement: "left"
       },
       {
         target: ".progress-bar-group",
-        content: "任務分為不同的組別，每組包含相關的學習目標。",
+        content: "Tasks are organized into different groups, each containing related learning objectives.",
         placement: "left"
       },
       {
         target: ".progress-title",
-        content: "每組任務都有一個標題，說明該組的主題。",
+        content: "Each task group has a title that explains the theme of that group.",
         placement: "left"
       },
       {
         target: ".progress-bar-item",
-        content: "這裡顯示每個具體的學習任務。",
+        content: "This shows each specific learning task.",
         placement: "left"
       },
       {
         target: ".progress-bar-name",
-        content: "這是任務的名稱，說明您需要完成什麼。",
+        content: "This is the name of the task, explaining what you need to complete.",
         placement: "left"
       },
       {
         target: ".progress-bar-bg",
-        content: "任務進度條顯示您完成任務的百分比。",
+        content: "The progress bar shows the percentage of task completion.",
         placement: "left"
       },
       {
         target: "div:has(> .progress-bar-stick)",
-        content: "綠色表示任務已完成，黃色表示任務進行中。",
+        content: "Green indicates a completed task, while yellow shows a task in progress.",
         placement: "left"
       },
       {
         target: "div:has(> svg.TiTick)",
-        content: "這個綠色勾號表示任務已經完成！",
+        content: "This green checkmark indicates that the task has been completed!",
         placement: "left"
       }
     ];
