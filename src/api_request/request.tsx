@@ -2,6 +2,8 @@ import axios from "axios";
 
 const baseURL = "http://localhost/api";
 const musicfileURL = "http://localhost/musicfile";
+const addChordURL = "http://localhost:8020/";
+const pianoTranscribeURL = "http://localhost:8010/";
 
 export function login(
                     login_id:number, 
@@ -161,4 +163,16 @@ export function api_user_music_upload(
     formData.append("midi", musicFile);
 
     return axios.post(`${baseURL}/user_music_upload`, formData);
+}
+
+export function api_add_chord(
+    formData: FormData
+) {
+    return axios.post(`${addChordURL}/combine_midi`, formData, {responseType: "arraybuffer", timeout: 180000});
+}
+
+export function api_piano_transcribe(
+    formData: FormData
+) {
+    return axios.post(`${pianoTranscribeURL}/transcribe`, formData, {responseType: "arraybuffer", timeout: 180000});
 }

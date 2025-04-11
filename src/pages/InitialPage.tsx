@@ -5,6 +5,8 @@ import { setLoginedUser, getLoginedUser, getStorageUser } from "../access_contro
 import { setFinishInitial } from "../access_control/webStatus.tsx";
 import { user_info_get } from "../api_request/request.tsx";
 
+import { clearInfo } from "../store/loginInfo.tsx";
+
 function InitialPage() {
     const dispatch = useDispatch();
 
@@ -32,7 +34,13 @@ function InitialPage() {
                         finishInitial()
                     } else {
                         alert(JSON.stringify(result));
+                        dispatch(clearInfo({}));
+                        finishInitial()
                     }
+                }).catch((error) => {
+                    alert("id: " + storageUser + "\n" + error);
+                    dispatch(clearInfo({}));
+                    finishInitial()
                 })
             }
         } else {
