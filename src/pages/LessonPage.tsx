@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
-import Joyride, { CallBackProps, STATUS, Step } from "react-joyride";
-
+import { Step } from "react-joyride";
+import JoyrideWrapper from '../components/JoyrideWrapper';
 import LessonMap from '../components/LessonMap';
 import TaskProgress from '../components/TaskProgress';
 import PianoCharacter, {PianoCharacterRef} from '../components/Character/PianoCharacter.tsx';
@@ -43,8 +43,6 @@ function App() {
   };
 
   const pianoCharacterRef = useRef<PianoCharacterRef>(null);
-  const [runTour, setRunTour] = useState(false);
-
   // Joyride steps
   const steps: Step[] = [
     {
@@ -115,17 +113,6 @@ function App() {
     }
   }, []);
 
-  // Joyride callback
-  const handleJoyrideCallback = (data: CallBackProps) => {
-    const { status } = data;
-    console.log(data)
-    if (status === STATUS.FINISHED || status === STATUS.SKIPPED) {
-      console.log('Tour finished or skipped');
-      setRunTour(false);
-      localStorage.setItem('hasSeenHomeTour', 'true');
-    }
-  };
-
   // Initial setup effect
   useEffect(() => {
     const user = getStorageUser();
@@ -142,15 +129,6 @@ function App() {
       pianoCharacterRef.current?.showCharacterHandler();
       pianoCharacterRef.current?.changePositionHandler({ right: "50px", bottom: "0px" });
     }
-
-    // Check and start tour
-    const hasSeenTour = localStorage.getItem('hasSeenHomeTour');
-    if (!hasSeenTour) {
-      const timer = setTimeout(() => {
-        setRunTour(true);
-      }, 2000);
-      return () => clearTimeout(timer);
-    }
   }, []);
 
   // Welcome message update interval
@@ -159,104 +137,22 @@ function App() {
     return () => clearInterval(intervalId);
   }, [updateWeloomeMessage]);
 
-  const resetTour = () => {
-    localStorage.removeItem('hasSeenHomeTour');
-    setRunTour(false);
-    setTimeout(() => setRunTour(true), 50);
-  };
-
   return (
-    <div className="lesson-index-container">
-      <Joyride
-        steps={steps}
-        run={runTour}
-        continuous={true}
-        showProgress={true}
-        showSkipButton={true}
-        disableOverlayClose={true}
-        spotlightClicks={false}
-        callback={handleJoyrideCallback}
-        styles={{
-          options: {
-            arrowColor: '#fff',
-            backgroundColor: '#333',
-            primaryColor: '#5cb7b7',
-            textColor: '#fff',
-            width: 300,
-            zIndex: 1000,
-          },
-          tooltip: {
-            fontSize: '14px',
-          },
-          buttonNext: {
-            backgroundColor: '#5cb7b7',
-          },
-          buttonBack: {
-            color: '#5cb7b7',
-          },
-          spotlight: {
-            backgroundColor: 'transparent',
-          }
-        }}
-        locale={{
-          back: 'Back',
-          close: 'Close',
-          last: 'Finish',
-          next: 'Next',
-          skip: 'Skip'
-        }}
-      />
-      
-      <button 
-        onClick={resetTour} 
-        className="tour-button"
-        style={{ 
-          position: 'fixed', 
-          bottom: '20px', 
-          right: '20px',
-          padding: '8px 16px',
-          backgroundColor: '#5cb7b7',
-          color: 'white',
-          border: 'none',
-          borderRadius: '4px',
-          cursor: 'pointer',
-          zIndex: 999
-        }}
-      >
-        Show Website Tour
-      </button>
-
-      {/* <button onClick={() => pianoCharacterRef.current?.showCharacterHandler()}>Show Character</button>
-      <button onClick={() => pianoCharacterRef.current?.hideCharacterHandler()}>Hide Character</button>
-      <button onClick={() => pianoCharacterRef.current?.setMessageHandler(`Hello, ${Math.random().toFixed(3)}! Welcome back!`)}>Set Message</button>
-      <button onClick={() => pianoCharacterRef.current?.changePositionHandler({ 
-        right: `${Math.floor(Math.random() * (100 - 1) + 1)}px`, 
-        bottom: `${Math.floor(Math.random() * (100 - 1) + 1)}px` 
-      })}>Change Position</button> */}
-
-      {/* <input type="file" accept=".wav" onChange={(e) => {
-        const file = e.target.files?.[0];
-        if (file) {
-          var formData = new FormData();
-          formData.append("audio", file);
-          api_piano_transcribe(formData).then((response) => {
-            console.log(response);
-          });
-        }
-      }} /> */}
-
-      <LessonMap 
-        chapters={sampleChapters.map(chapter => ({
-          ...chapter,
-          lessons: chapter.lessons.map(lesson => ({
-            ...lesson,
-            onClick: () => handleLessonClick(lesson.id)
-          }))
-        }))}
-      />
-      <TaskProgress />
-      <PianoCharacter ref={pianoCharacterRef}/> 
-    </div>
+    <JoyrideWrapper steps={steps} tourName="HomeTour">
+      <div className="lesson-index-container">
+        <LessonMap 
+          chapters={sampleChapters.map(chapter => ({
+            ...chapter,
+            lessons: chapter.lessons.map(lesson => ({
+              ...lesson,
+              onClick: () => handleLessonClick(lesson.id)
+            }))
+          }))}
+        />
+        <TaskProgress />
+        <PianoCharacter ref={pianoCharacterRef}/> 
+      </div>
+    </JoyrideWrapper>
   );
 }
 

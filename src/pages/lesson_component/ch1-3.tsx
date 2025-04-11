@@ -1,118 +1,139 @@
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import Quiz from "../../components/Quiz";
-import VideoBeforeQuiz from "../../components/VideoBeforeQuiz.tsx";
-import MemoBeforeQuiz from "../../components/MemoBeforeQuiz.tsx";
-import quiz_video from "../../assets/quiz_video/test.mp4";
+import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import VideoBeforeQuiz from '../../components/VideoBeforeQuiz';
+import MemoBeforeQuiz from '../../components/MemoBeforeQuiz';
+import Quiz from '../../components/Quiz';
+import quiz_video from '../../assets/quiz_video/test.mp4';
+import treble_clef from "../../assets/quiz_img/quiz_3/treble_clef.png";
+import bass_clef from "../../assets/quiz_img/quiz_3/bass_clef.png";
+import quarterNote from "../../assets/quiz_img/quiz_3/quarter_note.png";
+import halfNote from "../../assets/quiz_img/quiz_3/half_note.png";
+import wholeNote from "../../assets/quiz_img/quiz_3/whole_note.png";
+import staffLines from "../../assets/quiz_img/quiz_3/staff_lines.png";
+import timeSignature from "../../assets/quiz_img/quiz_3/time_signature.jpg";
+import measureExample from "../../assets/quiz_img/quiz_3/measure_example.png";
+import middleCPosition from "../../assets/quiz_img/quiz_3/middle_c_position.png";
+// import CMajorScale from "../../assets/quiz_img/quiz_3/c_major_scale.png";
+import DMajor from "../../assets/quiz_img/quiz_3/d_major_chord.png";
 
-// Import images for memory cards
-import trebleClef from "../../assets/baseImg/treble_clef.jpg";
-import timeSignature from "../../assets/baseImg/time_signature.jpg";
-import quarterNote from "../../assets/baseImg/quarter_note.jpg"; 
-import halfNote from "../../assets/baseImg/half_note.jpg";
-import wholeNote from "../../assets/baseImg/whole_note.jpg";
-import fingerReview from "../../assets/baseImg/finger_numbers.jpg";
-
-const chapter_ref_id = 1;
-const lesson_ref_id = 3;
-
+// 章節測驗題目
 export const questionsCh1_3 = [
-  // Review from previous lessons
-  {
-    questionText: "Which finger number is your thumb?",
-    answerOptions: [
-      { answerText: "1", isCorrect: true },
-      { answerText: "2", isCorrect: false },
-      { answerText: "3", isCorrect: false },
-      { answerText: "5", isCorrect: false },
-    ]
-  },
-  {
-    questionText: "Where is Middle C located on the piano?",
-    answerOptions: [
-      { answerText: "To the left of the two black keys group", isCorrect: true },
-      { answerText: "To the right of the two black keys group", isCorrect: false },
-      { answerText: "To the left of the three black keys group", isCorrect: false },
-      { answerText: "In the exact middle of the keyboard", isCorrect: false },
-    ]
-  },
-  // New content
   {
     questionText: "What is this symbol called?",
-    imageSrc: trebleClef, // You'll need to add this image
+    imageSrc: treble_clef,
     answerOptions: [
       { answerText: "Bass Clef", isCorrect: false },
       { answerText: "Treble Clef", isCorrect: true },
-      { answerText: "Time Signature", isCorrect: false },
-      { answerText: "Key Signature", isCorrect: false },
+      { answerText: "Alto Clef", isCorrect: false }
     ]
   },
   {
-    questionText: "What does the top number in a time signature tell us?",
+    questionText: "What is this symbol called?",
+    imageSrc: bass_clef,
     answerOptions: [
-      { answerText: "How fast to play", isCorrect: false },
-      { answerText: "How many beats are in each measure", isCorrect: true },
-      { answerText: "What note gets one beat", isCorrect: false },
-      { answerText: "How loud to play", isCorrect: false },
+      { answerText: "Bass Clef", isCorrect: true },
+      { answerText: "Treble Clef", isCorrect: false },
+      { answerText: "Tenor Clef", isCorrect: false }
     ]
   },
   {
-    questionText: "Which of these is a quarter note?",
+    questionText: "How many lines are in a standard music staff?",
+    imageSrc: staffLines,
     answerOptions: [
-      { answerText: "A hollow note head with a stem", isCorrect: false },
-      { answerText: "A hollow note head without a stem", isCorrect: false },
-      { answerText: "A filled note head with a stem", isCorrect: true },
-      { answerText: "A filled note head with a stem and a flag", isCorrect: false },
+      { answerText: "4", isCorrect: false },
+      { answerText: "5", isCorrect: true },
+      { answerText: "6", isCorrect: false }
+    ]
+  },
+  {
+    questionText: "What does the top number in a time signature represent?",
+    imageSrc: timeSignature,
+    answerOptions: [
+      { answerText: "Number of beats per measure", isCorrect: true },
+      { answerText: "Tempo of the piece", isCorrect: false },
+      { answerText: "Note value that gets one beat", isCorrect: false }
+    ]
+  },
+  {
+    questionText: "Which note has a filled-in head and a stem?",
+    imageSrc: quarterNote,
+    answerOptions: [
+      { answerText: "Whole Note", isCorrect: false },
+      { answerText: "Half Note", isCorrect: false },
+      { answerText: "Quarter Note", isCorrect: true }
+    ]
+  },
+  {
+    questionText: "Which note has a hollow head and a stem?",
+    imageSrc: halfNote,
+    answerOptions: [
+      { answerText: "Whole Note", isCorrect: false },
+      { answerText: "Half Note", isCorrect: true },
+      { answerText: "Quarter Note", isCorrect: false }
+    ]
+  },
+  {
+    questionText: "Which note has a hollow head and no stem?",
+    imageSrc: wholeNote,
+    answerOptions: [
+      { answerText: "Whole Note", isCorrect: true },
+      { answerText: "Half Note", isCorrect: false },
+      { answerText: "Eighth Note", isCorrect: false }
+    ]
+  },
+  {
+    questionText: "What separates measures in sheet music?",
+    imageSrc: measureExample,
+    answerOptions: [
+      { answerText: "Double lines", isCorrect: false },
+      { answerText: "Bar lines", isCorrect: true },
+      { answerText: "Clef symbols", isCorrect: false }
     ]
   },
   {
     questionText: "Please play Middle C",
+    imageSrc: middleCPosition,
     isPianoQuestion: true,
     requiredNotes: [60] // MIDI note for Middle C
   },
   {
-    questionText: "Please play C-E-G (C major chord)",
+    questionText: "Please play the D Major chord",
+    imageSrc: DMajor,
     isPianoQuestion: true,
-    requiredNotes: [60, 64, 67], // MIDI notes for C-E-G
-    isChord: true
+    requiredNotes: [62, 66, 69], // MIDI notes for D-F#-A
+    showNoteNames: true
   }
 ];
 
+// Tutorial content
 const tutorialCards = [
   {
-    title: "Treble Clef",
-    content: "The treble clef tells us which notes to play on the staff. It's also called the G clef because the inner curve circles around the G line. We use treble clef for right hand piano parts.",
-    imageSrc: trebleClef,
+    title: "Staff Lines",
+    content: "Music is written on five horizontal lines called a staff. Notes are placed on or between these lines to show their pitch.",
+    imageSrc: staffLines
   },
   {
-    title: "Time Signature",
-    content: "The time signature looks like a fraction and tells us two things: The top number shows how many beats are in each measure. The bottom number tells us what kind of note gets one beat.",
-    imageSrc: timeSignature,
+    title: "Clefs",
+    content: "The treble clef is used for higher notes (right hand), while the bass clef is for lower notes (left hand). They tell us which notes each line represents.",
+    imageSrc: treble_clef
   },
   {
-    title: "Quarter Note",
-    content: "A quarter note has a filled-in (black) note head and a stem. In 4/4 time, each quarter note gets 1 beat. Count '1, 2, 3, 4' for four quarter notes.",
-    imageSrc: quarterNote,
+    title: "Note Values",
+    content: "Different note shapes indicate how long to hold each note. A whole note (4 beats), half note (2 beats), and quarter note (1 beat) are fundamental.",
+    imageSrc: wholeNote
   },
   {
-    title: "Half Note",
-    content: "A half note has a hollow (white) note head and a stem. It's worth 2 beats, twice as long as a quarter note. Count '1-2' while holding the note.",
-    imageSrc: halfNote,
-  },
-  {
-    title: "Whole Note",
-    content: "A whole note has a hollow note head with no stem. It's worth 4 beats, as long as 4 quarter notes. Count '1-2-3-4' while holding the note.",
-    imageSrc: wholeNote,
-  },
-  {
-    title: "Review: Finger Numbers",
-    content: "Remember your finger numbers! Thumb is 1, index is 2, middle is 3, ring is 4, and pinky is 5. These numbers help you know which fingers to place on which keys.",
-    imageSrc: fingerReview,
+    title: "Time Signatures",
+    content: "The time signature (like 4/4) tells us how many beats are in each measure and which note value gets one beat.",
+    imageSrc: timeSignature
   }
 ];
 
+const chapter_ref_id = 1;
+const lesson_ref_id = 3;
+
 function Ch1_3() {
-  const [currentStep, setCurrentStep] = useState('video');
+  const [currentStep, setCurrentStep] = useState<'video' | 'memo' | 'quiz'>('video');
   const navigate = useNavigate();
 
   const handleVideoEnd = () => {
