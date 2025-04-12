@@ -1,12 +1,16 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 
 import { api_add_chord } from '../../api_request/request';
-import RenderMusicSheet2 from '../PianoPlayingPage/RenderMusicSheet2';
+import RenderMusicSheet2, { RenderMusicSheetRef } from '../PianoPlayingPage/RenderMusicSheet2';
 
 import { api_fileMidiToXml } from '../../api_request/request';
 import { Link } from 'react-router-dom';
 
+import { FaPlay, FaPause, FaStop } from "react-icons/fa";
+
 import { useTranslation } from 'react-i18next';
+
+import { formatTime } from "../../util/utils";
 
 import ChordProgressionInfoDialog from './ChordProgressionInfoDialog';
 import progression_info1 from '../../assets/chord_progression/progression_1_2_5_3.png'
@@ -14,6 +18,8 @@ import progression_info2 from '../../assets/chord_progression/progression_1_5_4_
 import progression_info3 from '../../assets/chord_progression/progression_3_6_2_5.png'
 import progression_info4 from '../../assets/chord_progression/progression_2_5_1.png'
 import progression_info5 from '../../assets/chord_progression/progression_1_6_2_5.png'
+
+import { Player, getPlayer } from "../MusicNotePlayer/player/Player.js";
 
 const FIELD_INFO = {
   key: {
@@ -41,6 +47,8 @@ const FIELD_INFO = {
 const AddChordTab = () => {
     const { t, i18n } = useTranslation();
 
+    const progressBarReadonly = false;
+
     const [uploadFile, setUploadFile] = useState<File | null>(null);
     const [respFile, setRespFile] = useState<File>();
     const [xmlFile, setXmlFile] = useState<string>();
@@ -57,7 +65,16 @@ const AddChordTab = () => {
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState('');
     const [showHelp, setShowHelp] = useState<keyof typeof FIELD_INFO | null>(null);
-    
+
+    const [isPlaying, setIsPlaying] = useState<boolean>(false);
+    const [valBpm, setValBpm] = useState<number>(0);
+    const [valPrePlay, setValPrePlay] = useState<number>(-2);
+    const [valProgress, setValProgress] = useState<number>(0);
+    const [valSongEndSecond, setValSongEndSecond] = useState<number>(0);
+    const [valSongCurSecond, setValSongCurSecond] = useState<number>(0);
+
+    const musicSheetRenderRef = useRef<RenderMusicSheetRef>(null);
+
     const chordProgressionOptions = ['1,2,5,3', '1,5,4,5', '3,6,2,5', '2,5,1', '1,6,2,5']
     const chordProgressionInfo = [
         progression_info1,
@@ -126,8 +143,51 @@ const AddChordTab = () => {
         }));
     }
 
+    const togglePlay = () => {
+      if(getIsPlaying()) {
+        handlePause()
+      } else {
+        handlePlay()
+      }
+    };
+    
+    const getIsPlaying = () => {
+      return getPlayer().isPlaying()
+    };
+    const handlePlay = () => {
+      getPlayer().startPlay();
+      setIsPlaying(true)
+    };
+    const handlePause = () => {
+        getPlayer().pause();
+        setIsPlaying(false)
+    };
+    const handleStop = () => {
+      getPlayer().stop();
+      setIsPlaying(false)
+    };
+    const handleFinish = () => {
+      setIsPlaying(false)
+    };
+
+    const onPlayerTimeUpdated = (time: number, end: number, bpm: number) => {
+      // setValProgress((time / (end / 1000 / 100)));
+      setValProgress(time);
+      setValSongCurSecond(time);
+      setValSongEndSecond(end / 1000);
+      setValBpm(bpm);
+    };
+
+    const progressChanged = (progress: number) => {
+      handlePause();
+      setValProgress(progress);
+      getPlayer().setTime(progress);
+    };
+
     useEffect(() => {
         if (respFile) {
+            getPlayer().loadSong(respFile, "fileName", "fileName");
+
             const formData = new FormData();
             formData.append('midi', respFile);
             api_fileMidiToXml(formData).then((response) => {
@@ -137,6 +197,36 @@ const AddChordTab = () => {
             });
         }
     }, [respFile]);
+
+    useEffect(() => {
+      getPlayer().setHaveNodeVoice(true)
+      getPlayer().setHaveBeatVoice(false)
+      getPlayer().setHaveStartDelay(false)
+
+      getPlayer().addFinishListener(() => {
+        handleFinish();
+      });
+      
+      getPlayer().addTimeUpdatedListener((time: number, end: number, bpm: number)=>{
+        musicSheetRenderRef.current?.cursorMoveTo(time * 1000, bpm)
+      });
+      getPlayer().addTimeUpdatedListener(onPlayerTimeUpdated);
+
+      setValPrePlay(getPlayer().startDelay)
+  
+      return () => {
+        getPlayer().setHaveNodeVoice(false)
+        getPlayer().setHaveBeatVoice(true)
+        getPlayer().setHaveStartDelay(true)
+
+        getPlayer().pause();
+        getPlayer().clearFinishListener();
+        getPlayer().clearTimeUpdatedListener();
+        getPlayer().clearNewSongCallback();
+        getPlayer().clearSong();
+      };
+    }, []);
+
 
     const HelpButton = ({ field }: { field: keyof typeof FIELD_INFO }) => (
         <button
@@ -151,10 +241,10 @@ const AddChordTab = () => {
       );
 
     return (
-        <div className="container py-5">
+      <div className="">
         <div className="card shadow">
+          <h1 className="card-header">{t("Add Chord Progression")}</h1>
           <div className="card-body p-4">
-            <h1 className="card-title mb-4">{t("Add Chord Progression")}</h1>
             
             <form onSubmit={handleSubmit}>
               <div className="row g-3 mb-4">
@@ -185,10 +275,20 @@ const AddChordTab = () => {
                           id={`option-${index}`}
                         />
                         <label htmlFor={`option-${index}`} className="form-check-label">{option}</label>
-                        <ChordProgressionInfoDialog
+                        <br/>
+                        <img
+                          src={chordProgressionInfo[index]}
+                          alt={`Progression Info ${index + 1}`}
+                          style={{
+                            borderRadius: '8px',
+                            margin: '10px 0',
+                            width: "350px"
+                          }}
+                        />
+                        {/* <ChordProgressionInfoDialog
                           progressionIndex={index}
                           chordProgressionInfo={chordProgressionInfo}
-                        />
+                        /> */}
                       </div>
                     ))}
                   </div>
@@ -198,7 +298,7 @@ const AddChordTab = () => {
                 <div className="col-md-6">
                   <label className="form-label d-flex align-items-center">
                     {t("key")}
-                    <HelpButton field="key" />
+                    {/* <HelpButton field="key" /> */}
                   </label>
                   <select
                     name="key"
@@ -210,13 +310,14 @@ const AddChordTab = () => {
                       <option key={key} value={key}>{key}</option>
                     ))}
                   </select>
+                  <small className="caption">{getInfo("key")}</small>
                 </div>
   
                 {/* Mode */}
                 <div className="col-md-6">
                   <label className="form-label d-flex align-items-center">
                     {t("Mode")}
-                    <HelpButton field="mode" />
+                    {/* <HelpButton field="mode" /> */}
                   </label>
                   <select
                     name="mode"
@@ -227,13 +328,14 @@ const AddChordTab = () => {
                     <option value="Major">{t("Major")}</option>
                     <option value="Minor">{t("Minor")}</option>
                   </select>
+                  <small className="caption">{getInfo("mode")}</small>
                 </div>
   
                 {/* Chord Progression */}
                 <div className="col-md-6">
                   <label className="form-label d-flex align-items-center">
                     {t("Chord Progression (comma separated)")}
-                    <HelpButton field="progression" />
+                    {/* <HelpButton field="progression" /> */}
                   </label>
                   <input
                     type="text"
@@ -242,13 +344,14 @@ const AddChordTab = () => {
                     onChange={handleInputChange}
                     className="form-control"
                   />
+                  <small className="caption">{getInfo("progression")}</small>
                 </div>
   
                 {/* Time Signature */}
                 <div className="col-md-6">
                   <label className="form-label d-flex align-items-center">
                     {t("Time Signature (comma separated)")}
-                    <HelpButton field="time_sig" />
+                    {/* <HelpButton field="time_sig" /> */}
                   </label>
                   <input
                     type="text"
@@ -257,13 +360,14 @@ const AddChordTab = () => {
                     onChange={handleInputChange}
                     className="form-control"
                   />
+                  <small className="caption">{getInfo("time_sig")}</small>
                 </div>
   
                 {/* Tempo */}
                 <div className="col-md-6">
                   <label className="form-label d-flex align-items-center">
                     {t("Tempo (BPM)")}
-                    <HelpButton field="tempo" />
+                    {/* <HelpButton field="tempo" /> */}
                   </label>
                   <input
                     type="number"
@@ -272,6 +376,7 @@ const AddChordTab = () => {
                     onChange={handleInputChange}
                     className="form-control"
                   />
+                  <small className="caption">{getInfo("tempo")}</small>
                 </div>
               </div>
   
@@ -335,25 +440,50 @@ const AddChordTab = () => {
                 <h2 className="h5 mb-3">{t("Your Generated MIDI")}</h2>
                 <div className="d-flex justify-content-between align-items-center mb-3">
                   <div className="d-flex align-items-center gap-3">
-                    <a
-                      href={generatedMidi}
-                      download="chord_progression.mid"
-                      className="btn btn-success"
-                    >
-                      {t("Download MIDI")}
-                    </a>
+                    <a href={generatedMidi} download="chord_progression.mid" className="btn btn-success">{t("Download MIDI")}</a>
+                    <Link to='/playing' className="btn btn-warning" state={{respFile: respFile}}>{t("upload_study")}</Link>
                   </div>
-                  <div>
-                    <Link to='/playing' className="btn btn-secondary mt-3" state={{respFile: respFile}}>{t("Play Music")}</Link>
+                  <div className="d-flex align-items-center gap-3">
+                    <button onClick={togglePlay}>{isPlaying?<FaPause/>:<FaPlay/>}</button>
+                    <button onClick={handleStop}><FaStop/></button>
                   </div>
                 </div>
-                <RenderMusicSheet2 musicXML={xmlFile} cssProps={{top: 0}}/>
+                <div style={progressBarStyles}>
+                  <input
+                    type="range"
+                    className="musicProgressBar"
+                    name="valPrograss"
+                    min={valPrePlay}
+                    max={valSongEndSecond}
+                    step="0.01"
+                    value={valProgress}
+                    disabled={progressBarReadonly}
+                    onChange={(e) => {
+                      progressChanged(parseFloat(e.target.value));
+                    }}
+                  />
+                </div>
+                <div style={statusBarStyles}>
+                  <div>{formatTime(valSongCurSecond)} / {formatTime(valSongEndSecond)} | {valBpm} BPM</div>
+                </div>
+                <RenderMusicSheet2 ref={musicSheetRenderRef} musicXML={xmlFile} cssProps={{top: 0}} singleHorizontalStaffline={false}/>
               </div>
             )}
           </div>
         </div>
       </div>
     );
+};
+
+const progressBarStyles: Object = {
+  backgroundColor: "#757575",
+  padding: "10px 20px",
+};
+
+const statusBarStyles: Object = {
+  background: "Black",
+  color: "white",
+  padding: "0 20px",
 };
 
 export default AddChordTab;

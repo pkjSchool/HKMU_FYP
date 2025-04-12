@@ -10,8 +10,8 @@
   height: 100vh; 
   padding: 20px;
   /* background-color: #f9f9f9; */
-  overflow-x: hidden;
-  overflow-y: auto; 
+  overflow-x: hidden !important;
+  overflow-y: auto !important;
   /* transition: margin-left 0.3s ease;  */
   /* background-image: url('../assets/background.png'); 
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);  */
@@ -133,4 +133,12 @@
   display: flex;
   justify-content: center;
   align-items: center;
+}
+
+.caption {
+  display: block;
+  font-size: 0.8em;
+  line-height: 1.1;
+  color: #333;
+  margin-top: 6px;
 }

@@ -38,8 +38,10 @@ const PianoCharacter = ({}, ref: React.Ref<PianoCharacterRef>) => {
         }
 
         let split = " ";
+        let typerSpeed = 200;
         if(i18n.language == "zh-HK") {
             split = "";
+            typerSpeed = 130;
         }
         
         messagesplit.current = split
@@ -53,7 +55,7 @@ const PianoCharacter = ({}, ref: React.Ref<PianoCharacterRef>) => {
             } else {
                 clearInterval(messageTyperInterval.current)
             }
-        }, 130)
+        }, typerSpeed)
     }
 
     const changePositionHandler = (position: CSSProperties) => {
