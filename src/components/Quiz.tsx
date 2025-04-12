@@ -12,8 +12,39 @@ import MIDIController, {
 } from "../components/PianoPlayingPage/MidiController.js";
 import { useTranslation } from 'react-i18next';
 import i18next from 'i18next';
+import shine from "../assets/shine.mp3";
 
 import PianoCharacter, {PianoCharacterRef} from "./Character/PianoCharacter";
+
+function playSound(audioContext: AudioContext, buffer: AudioBuffer) {
+  const source = audioContext.createBufferSource();
+  const g = audioContext.createGain();
+  source.buffer = buffer;
+  // source.start(0);
+  // g.gain.value = 0.5;
+  // source.connect(g);
+  // g.connect(audioContext.destination);
+
+  source.connect(audioContext.destination);
+  source.start();
+}
+
+function processStar() {
+  const audioContext = new (window.AudioContext || (window as any).webkitAudioContext)();
+
+  var request = new XMLHttpRequest();
+  
+  request.open('GET', shine, true);
+  
+  request.responseType = 'arraybuffer';
+  
+  request.onload = function() {
+    audioContext.decodeAudioData(request.response, function(theBuffer) {
+      playSound(audioContext, theBuffer);
+    });
+  }
+  request.send();
+}
 
 const Quiz: React.FC<QuizProps> = ({ lesson_ref_id, chapter_ref_id, title, questions, onExit }) => {
 
@@ -183,6 +214,10 @@ const Quiz: React.FC<QuizProps> = ({ lesson_ref_id, chapter_ref_id, title, quest
       updateSize()
     } else {
       setShowScore(true);
+
+      setTimeout(()=>{
+        processStar()
+      }, 300)
 
       user_lesson_save(parseInt(userInfo.user_id), chapter_ref_id, lesson_ref_id, score).then((response) => {
 
@@ -361,9 +396,9 @@ const Quiz: React.FC<QuizProps> = ({ lesson_ref_id, chapter_ref_id, title, quest
                       className={`btn ${
                         answered
                           ? option.isCorrect
-                            ? "btn-success"
+                            ? "btn-success animate__animated animate__shakeY"
                             : selectedAnswer === index
-                            ? "btn-danger"
+                            ? "btn-danger animate__animated animate__shakeX"
                             : "btn-outline-secondary"
                           : "btn-outline-secondary"
                       } ${answered ? "disabled" : ""}`}

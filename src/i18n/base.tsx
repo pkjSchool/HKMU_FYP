@@ -33,7 +33,8 @@ i18n
                 "exit": "Exit",
                 "finish": "Finish",
                 "open_dialog": "Open",
-                "nextLabelWithProgress": 'Next (Step {step} of {steps})'
+                "nextLabelWithProgress": 'Next (Step {step} of {steps})',
+                "here": "Here"
             }
         },
         "zh-HK": {
@@ -49,6 +50,7 @@ i18n
                 "detail": "詳細資料",
                 "again": "再次",
                 "back": "返回",
+                "total_history": "總歷史",
                 "skip": "跳過",
                 "next": "下一頁",
                 "prev": "上一頁",
@@ -63,7 +65,8 @@ i18n
                 "exit": "退出",
                 "finish": "結束",
                 "open_dialog": "打開",
-                "nextLabelWithProgress": '下一頁 (步驟 {step} 於 {steps})'
+                "nextLabelWithProgress": '下一頁 (步驟 {step} 於 {steps})',
+                "here": "這裡"
             }
         }
     },

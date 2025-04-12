@@ -19,6 +19,8 @@ const PianoCharacter = ({}, ref: React.Ref<PianoCharacterRef>) => {
     const [ message, setMessage ] = useState<string>("");
     const [ visible, setVisible ] = useState<boolean>(false);
 
+    const characterImage = useRef<HTMLDivElement>(null);
+
     const messagesplit = useRef<any>("");
     const messageTyperInterval = useRef<any>(null);
     const messageSequence = useRef<any>(null);
@@ -31,11 +33,21 @@ const PianoCharacter = ({}, ref: React.Ref<PianoCharacterRef>) => {
         hideCharacterHandler
     }));
 
+    const setAnimate = () => {
+        characterImage.current.classList.add("animate__bounce")
+
+        setTimeout(()=> {
+            characterImage.current.classList.remove("animate__bounce")
+        }, 1000)
+    }
+
     const setMessageHandler = (message: string) => {
         setMessage("")
         if(messageTyperInterval.current){
             clearInterval(messageTyperInterval.current)
         }
+
+        setAnimate()
 
         let split = " ";
         let typerSpeed = 200;
@@ -75,7 +87,7 @@ const PianoCharacter = ({}, ref: React.Ref<PianoCharacterRef>) => {
     return (
         <div className="piano-character" style={position} >
             {message && <div className="piano-character-message">{message}</div>}
-            <div className="piano-character-image">
+            <div className="piano-character-image animate__animated" ref={characterImage}>
                 <img src="/src/assets/Character/Image/piano_character.gif" alt="Piano Character" />
             </div>
         </div>
