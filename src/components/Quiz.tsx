@@ -41,7 +41,7 @@ const Quiz: React.FC<QuizProps> = ({ lesson_ref_id, chapter_ref_id, title, quest
       } else {
         pianoCharacterRef.current?.setMessageHandler("Learning piano is like learning a new language—it takes time! Keep practicing, and soon you'll master the fundamentals.")
       }
-      // pianoCharacterRef.current?.changePositionHandler({ right: '40%', bottom: '40%'})  
+      pianoCharacterRef.current?.changePositionHandler({ right: "10%", bottom: "10%" })
     } 
     
   }, [showScore])
@@ -221,7 +221,7 @@ const Quiz: React.FC<QuizProps> = ({ lesson_ref_id, chapter_ref_id, title, quest
               }
             >
               {showScore ? (
-                <div className="text-center">
+                <div className="text-center pb-5">
                   <div className="mt-3 mb-3" style={starWrapper}>
                     { getResultStar(score, questions.length) }
                   </div>
