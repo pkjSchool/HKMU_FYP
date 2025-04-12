@@ -50,6 +50,7 @@ i18n
                 "detail": "詳細資料",
                 "again": "再次",
                 "back": "返回",
+                "total_history": "總歷史",
                 "skip": "跳過",
                 "next": "下一頁",
                 "prev": "上一頁",
