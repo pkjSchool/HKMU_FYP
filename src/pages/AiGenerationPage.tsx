@@ -5,18 +5,21 @@ import JoyrideWrapper from '../components/JoyrideWrapper';
 import AddChordTab from '../components/AIGenerationPage/AddChordTab';
 import FormatConvertionTab from '../components/AIGenerationPage/FormatConvertionTab';
 
+import { useTranslation } from 'react-i18next';
+
 import '../css/AiGenerationPage.css';
 
 const AiGenerationPage = () => {
+  const { t } = useTranslation();
   const [activeTab, setActiveTab] = useState(0);
 
   const tabs = [
     {
-      name: 'Add Chord',
+      name: t('Add Chord'),
       component: <AddChordTab />
     },
     {
-      name: 'Wav to Midi Conversion',
+      name: t('Wav to Midi Conversion'),
       component: <FormatConvertionTab/>
     }
   ]

@@ -10,10 +10,13 @@ import { calcLessonStarNumber } from "../util/lessonStar";
 import MIDIController, {
   MidiControllerRef,
 } from "../components/PianoPlayingPage/MidiController.js";
+import { useTranslation } from 'react-i18next';
 
 import PianoCharacter, {PianoCharacterRef} from "./Character/PianoCharacter";
 
 const Quiz: React.FC<QuizProps> = ({ lesson_ref_id, chapter_ref_id, title, questions, onExit }) => {
+
+  const { t } = useTranslation();
   const userInfo = getLoginedUser();
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [answered, setAnswered] = useState(false);
@@ -227,15 +230,15 @@ const Quiz: React.FC<QuizProps> = ({ lesson_ref_id, chapter_ref_id, title, quest
                   <div className="mt-3 mb-3" style={starWrapper}>
                     { getResultStar(score, questions.length) }
                   </div>
-                  <h4>Quiz completed!</h4>
+                  <h4>{t("quiz_completed")}</h4>
                   <p>
-                    Score: {score} out of {questions.length}
+                  {t("score")}: {score} {t("out of")} {questions.length}
                   </p>
                 </div>
               ) : (
                 <>
                   <p className="text-center text-secondary mt-2 mb-3">
-                    Question {currentQuestion + 1} of {questions.length}
+                  {t("question")} {currentQuestion + 1} {t("of")} {questions.length}
                   </p>
 
                   <div className="mb-4 text-center">
@@ -267,7 +270,7 @@ const Quiz: React.FC<QuizProps> = ({ lesson_ref_id, chapter_ref_id, title, quest
                                       : "bg-secondary"
                                   } me-2`}
                                 >
-                                  Note {note}
+                                  {t("note")} {note}
                                 </span>
                               )
                             )}
@@ -279,7 +282,7 @@ const Quiz: React.FC<QuizProps> = ({ lesson_ref_id, chapter_ref_id, title, quest
                               onClick={autoPlayChord}
                               style={{ marginRight: "1rem" }}
                             >
-                              <i className="bi bi-play-fill"></i> Test Chord
+                              <i className="bi bi-play-fill"></i> {t("Test Chord")}
                             </button>
                           )}
                         </div>
@@ -287,14 +290,14 @@ const Quiz: React.FC<QuizProps> = ({ lesson_ref_id, chapter_ref_id, title, quest
                       </div>
                       <div>
                         {answered && (
-                          <div className="alert alert-success mb-3">Correct!</div>
+                          <div className="alert alert-success mb-3">{t("Correct!")}</div>
                         )}
                         {answered && (
                           <button
                             className="btn btn-primary w-100 mt-3"
                             onClick={handleNextQuestion}
                           >
-                            Next Question
+                            {t("Next Question")}
                           </button>
                         )}
                       </div>
@@ -330,7 +333,7 @@ const Quiz: React.FC<QuizProps> = ({ lesson_ref_id, chapter_ref_id, title, quest
                       className="btn btn-primary w-100 mt-3"
                       onClick={handleNextQuestion}
                     >
-                      Next Question
+                      {t("Next Question")}
                     </button>
                   )}
                 </>

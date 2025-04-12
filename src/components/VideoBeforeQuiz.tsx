@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import { FaPlay, FaPause } from "react-icons/fa";
+import { useTranslation } from 'react-i18next';
 
 interface VideoWithQuizProps {
   videoSrc: string; 
@@ -15,6 +16,7 @@ const VideoWithQuiz: React.FC<VideoWithQuizProps> = ({
   controls = true,
 }) => {
 
+  const { t } = useTranslation();
   const vdoRef = useRef<HTMLVideoElement>(null);
   const [playTime, setPlayTime] = useState<number>(0);
   const [totalTime, setTotalTime] = useState<number>(0);
@@ -72,7 +74,7 @@ const VideoWithQuiz: React.FC<VideoWithQuizProps> = ({
 
         <div className="col-6 text-end">
           <button onClick={vdoPause}>{vdoPlay?<FaPause/>:<FaPlay/>}</button>
-          <button onClick={onVideoEnd}>Skip</button>
+          <button className="ms-3" onClick={onVideoEnd}>{t("skip")}</button>
         </div>
       </div>
     </div>

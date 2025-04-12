@@ -2,6 +2,8 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import { useState } from "react";
 import quizBackground from "../assets/quiz_background.jpg";
 import placeholderImage from "../assets/ERRORIMG.png"; 
+import { useTranslation } from 'react-i18next';
+
 interface TutorialCard {
   title: string;
   content: string;
@@ -14,6 +16,7 @@ interface TutorialProps {
 }
 
 const MemoBeforeQuiz: React.FC<TutorialProps> = ({ cards, onComplete }) => {
+  const { t } = useTranslation();
   const [currentCardIndex, setCurrentCardIndex] = useState(0);
 
   const handleNextCard = () => {
@@ -83,7 +86,7 @@ const MemoBeforeQuiz: React.FC<TutorialProps> = ({ cards, onComplete }) => {
               }`}
               onClick={handleNextCard}
             >
-              {currentCardIndex === cards.length - 1 ? "Complete" : "Next"}
+              {currentCardIndex === cards.length - 1 ? t("complete") : t("next")}
             </button>
           </div>
         </div>

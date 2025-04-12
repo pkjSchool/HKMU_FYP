@@ -9,6 +9,8 @@ import Chart from 'chart.js/auto';
 
 import RenderResultMusicSheet, { HistorySummary } from "./RenderResultMusicSheet.js";
 
+import { useTranslation } from 'react-i18next';
+
 export type RenderStatisticsMusicSheetRef = {
   setMusicSheet: (musicSheet: string) => void;
 //   setResult: (result: any[]) => void;
@@ -26,6 +28,8 @@ const RenderStatisticsMusicSheet = (props: RenderStatisticsMusicSheetProps,ref: 
     useImperativeHandle(ref, () => ({
         setMusicSheet,
     }));
+
+    const { t } = useTranslation();
 
     const chartRef_1 = useRef<HTMLCanvasElement>(null);
     const chartRef_2 = useRef<HTMLCanvasElement>(null);
@@ -534,7 +538,7 @@ const RenderStatisticsMusicSheet = (props: RenderStatisticsMusicSheetProps,ref: 
                     labels: data.map(row => row.date),
                     datasets: [
                     {
-                        label: 'Played (%)',
+                        label: t("playRecord_played")+' (%)',
                         data: data.map(row => row.value)
                     }
                     ]
@@ -549,7 +553,7 @@ const RenderStatisticsMusicSheet = (props: RenderStatisticsMusicSheetProps,ref: 
                         },
                         title: {
                             display: true,
-                            text: "Note Played",
+                            text: t("note_played"),
                             font: {
                                 size: 20
                             }
@@ -557,7 +561,7 @@ const RenderStatisticsMusicSheet = (props: RenderStatisticsMusicSheetProps,ref: 
                     },
                     scales: {
                         x: {
-                            title: { display: true, text: 'History', font: { size: 16 } },
+                            title: { display: true, text: t("history"), font: { size: 16 } },
                             ticks: { font: { size: 16 } }
                         },
                         y: {
@@ -592,7 +596,7 @@ const RenderStatisticsMusicSheet = (props: RenderStatisticsMusicSheetProps,ref: 
                     labels: data.map(row => row.date),
                     datasets: [
                         {
-                            label: 'Score',
+                            label: t("score"),
                             data: data.map(row => row.value)
                         }
                         ]
@@ -607,17 +611,17 @@ const RenderStatisticsMusicSheet = (props: RenderStatisticsMusicSheetProps,ref: 
                         },
                         title: {
                             display: true,
-                            text: "Score",
+                            text: t("score"),
                             font: { size: 24 }
                         }
                     },
                     scales: {
                         x: {
-                            title: { display: true, text: 'History', font: { size: 16 } },
+                            title: { display: true, text: t("history"), font: { size: 16 } },
                             ticks: { font: { size: 16 } }
                         },
                         y: {
-                            title: { display: true, text: 'Score', font: { size: 16 } },
+                            title: { display: true, text: t("score"), font: { size: 16 } },
                             ticks: { font: { size: 16 } }
                         }
                     }
@@ -651,15 +655,15 @@ const RenderStatisticsMusicSheet = (props: RenderStatisticsMusicSheetProps,ref: 
                     )) }
                     </div>
                     {countSheetHistory() > 6?<button className="btn btn-secondary btn-sm w-100" onClick={toggleShowHistoryButton}>{isShowHistoryButton?<FaAnglesUp/>:<FaAnglesDown/>}</button>:null}
-                    <div>Total History: {countSheetHistory()}</div>
+                    <div>{t("total_history")}: {countSheetHistory()}</div>
                     <hr/>
                     {(countSheetHistory() > 0)?
                         <>
                         <table>
                             <tbody>
-                                <tr><th>Total Note : </th><td>{getFormatedTotalNote()}</td><th>Music Time : </th><td>{getFormatedMusicTime()}</td></tr>
-                                <tr><th>Score: </th><td>Average: {getAverageScore()} | Max: {getMaxScore()} | Min: {getMinScore()}</td></tr>
-                                <tr><th>Note Played : </th><td>Average: {getAverageNoteEntered()} | Max: {getMaxNoteEntered()} | Min: {getMinNoteEntered()}</td></tr>
+                                <tr><th>{t("total_note")} : </th><td>{getFormatedTotalNote()}</td><th>{t("music_time")} : </th><td>{getFormatedMusicTime()}</td></tr>
+                                <tr><th>{t("score")}: </th><td>{t("average")}: {getAverageScore()} | {t("max")}: {getMaxScore()} | {t("min")}: {getMinScore()}</td></tr>
+                                <tr><th>{t("note_played")} : </th><td>{t("average")}: {getAverageNoteEntered()} | {t("max")}: {getMaxNoteEntered()} | {t("min")}: {getMinNoteEntered()}</td></tr>
                             </tbody>
                         </table>
                         <hr/>
@@ -676,7 +680,7 @@ const RenderStatisticsMusicSheet = (props: RenderStatisticsMusicSheetProps,ref: 
                             <div key={index} className="noteEvent-wrapper" style={{ position: 'absolute', left: event.x, top: event.y }}>
                                 <div className={getNoteEventButtonClassName(event.statistics)}></div>
                                 <div className="noteEvent-popper">
-                                    True : {event.statistics.yes}<br/>False : {event.statistics.no}<hr/>Played : {(getEnteredProbability(event.statistics) * 100).toFixed(2)}%
+                                {t("true")} : {event.statistics.yes}<br/>{t("false")} : {event.statistics.no}<hr/>{t("playRecord_played")} : {(getEnteredProbability(event.statistics) * 100).toFixed(2)}%
                                 </div>
                             </div>
                         )) }
