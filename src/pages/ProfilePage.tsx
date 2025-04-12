@@ -77,7 +77,7 @@ function ProfilePage() {
           <div className="card">
             <h2 className="card-header">{t("information")}</h2>
             <div className="card-body">
-              <div className="mb-3"><b>{t("username")}</b>: user1</div>
+              <div className="mb-3"><b>{t("username")}</b>: {userInfo.login_id}</div>
               <div className="mb-3"><label className="form-label">{t("displayName")}</label><input type="text" className="form-control" {...register("displayName", { required: true })} /></div>
                 {errors.displayName?.type === "required" && (<p role="alert" className="errorText">{t("displayName_required")}</p>)}
               <div className='row'>

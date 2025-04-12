@@ -130,8 +130,8 @@ const tutorialCards = [
   }
 ];
 
-const chapter_ref_id = 1;
-const lesson_ref_id = 6;
+const chapter_ref_id = 2;
+const lesson_ref_id = 2;
 
 function Ch1_6() {
   const [currentStep, setCurrentStep] = useState<'video' | 'memo' | 'quiz'>('video');

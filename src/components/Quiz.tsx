@@ -211,12 +211,14 @@ const Quiz: React.FC<QuizProps> = ({ lesson_ref_id, chapter_ref_id, title, quest
               style={
                 questions[currentQuestion].isPianoQuestion
                   ? {
-                      padding: 0,
+                      padding: "1rem",
                       flex: "1 1 auto",
                     }
                   : {
                       padding: "1rem",
                       flex: "1 1 auto",
+                      overflow: "auto",
+                      maxHeight: "70vh"
                     }
               }
             >

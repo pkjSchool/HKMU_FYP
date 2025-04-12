@@ -5,14 +5,13 @@ import { FaRegFolderOpen, FaPlay, FaPause, FaStop } from "react-icons/fa";
 import { MdAudiotrack, MdOutlineExitToApp } from "react-icons/md";
 import { CiVolume, CiVolumeHigh } from "react-icons/ci";
 import { IoIosSettings } from "react-icons/io";
+import { HiMiniCalendarDateRange } from "react-icons/hi2";
 import { formatTime } from "../../util/utils";
 import { Player, getPlayer } from "../MusicNotePlayer/player/Player.js";
 import { api_user_music_list } from "../../api_request/request.tsx";
 import { getLoginedUser } from "../../access_control/user";
 
-import { HiMiniCalendarDateRange } from "react-icons/hi2";
-
-import "../../css/VolumeSlider.css";
+import { useTranslation } from 'react-i18next';
 
 export type CollapsibleNavBarRef = {
   onPlayerTimeUpdated: (time: number, end: number, bpm: number) => void;
@@ -37,6 +36,7 @@ interface CollapsibleNavBarProps {
 
 const CollapsibleNavBar = (props: CollapsibleNavBarProps,ref: React.Ref<CollapsibleNavBarRef>) => {
   const progressBarReadonly = false;
+  const { t } = useTranslation();
   const userInfo = getLoginedUser();
 
   useImperativeHandle(ref, () => ({
@@ -184,7 +184,7 @@ const CollapsibleNavBar = (props: CollapsibleNavBarProps,ref: React.Ref<Collapsi
                     onChange={(e) => handleFileChange(e)}
                   />
                   <span className="text" style={styles.text}>
-                    Upload
+                    {t("upload")}
                   </span>
                 </label>
                 <button
@@ -197,7 +197,7 @@ const CollapsibleNavBar = (props: CollapsibleNavBarProps,ref: React.Ref<Collapsi
                     <MdAudiotrack size={25} />
                   </div>
                   <span className="text" style={styles.text}>
-                    Music
+                    {t("music")}
                   </span>
                 </button>
               </div>
@@ -258,7 +258,7 @@ const CollapsibleNavBar = (props: CollapsibleNavBarProps,ref: React.Ref<Collapsi
                     style={{ ...styles.volumeContainer, width: "150px" }}
                   >
                     <label style={styles.volumeLabel}>
-                      <span style={{ color: "white" }}>Volume</span>
+                      <span style={{ color: "white" }}>{t("volume")}</span>
                       <button
                         className="volume-btn"
                         style={buttonStyles.TopNavBarBtn(hoveredButton, 6)}
@@ -355,13 +355,13 @@ const CollapsibleNavBar = (props: CollapsibleNavBarProps,ref: React.Ref<Collapsi
           onMouseEnter={() => setIsButtonHovered(true)}
           onMouseLeave={() => setIsButtonHovered(false)}
         >
-          {props.isCollapsed ? "Expand" : "Collapse"}
+          {props.isCollapsed ? t("Expand") : t("Collapse")}
         </button>
       </div>
       <div className="PianoPageTopNavBarMusicList-Wrapper" style={{ display: isMusicListOpened ? "flex" : "none" }}>
         <div className="PianoPageTopNavBarMusicList-Container">
           <div className="pb-0 text-end">
-            <div className="" style={{"float": "left", "marginTop": "10px", "fontWeight": 700, "fontSize": "1.4em"}}>My Music List</div>
+            <div className="" style={{"float": "left", "marginTop": "10px", "fontWeight": 700, "fontSize": "1.4em"}}>{t("musicList")}</div>
             <button type="button" className="btn btn-danger text-center" style={{padding: "10px 18px", margin:"0"}} onClick={closeMusicListOpened}>X</button>
           </div>
           <div className="PianoPageTopNavBarMusicList-ItemList">

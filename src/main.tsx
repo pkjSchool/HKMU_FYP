@@ -17,6 +17,7 @@ import "./css/taskProgress.css";
 import "./css/PianoPageTopNavBar.css";
 import "./css/statistics.css";
 import "./css/quiz.css";
+import "./css/VolumeSlider.css";
 
 // @ts-ignore
 import store from './store/globalConfig.tsx'
@@ -47,6 +48,9 @@ import './i18n/sidebar.tsx';
 import './i18n/lessonList.tsx';
 import './i18n/statistics.tsx';
 import './i18n/user.tsx';
+import './i18n/piano.tsx';
+import './i18n/playRecord.tsx';
+import './i18n/quiz.tsx';
 
 interface Props {
   children: React.ReactNode;

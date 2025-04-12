@@ -12,11 +12,15 @@ import { FaBook } from "react-icons/fa";
 
 import { questionsCh1_1 } from "../pages/lesson_component/ch1-1";
 import { questionsCh1_2 } from "../pages/lesson_component/ch1-2";
+import { questionsCh1_3 } from "../pages/lesson_component/ch1-3";
+import { questionsCh1_4 } from "../pages/lesson_component/ch1-4";
+import { questionsCh1_5 } from "../pages/lesson_component/ch2-1";
+import { questionsCh1_6 } from "../pages/lesson_component/ch2-2";
 
 interface Lesson {
   id: string;
   ref_id: number;
-  completed: boolean;
+  completed?: boolean;
   stars?: number;
   onClick?: () => void;
 }
@@ -43,7 +47,8 @@ const LessonMap: FC<LessonMapProps> = ({ chapters }) => {
 
   const getLessonMaxScore = (chapter_id:number, lesson_id:number) => {
     const record: { [key: number]: { [key: number]: any[] } } = {
-      1: { "1": questionsCh1_1, 2: questionsCh1_2}
+      1: { 1: questionsCh1_1, 2: questionsCh1_2, 3: questionsCh1_3, 4: questionsCh1_4},
+      2: { 1: questionsCh1_5, 2: questionsCh1_6}
     }
     const target = (record[chapter_id])?record[chapter_id][lesson_id]: null
     return (target)?target.length:null
@@ -75,11 +80,16 @@ const LessonMap: FC<LessonMapProps> = ({ chapters }) => {
     return (lessonUserScore)?(lessonUserScore + " / " + lessonMaxScore):null
   }
 
-  const getLessonStar = (chapter_id:number, lesson_id:number, lesson:Lesson) => {
+  const getLessonStar = (chapter_id:number, lesson_id:number) => {
     const record = getUserLessonRecord(chapter_id, lesson_id)
     const lessonMaxScore = getLessonMaxScore(chapter_id, lesson_id)
     const stars = (record && lessonMaxScore)?printLessonStar(record.score, lessonMaxScore):null
     return (record) ? stars:null
+  }
+
+  const getLessonCompleted = (chapter_id:number, lesson_id:number, lesson:Lesson) => {
+    const record = getUserLessonRecord(chapter_id, lesson_id)
+    return (record) ? true:false
   }
 
   const getDocumentImage = (chapterIndex: number) => {
@@ -113,14 +123,14 @@ const LessonMap: FC<LessonMapProps> = ({ chapters }) => {
                   <NavLink 
                       to={`/lesson/${lesson.id}`}  
                       className={({ isActive }) =>  
-                        `lesson-node ${lesson.completed ? 'completed' : ''} ${isActive ? 'active' : ''}`
+                        `lesson-node ${getLessonCompleted(chapter.ref_id, lesson.ref_id, lesson) ? 'completed' : ''} ${isActive ? 'active' : ''}`
                       }
                       onClick={() => lesson.onClick && lesson.onClick()}  
                     >
                       {lessonIndex + 1} 
                     </NavLink>
                     <div className="lesson-score">{getLessonScore(chapter.ref_id, lesson.ref_id)}</div>
-                    <div className="lesson-status">{getLessonStar(chapter.ref_id, lesson.ref_id, lesson)}</div>
+                    <div className="lesson-status">{getLessonStar(chapter.ref_id, lesson.ref_id)}</div>
                   </div>
                   {lessonIndex < chapter.lessons.length - 1 && (
                     <div className={["connector-wrapper", getConnectorDirectionClass(lessonIndex)].join(" ")}>

@@ -9,5 +9,6 @@
 .answer-btn-list > button {
     height: 100px;
     color: #000 !important;
-    font-size: 38px;
+    font-size: 28px;
+    height: auto;
 }
