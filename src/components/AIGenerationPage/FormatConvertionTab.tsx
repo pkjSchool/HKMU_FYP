@@ -76,11 +76,11 @@ const FormatConvertionTab = () => {
         }, [respFile]);
 
     return (
-        <div className="container py-5">
+        <div className="">
             <div className="card shadow">
+                <h1 className="card-header">{t("Wav to Midi Conversion")}</h1>
                 <div className="card-body p-4">
-                    <h1 className="card-title mb-4">{t("Wav to Midi Conversion")}</h1>
-                    
+
                     <form onSubmit={handleSubmit}>
                         <div className="mb-4">
                             <label htmlFor="audioFile" className="form-label">
@@ -141,7 +141,7 @@ const FormatConvertionTab = () => {
                                 <div>
                                     <Link to='/playing' className="btn btn-secondary mt-3" state={{respFile: respFile}}>{t("Play Music")}</Link>
                                 </div>
-                            </div>                            
+                            </div>
                             <RenderMusicSheet2 musicXML={xmlFile} cssProps={{top: 0}}/>
                         </div>
                     )}

@@ -151,10 +151,10 @@ const AddChordTab = () => {
       );
 
     return (
-        <div className="container py-5">
+      <div className="">
         <div className="card shadow">
+          <h1 className="card-header">{t("Add Chord Progression")}</h1>
           <div className="card-body p-4">
-            <h1 className="card-title mb-4">{t("Add Chord Progression")}</h1>
             
             <form onSubmit={handleSubmit}>
               <div className="row g-3 mb-4">
@@ -185,10 +185,20 @@ const AddChordTab = () => {
                           id={`option-${index}`}
                         />
                         <label htmlFor={`option-${index}`} className="form-check-label">{option}</label>
-                        <ChordProgressionInfoDialog
+                        <br/>
+                        <img
+                          src={chordProgressionInfo[index]}
+                          alt={`Progression Info ${index + 1}`}
+                          style={{
+                            borderRadius: '8px',
+                            margin: '10px 0',
+                            width: "350px"
+                          }}
+                        />
+                        {/* <ChordProgressionInfoDialog
                           progressionIndex={index}
                           chordProgressionInfo={chordProgressionInfo}
-                        />
+                        /> */}
                       </div>
                     ))}
                   </div>
@@ -198,7 +208,7 @@ const AddChordTab = () => {
                 <div className="col-md-6">
                   <label className="form-label d-flex align-items-center">
                     {t("key")}
-                    <HelpButton field="key" />
+                    {/* <HelpButton field="key" /> */}
                   </label>
                   <select
                     name="key"
@@ -210,13 +220,14 @@ const AddChordTab = () => {
                       <option key={key} value={key}>{key}</option>
                     ))}
                   </select>
+                  <small className="caption">{getInfo("key")}</small>
                 </div>
   
                 {/* Mode */}
                 <div className="col-md-6">
                   <label className="form-label d-flex align-items-center">
                     {t("Mode")}
-                    <HelpButton field="mode" />
+                    {/* <HelpButton field="mode" /> */}
                   </label>
                   <select
                     name="mode"
@@ -227,13 +238,14 @@ const AddChordTab = () => {
                     <option value="Major">{t("Major")}</option>
                     <option value="Minor">{t("Minor")}</option>
                   </select>
+                  <small className="caption">{getInfo("mode")}</small>
                 </div>
   
                 {/* Chord Progression */}
                 <div className="col-md-6">
                   <label className="form-label d-flex align-items-center">
                     {t("Chord Progression (comma separated)")}
-                    <HelpButton field="progression" />
+                    {/* <HelpButton field="progression" /> */}
                   </label>
                   <input
                     type="text"
@@ -242,13 +254,14 @@ const AddChordTab = () => {
                     onChange={handleInputChange}
                     className="form-control"
                   />
+                  <small className="caption">{getInfo("progression")}</small>
                 </div>
   
                 {/* Time Signature */}
                 <div className="col-md-6">
                   <label className="form-label d-flex align-items-center">
                     {t("Time Signature (comma separated)")}
-                    <HelpButton field="time_sig" />
+                    {/* <HelpButton field="time_sig" /> */}
                   </label>
                   <input
                     type="text"
@@ -257,13 +270,14 @@ const AddChordTab = () => {
                     onChange={handleInputChange}
                     className="form-control"
                   />
+                  <small className="caption">{getInfo("time_sig")}</small>
                 </div>
   
                 {/* Tempo */}
                 <div className="col-md-6">
                   <label className="form-label d-flex align-items-center">
                     {t("Tempo (BPM)")}
-                    <HelpButton field="tempo" />
+                    {/* <HelpButton field="tempo" /> */}
                   </label>
                   <input
                     type="number"
@@ -272,6 +286,7 @@ const AddChordTab = () => {
                     onChange={handleInputChange}
                     className="form-control"
                   />
+                  <small className="caption">{getInfo("tempo")}</small>
                 </div>
               </div>
   
