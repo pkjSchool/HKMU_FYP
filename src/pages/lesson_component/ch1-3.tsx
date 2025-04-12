@@ -218,6 +218,10 @@ function Ch1_3() {
         return (
           <MemoBeforeQuiz
             cards={tutorialCards}
+            title={{
+              en: "Lesson 3: Basic Music Notation",
+              "zh-HK": "第三課：基本樂理符號"
+            }}
             onComplete={handleMemoComplete}
           />
         );

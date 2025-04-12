@@ -29,7 +29,11 @@ i18n
                 "key": "Key",
                 "Mode": "Mode",
                 "Major": "Major",
-                "Minor": "Minor"
+                "Minor": "Minor",
+                "exit": "Exit",
+                "finish": "Finish",
+                "open_dialog": "Open",
+                "nextLabelWithProgress": 'Next (Step {step} of {steps})'
             }
         },
         "zh-HK": {
@@ -55,7 +59,11 @@ i18n
                 "key": "調",
                 "Mode": "模式",
                 "Major": "主要",
-                "Minor": "次要"
+                "Minor": "次要",
+                "exit": "退出",
+                "finish": "結束",
+                "open_dialog": "打開",
+                "nextLabelWithProgress": '下一頁 (步驟 {step} 於 {steps})'
             }
         }
     },

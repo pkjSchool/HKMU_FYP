@@ -24,8 +24,18 @@ const Quiz: React.FC<QuizProps> = ({ lesson_ref_id, chapter_ref_id, title, quest
   const [score, setScore] = useState(0);
   const [showScore, setShowScore] = useState(false);
   const [activeNotes, setActiveNotes] = useState<number[]>([]);
+
   const MIDIControllerRef = useRef<MidiControllerRef>(null);
   const pianoCharacterRef = useRef<PianoCharacterRef>(null);
+
+  const titleRef = useRef<HTMLDivElement>(null);
+  const stepRef = useRef<HTMLDivElement>(null);
+  const questionRef = useRef<HTMLDivElement>(null);
+  const bottomRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    window.addEventListener('resize', updateSize);
+  }, []);
 
   useEffect(() => {
     if (questions[currentQuestion].isPianoQuestion) {
@@ -34,20 +44,39 @@ const Quiz: React.FC<QuizProps> = ({ lesson_ref_id, chapter_ref_id, title, quest
   }, [activeNotes]);
 
   useEffect(() => {
-    if (showScore){
-      const starsNumber = calcLessonStarNumber(score, questions.length)
-      pianoCharacterRef.current?.showCharacterHandler()
-      if (starsNumber === 3) {
-        pianoCharacterRef.current?.setMessageHandler("Well done! You're ready to take on more challenges. Keep up the great work")
-      } else if (starsNumber === 2) {
-        pianoCharacterRef.current?.setMessageHandler("You're on the right track! Keep exploring the keys, and soon you'll be playing your first song!")
-      } else {
-        pianoCharacterRef.current?.setMessageHandler("Learning piano is like learning a new language—it takes time! Keep practicing, and soon you'll master the fundamentals.")
-      }
-      pianoCharacterRef.current?.changePositionHandler({ right: "10%", bottom: "10%" })
-    } 
-    
+    if (showScore){ pianoCharacterSpeak() }
   }, [showScore])
+
+  const pianoCharacterSpeak = () => {
+    const starsNumber = calcLessonStarNumber(score, questions.length)
+    pianoCharacterRef.current?.showCharacterHandler()
+    switch(i18n.language){
+      case "zh-HK":
+        if (starsNumber === 3) {
+          pianoCharacterRef.current?.setMessageHandler("做得好！你已經準備好迎接更多挑戰。繼續保持！")
+        } else if (starsNumber === 2) {
+          pianoCharacterRef.current?.setMessageHandler("你走在正確的道路上！繼續探索琴鍵，很快你就能彈奏你的第一首歌！")
+        } else {
+          pianoCharacterRef.current?.setMessageHandler("學習鋼琴就像學習一門新語言一樣，需要時間！繼續練習，你很快就能掌握基礎。")
+        }
+        break;
+      default:
+        if (starsNumber === 3) {
+          pianoCharacterRef.current?.setMessageHandler("Well done! You're ready to take on more challenges. Keep up the great work")
+        } else if (starsNumber === 2) {
+          pianoCharacterRef.current?.setMessageHandler("You're on the right track! Keep exploring the keys, and soon you'll be playing your first song!")
+        } else {
+          pianoCharacterRef.current?.setMessageHandler("Learning piano is like learning a new language—it takes time! Keep practicing, and soon you'll master the fundamentals.")
+        }
+    }
+    pianoCharacterRef.current?.changePositionHandler({ right: "10%", bottom: "10%" })
+
+  }
+
+  const updateSize = () => {
+    const x = titleRef.current.offsetHeight + stepRef.current.offsetHeight + bottomRef.current.offsetHeight
+    questionRef.current.style.height = `calc(100vh - ${x}px)`;
+  }
 
   const getResultStar = (score:number, lessonMaxScore:number) => {
     const starsNumber = calcLessonStarNumber(score, lessonMaxScore)
@@ -146,6 +175,7 @@ const Quiz: React.FC<QuizProps> = ({ lesson_ref_id, chapter_ref_id, title, quest
     const nextQuestion = currentQuestion + 1;
     if (nextQuestion < questions.length) {
       setCurrentQuestion(nextQuestion);
+      updateSize()
     } else {
       setShowScore(true);
 
@@ -175,30 +205,41 @@ const Quiz: React.FC<QuizProps> = ({ lesson_ref_id, chapter_ref_id, title, quest
     //     backgroundRepeat: "no-repeat",
     //   }}
     // >
-    <div
-      className="vh-100"
-      style={{
-        backgroundImage: `url(${quizBackground})`,
-        backgroundSize: "cover",
-        backgroundPosition: "center",
-        backgroundRepeat: "no-repeat",
-      }}
-    >
+    <>
+      <div
+        style={{
+          backgroundImage: `url(${quizBackground})`,
+          backgroundSize: "cover",
+          backgroundPosition: "center",
+          backgroundRepeat: "no-repeat",
 
-      <div className="d-flex flex-column justify-content-center align-items-center">
-        <div style={{width: "80%", padding: "40px 0"}}><div className="step-list">{ steps }</div></div>
+          position: "fixed",
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          zIndex: -1
+        }}
+      ></div>
+      <div className="d-flex flex-column align-items-center vh-100">
 
+        <div className="leature-title" ref={titleRef}>{title[i18n.language]}</div>
+
+        <div style={{width: "80%", padding: "40px 0"}} ref={stepRef}><div className="step-list">{ steps }</div></div>
+
+        <div style={{ flexGrow: 1, width: "100%", padding: "0 0 40px" }} ref={questionRef}>
           <div
-            className={`card shadow ${
-              showScore ? "w-50" : "w-50"
-            }`}
+            className={`card shadow`}
             style={{
               backgroundColor: "rgba(255, 255, 255, 0.8)",
-              minHeight: (questions[currentQuestion].isPianoQuestion)?0:"70vh",
-              margin:"0 auto"
+              // minHeight: (questions[currentQuestion].isPianoQuestion)?0:"70vh",
+              margin:"0 auto",
+              maxHeight: "100%",
+              overflow: "auto",
+              width: "80%"
             }}
           >
-            <div className="card-header d-flex justify-content-between align-items-center">
+            {/* <div className="card-header d-flex justify-content-between align-items-center">
               <span className="fw-bold fs-4">{title[i18n.language]}</span>
               <button
                 className="btn btn-danger btn-sm"
@@ -207,7 +248,7 @@ const Quiz: React.FC<QuizProps> = ({ lesson_ref_id, chapter_ref_id, title, quest
               >
                 X
               </button>
-            </div>
+            </div> */}
 
             <div
               className="card-body"
@@ -220,8 +261,8 @@ const Quiz: React.FC<QuizProps> = ({ lesson_ref_id, chapter_ref_id, title, quest
                   : {
                       padding: "1rem",
                       flex: "1 1 auto",
-                      overflow: "auto",
-                      maxHeight: "70vh"
+                      // overflow: "auto",
+                      // maxHeight: "70vh"
                     }
               }
             >
@@ -237,11 +278,7 @@ const Quiz: React.FC<QuizProps> = ({ lesson_ref_id, chapter_ref_id, title, quest
                 </div>
               ) : (
                 <>
-                  <p className="text-center text-secondary mt-2 mb-3">
-                  {t("question")} {currentQuestion + 1} {t("of")} {questions.length}
-                  </p>
-
-                  <div className="mb-4 text-center">
+                  <div className="text-center">
                     {questions[currentQuestion].imageSrc && (
                       <img
                         src={questions[currentQuestion].imageSrc}
@@ -252,6 +289,9 @@ const Quiz: React.FC<QuizProps> = ({ lesson_ref_id, chapter_ref_id, title, quest
                     )}
                     <p className="card-text fs-5">
                       {questions[currentQuestion].questionText[i18n.language]}
+                    </p>
+                    <p className="text-center text-secondary mt-2">
+                      {t("question")} {currentQuestion + 1} {t("of")} {questions.length}
                     </p>
                   </div>
 
@@ -292,56 +332,58 @@ const Quiz: React.FC<QuizProps> = ({ lesson_ref_id, chapter_ref_id, title, quest
                         {answered && (
                           <div className="alert alert-success mb-3">{t("Correct!")}</div>
                         )}
-                        {answered && (
-                          <button
-                            className="btn btn-primary w-100 mt-3"
-                            onClick={handleNextQuestion}
-                          >
-                            {t("Next Question")}
-                          </button>
-                        )}
                       </div>
                     </>
-                  ) : (
-                    <div className="answer-btn-list">
-                      {questions[currentQuestion].answerOptions?.map(
-                        (option, index) => (
-                          <button
-                            key={index}
-                            onClick={() =>
-                              handleAnswerButtonClick(index, option.isCorrect)
-                            }
-                            className={`btn ${
-                              answered
-                                ? option.isCorrect
-                                  ? "btn-success"
-                                  : selectedAnswer === index
-                                  ? "btn-danger"
-                                  : "btn-outline-secondary"
-                                : "btn-outline-secondary"
-                            } ${answered ? "disabled" : ""}`}
-                          >
-                            {option.answerText?option.answerText[i18n.language]:""}
-                          </button>
-                        )
-                      )}
-                    </div>
-                  )}
-
-                  {answered && !questions[currentQuestion].isPianoQuestion && (
-                    <button
-                      className="btn btn-primary w-100 mt-3"
-                      onClick={handleNextQuestion}
-                    >
-                      {t("Next Question")}
-                    </button>
-                  )}
+                  ) : null}
                 </>
               )}
             </div>
           </div>
+        </div>
 
-          {!showScore && questions[currentQuestion].isPianoQuestion ? (
+        <div className="quiz-bottom-panel" ref={bottomRef}>
+          <div className="quiz-bottom-panel-inner">
+
+            {!questions[currentQuestion].isPianoQuestion?
+              <div className="answer-btn-list">
+                {questions[currentQuestion].answerOptions?.map(
+                  (option, index) => (
+                    <button
+                      key={index}
+                      onClick={() =>
+                        handleAnswerButtonClick(index, option.isCorrect)
+                      }
+                      className={`btn ${
+                        answered
+                          ? option.isCorrect
+                            ? "btn-success"
+                            : selectedAnswer === index
+                            ? "btn-danger"
+                            : "btn-outline-secondary"
+                          : "btn-outline-secondary"
+                      } ${answered ? "disabled" : ""}`}
+                    >
+                      {option.answerText?option.answerText[i18n.language]:""}
+                    </button>
+                  )
+                )}
+              </div>
+            :null}
+
+            <div className="mt-3" style={{height: "43px"}}>
+              {answered && (
+                <button className="btn btn-warning w-100" onClick={handleNextQuestion}>
+                  {t("Next Question")}
+                </button>
+              )}
+              {showScore && (
+                <button className="btn btn-danger w-100" onClick={onExit}>{t("exit")}</button>
+              )}
+            </div>
+
+          </div>
+
+          {!showScore && !answered && questions[currentQuestion].isPianoQuestion ? (
             <>
               <MIDIController
                 ref={MIDIControllerRef}
@@ -355,11 +397,12 @@ const Quiz: React.FC<QuizProps> = ({ lesson_ref_id, chapter_ref_id, title, quest
               />
             </>
           ):null}
-
-          <PianoCharacter ref={pianoCharacterRef}/>
-
         </div>
-    </div>
+
+        <PianoCharacter ref={pianoCharacterRef}/>
+
+      </div>
+    </>
   );
 };
 

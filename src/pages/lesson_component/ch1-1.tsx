@@ -247,6 +247,10 @@ function Ch1_1() {
         return (
           <MemoBeforeQuiz
             cards={tutorialCards}
+            title={{
+              "en": "Lesson 1: Piano Basics",
+              "zh-HK": "課堂一：鋼琴基礎"
+            }}
             onComplete={handleMemoComplete}
           />
         );

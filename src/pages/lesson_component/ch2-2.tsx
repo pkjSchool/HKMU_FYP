@@ -219,6 +219,10 @@ function Ch1_6() {
         return (
           <MemoBeforeQuiz
             cards={tutorialCards}
+            title={{
+              en: "Lesson 6: Simple Melodies and Playing Techniques",
+              "zh-HK": "課程六：簡單旋律和演奏技巧"
+            }}
             onComplete={handleMemoComplete}
           />
         );

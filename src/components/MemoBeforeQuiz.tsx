@@ -12,10 +12,11 @@ interface TutorialCard {
 
 interface TutorialProps {
   cards: TutorialCard[];
+  title: Record<string, string>;
   onComplete?: () => void;
 }
 
-const MemoBeforeQuiz: React.FC<TutorialProps> = ({ cards, onComplete }) => {
+const MemoBeforeQuiz: React.FC<TutorialProps> = ({ cards, title, onComplete }) => {
   const { t, i18n } = useTranslation();
   const [currentCardIndex, setCurrentCardIndex] = useState(0);
 
@@ -49,13 +50,16 @@ const MemoBeforeQuiz: React.FC<TutorialProps> = ({ cards, onComplete }) => {
     >
       <div className="d-flex flex-column justify-content-center align-items-center">
 
+        <div className="leature-title">{title[i18n.language]}</div>
+
         <div style={{width: "80%", padding: "40px 0"}}><div className="step-list">{ steps }</div></div>
 
         <div
-          className="card w-50 shadow"
+          className="card shadow"
           style={{
             backgroundColor: "rgba(255, 255, 255, 0.9)", 
             minHeight: "70vh",
+            width: "80%",
             margin:"0 auto"
           }}
         >

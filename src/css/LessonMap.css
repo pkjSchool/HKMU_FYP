@@ -194,7 +194,8 @@
   }
   
   .lesson-status {
-    font-size: 1.1em;
+    font-size: 1em;
+    line-height: 0;
     color: #ffd700;
   }
   

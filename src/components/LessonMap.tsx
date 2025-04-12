@@ -9,6 +9,7 @@ import { calcLessonStarNumber, printLessonStar } from "../util/lessonStar";
 import { useTranslation } from "react-i18next";
 
 import { FaBook } from "react-icons/fa";
+import { IoStar, IoStarOutline } from "react-icons/io5";
 
 import { questionsCh1_1 } from "../pages/lesson_component/ch1-1";
 import { questionsCh1_2 } from "../pages/lesson_component/ch1-2";
@@ -83,8 +84,8 @@ const LessonMap: FC<LessonMapProps> = ({ chapters }) => {
   const getLessonStar = (chapter_id:number, lesson_id:number) => {
     const record = getUserLessonRecord(chapter_id, lesson_id)
     const lessonMaxScore = getLessonMaxScore(chapter_id, lesson_id)
-    const stars = (record && lessonMaxScore)?printLessonStar(record.score, lessonMaxScore):null
-    return (record) ? stars:null
+    // const stars = (record && lessonMaxScore)?printLessonStar(record.score, lessonMaxScore):null
+    return (record) ? getResultStar(record.score, lessonMaxScore):null
   }
 
   const getLessonCompleted = (chapter_id:number, lesson_id:number, lesson:Lesson) => {
@@ -95,6 +96,33 @@ const LessonMap: FC<LessonMapProps> = ({ chapters }) => {
   const getDocumentImage = (chapterIndex: number) => {
     const x = chapterIndex % 4 + 1
     return `/src/assets/mainpage-img/${x}.jpeg`
+  }
+
+  const getResultStar = (score:number, lessonMaxScore:number) => {
+    const starsNumber = calcLessonStarNumber(score, lessonMaxScore)
+    switch (starsNumber) {
+      case 2:
+        return <>
+          <IoStar className={starAnime} style={{...starSmall, ...starOrder1}} />
+          <IoStarOutline className={starAnime} style={{...starBig, ...starOrder2}} />
+          <IoStar className={starAnime} style={{...starSmall, ...starOrder3}} />
+        </>
+        break;
+      case 3:
+        return <>
+            <IoStar className={starAnime} style={{...starSmall, ...starOrder1}} />
+            <IoStar className={starAnime} style={{...starBig, ...starOrder2}} />
+            <IoStar className={starAnime} style={{...starSmall, ...starOrder3}} />
+          </>
+        break;
+      default:
+        return <>
+          <IoStar className={starAnime} style={{...starSmall, ...starOrder1}} />
+          <IoStarOutline className={starAnime} style={{...starBig, ...starOrder2}} />
+          <IoStarOutline className={starAnime} style={{...starSmall, ...starOrder3}} />
+        </>
+        break;
+    }
   }
 
   useEffect(() => {
@@ -130,7 +158,7 @@ const LessonMap: FC<LessonMapProps> = ({ chapters }) => {
                       {lessonIndex + 1} 
                     </NavLink>
                     <div className="lesson-score">{getLessonScore(chapter.ref_id, lesson.ref_id)}</div>
-                    <div className="lesson-status">{getLessonStar(chapter.ref_id, lesson.ref_id)}</div>
+                    <div className="lesson-status" style={starWrapper}>{getLessonStar(chapter.ref_id, lesson.ref_id)}</div>
                   </div>
                   {lessonIndex < chapter.lessons.length - 1 && (
                     <div className={["connector-wrapper", getConnectorDirectionClass(lessonIndex)].join(" ")}>
@@ -151,5 +179,25 @@ const LessonMap: FC<LessonMapProps> = ({ chapters }) => {
     </div>
   );
 };
+
+const starOrder1 = { animationDelay: "0.0s" }
+
+const starOrder2 = { animationDelay: "0.0s" }
+
+const starOrder3 = { animationDelay: "0.0s" }
+
+const starWrapper:object = { display:"flex", justifyContent:"center", alignItems:"baseline" }
+
+const starSmall = {
+  fontSize:"20px",
+  color: "var(--bs-warning)"
+}
+
+const starBig = {
+  fontSize:"30px",
+  color: "var(--bs-warning)"  
+}
+
+const starAnime = "animate__animated animate__zoomIn animate__faster"
 
 export default LessonMap;

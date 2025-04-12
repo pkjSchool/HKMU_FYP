@@ -36,4 +36,6 @@
     word-wrap: break-word; /* Break long words */
     overflow-wrap: break-word; /* Alternative to word-wrap */
     white-space: normal; /* Allow text to wrap */
+    position: absolute;
+    bottom: 100%;
 }
