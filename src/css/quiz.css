@@ -1,0 +1,13 @@
+.answer-btn-list {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+.answer-btn-list > button {
+    height: 100px;
+    color: #000 !important;
+    font-size: 38px;
+}

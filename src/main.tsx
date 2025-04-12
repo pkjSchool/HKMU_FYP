@@ -16,6 +16,7 @@ import "./css/Sidebar.css";
 import "./css/taskProgress.css";
 import "./css/PianoPageTopNavBar.css";
 import "./css/statistics.css";
+import "./css/quiz.css";
 
 // @ts-ignore
 import store from './store/globalConfig.tsx'
