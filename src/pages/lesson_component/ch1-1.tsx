@@ -190,7 +190,7 @@ function Ch1_1() {
             videoSrc={quiz_video}
             onVideoEnd={handleVideoEnd}
             autoPlay={true}
-            controls={true}
+            controls={false}
           />
         );
       case 'memo':
