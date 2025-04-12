@@ -41,6 +41,7 @@ const LessonMap: FC<LessonMapProps> = ({ chapters }) => {
 
   const userInfo = getLoginedUser();
   const [userLessonRecord, setUserLessonRecord] = useState([]);
+  const [firstEmptyIdx, setFirstEmptyIdx] = useState<[number, number] | null>(null);
 
   const getConnectorDirectionClass = (idx:number) => {
     return (idx%2==0)?"connector-left":"connector-right"
@@ -88,7 +89,7 @@ const LessonMap: FC<LessonMapProps> = ({ chapters }) => {
     return (record) ? getResultStar(record.score, lessonMaxScore):null
   }
 
-  const getLessonCompleted = (chapter_id:number, lesson_id:number, lesson:Lesson) => {
+  const getLessonCompleted = (chapter_id:number, lesson_id:number) => {
     const record = getUserLessonRecord(chapter_id, lesson_id)
     return (record) ? true:false
   }
@@ -125,13 +126,30 @@ const LessonMap: FC<LessonMapProps> = ({ chapters }) => {
     }
   }
 
+  const findFirstEmptyIdx = () => {
+    for(let chapter of chapters) {
+      for(let lesson of chapter.lessons) {
+        if(getLessonCompleted(chapter.ref_id, lesson.ref_id) == false){
+          console.log([chapter.ref_id, lesson.ref_id])
+          setFirstEmptyIdx([chapter.ref_id, lesson.ref_id])
+          return null
+        }
+      }
+    }
+  }
+
+  useEffect(() => {
+    if(userLessonRecord.length > 0){
+      findFirstEmptyIdx()
+    }
+  }, [userLessonRecord]);
+
   useEffect(() => {
     user_lesson_get(parseInt(userInfo.user_id)).then((response) => {
           const result = response.data
           if(result.status) {
             const resultData = result.data
             setUserLessonRecord(resultData)
-            // setIsload(true)
           } else {
             alert(JSON.stringify(result));
           }
@@ -148,10 +166,13 @@ const LessonMap: FC<LessonMapProps> = ({ chapters }) => {
               {chapter.lessons.map((lesson, lessonIndex) => (
                 <div key={lessonIndex} className="lesson-item">
                   <div className="lesson-node-wrapper">
-                  <NavLink 
+                    {(firstEmptyIdx && firstEmptyIdx[0] == chapter.ref_id && firstEmptyIdx[1] == lesson.ref_id)?(
+                      <div className="lesson-node-banner animate__animated animate__tada animate__slower" style={{animationIterationCount: "infinite"}}>{t("here")}</div>
+                    ):null}
+                    <NavLink 
                       to={`/lesson/${lesson.id}`}  
                       className={({ isActive }) =>  
-                        `lesson-node ${getLessonCompleted(chapter.ref_id, lesson.ref_id, lesson) ? 'completed' : ''} ${isActive ? 'active' : ''}`
+                        `lesson-node ${getLessonCompleted(chapter.ref_id, lesson.ref_id) ? 'completed' : ''} ${isActive ? 'active' : ''}`
                       }
                       onClick={() => lesson.onClick && lesson.onClick()}  
                     >
@@ -171,7 +192,7 @@ const LessonMap: FC<LessonMapProps> = ({ chapters }) => {
               ))}
             </div>
             <div className="chapter-image">
-              <img src={getDocumentImage(chapterIndex)} />
+              <img src={getDocumentImage(chapterIndex)} className='animate__animated animate__pulse animate__slower' style={{animationIterationCount: "infinite", animationDelay: `${chapterIndex*0.5}s`}} />
             </div>
           </div>
         </div>

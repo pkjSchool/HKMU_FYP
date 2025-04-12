@@ -85,12 +85,24 @@
     align-items: flex-end;
   }
   
+  .lesson-node-banner {
+    width: 70px;
+    padding: 2px;
+    background: #FFF;
+    text-align: center;
+    border-radius: 4px;
+    border: 1px solid #333;
+    position: absolute;
+    bottom: calc(100% + 10px);
+  }
+
   .lesson-node-wrapper {
     display: flex;
     flex-direction: column;
     align-items: center;
     gap: 5px;
     padding-top: 6px;
+    position: relative;
   }
   
   .lesson-node {
