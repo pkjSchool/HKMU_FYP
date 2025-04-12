@@ -47,42 +47,47 @@ const AiGenerationPage = () => {
   const addChordSteps: Step[] = [
     {
       target: ".tab-content h1", 
-      content: "This section allows you to create custom chord progressions.",
+      content: "In this section, you can create custom chord progressions tailored to your musical needs.",
       placement: "bottom"
     },
     {
       target: "input[type='file']", 
-      content: "You can optionally upload an existing MIDI file as a starting point.",
+      content: "Optionally upload a MIDI file to use as a starting point for your chord progression.",
       placement: "top"
     },
     {
-      target: "input[type='radio']", 
-      content: "Select from these common chord progression patterns to get started quickly.",
+      target: ".form-check-input", 
+      content: "Choose from these common chord progression patterns to quickly get started.",
       placement: "bottom"
     },
     {
-      target: "select", 
-      content: "Choose the key and mode for your chord progression.",
+      target: "select[name='key']", 
+      content: "Select the key for your chord progression to define its tonal center.",
       placement: "bottom"
     },
     {
-      target: "input[placeholder='1,2,5,3']", 
-      content: "Enter your chord progression using numbers representing scale degrees, separated by commas.",
+      target: "select[name='mode']", 
+      content: "Choose the mode (e.g., Major, Minor) to set the mood of your progression.",
+      placement: "bottom"
+    },
+    {
+      target: "input[name='progression']", 
+      content: "Enter your chord progression using scale degree numbers, separated by commas.",
       placement: "top"
     },
     {
-      target: "input[placeholder='4,4']", 
-      content: "Enter the time signature for your music (e.g., 4,4 for 4/4 time).",
+      target: "input[name='time_sig']", 
+      content: "Specify the time signature for your music. For example, use '4,4' for 4/4 time, '3,4' for 3/4 time, or '6,8' for 6/8 time.",
       placement: "top"
     },
     {
-      target: "input[placeholder='90']", 
-      content: "Set the tempo in beats per minute (BPM).",
+      target: "input[name='tempo']", 
+      content: "Set the tempo in beats per minute (BPM) to control the speed of your music.",
       placement: "top"
     },
     {
       target: "button.generate-midi", 
-      content: "Click this button to generate your MIDI file based on the settings you've chosen.",
+      content: "Click this button to generate your MIDI file based on the settings you've configured.",
       placement: "left"
     }
   ];
