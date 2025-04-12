@@ -52,6 +52,7 @@ import './i18n/piano.tsx';
 import './i18n/playRecord.tsx';
 import './i18n/quiz.tsx';
 import './i18n/aiGeneration.tsx';
+import './i18n/tour.tsx';
 
 interface Props {
   children: React.ReactNode;

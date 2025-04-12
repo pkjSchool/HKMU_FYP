@@ -30,7 +30,10 @@ i18n
                 "Mode": "Mode",
                 "Major": "Major",
                 "Minor": "Minor",
-                "exit": "Exit"
+                "exit": "Exit",
+                "finish": "Finish",
+                "open_dialog": "Open",
+                "nextLabelWithProgress": 'Next (Step {step} of {steps})'
             }
         },
         "zh-HK": {
@@ -57,7 +60,10 @@ i18n
                 "Mode": "模式",
                 "Major": "主要",
                 "Minor": "次要",
-                "exit": "退出"
+                "exit": "退出",
+                "finish": "結束",
+                "open_dialog": "打開",
+                "nextLabelWithProgress": '下一頁 (步驟 {step} 於 {steps})'
             }
         }
     },

@@ -8,7 +8,7 @@ import { getLoginedUser } from "../access_control/user";
 import { useTranslation } from 'react-i18next';
 
 const TaskProgress: React.FC = () => {
-    const { i18n } = useTranslation();
+    const { t, i18n } = useTranslation();
     const userInfo = getLoginedUser();
     const [userTasks, setUserTasks] = useState<any[]>([]);
 
@@ -30,42 +30,42 @@ const TaskProgress: React.FC = () => {
     const steps: Step[] = [
       {
         target: ".task-progress",
-        content: "This is your task progress area, showing various learning tasks you need to complete.",
+        content: t("task-1"),
         placement: "left"
       },
       {
         target: ".progress-bar-group",
-        content: "Tasks are organized into different groups, each containing related learning objectives.",
+        content: t("task-2"),
         placement: "left"
       },
       {
         target: ".progress-title",
-        content: "Each task group has a title that explains the theme of that group.",
+        content: t("task-3"),
         placement: "left"
       },
       {
         target: ".progress-bar-item",
-        content: "This shows each specific learning task.",
+        content: t("task-4"),
         placement: "left"
       },
       {
         target: ".progress-bar-name",
-        content: "This is the name of the task, explaining what you need to complete.",
+        content: t("task-5"),
         placement: "left"
       },
       {
         target: ".progress-bar-bg",
-        content: "The progress bar shows the percentage of task completion.",
+        content: t("task-6"),
         placement: "left"
       },
       {
         target: "div:has(> .progress-bar-stick)",
-        content: "Green indicates a completed task, while yellow shows a task in progress.",
+        content: t("task-7"),
         placement: "left"
       },
       {
         target: "div:has(> svg.TiTick)",
-        content: "This green checkmark indicates that the task has been completed!",
+        content: t("task-8"),
         placement: "left"
       }
     ];

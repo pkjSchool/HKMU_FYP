@@ -44,20 +44,34 @@ const Quiz: React.FC<QuizProps> = ({ lesson_ref_id, chapter_ref_id, title, quest
   }, [activeNotes]);
 
   useEffect(() => {
-    if (showScore){
-      const starsNumber = calcLessonStarNumber(score, questions.length)
-      pianoCharacterRef.current?.showCharacterHandler()
-      if (starsNumber === 3) {
-        pianoCharacterRef.current?.setMessageHandler("Well done! You're ready to take on more challenges. Keep up the great work")
-      } else if (starsNumber === 2) {
-        pianoCharacterRef.current?.setMessageHandler("You're on the right track! Keep exploring the keys, and soon you'll be playing your first song!")
-      } else {
-        pianoCharacterRef.current?.setMessageHandler("Learning piano is like learning a new language—it takes time! Keep practicing, and soon you'll master the fundamentals.")
-      }
-      pianoCharacterRef.current?.changePositionHandler({ right: "10%", bottom: "10%" })
-    } 
-    
+    if (showScore){ pianoCharacterSpeak() }
   }, [showScore])
+
+  const pianoCharacterSpeak = () => {
+    const starsNumber = calcLessonStarNumber(score, questions.length)
+    pianoCharacterRef.current?.showCharacterHandler()
+    switch(i18n.language){
+      case "zh-HK":
+        if (starsNumber === 3) {
+          pianoCharacterRef.current?.setMessageHandler("做得好！你已經準備好迎接更多挑戰。繼續保持！")
+        } else if (starsNumber === 2) {
+          pianoCharacterRef.current?.setMessageHandler("你走在正確的道路上！繼續探索琴鍵，很快你就能彈奏你的第一首歌！")
+        } else {
+          pianoCharacterRef.current?.setMessageHandler("學習鋼琴就像學習一門新語言一樣，需要時間！繼續練習，你很快就能掌握基礎。")
+        }
+        break;
+      default:
+        if (starsNumber === 3) {
+          pianoCharacterRef.current?.setMessageHandler("Well done! You're ready to take on more challenges. Keep up the great work")
+        } else if (starsNumber === 2) {
+          pianoCharacterRef.current?.setMessageHandler("You're on the right track! Keep exploring the keys, and soon you'll be playing your first song!")
+        } else {
+          pianoCharacterRef.current?.setMessageHandler("Learning piano is like learning a new language—it takes time! Keep practicing, and soon you'll master the fundamentals.")
+        }
+    }
+    pianoCharacterRef.current?.changePositionHandler({ right: "10%", bottom: "10%" })
+
+  }
 
   const updateSize = () => {
     const x = titleRef.current.offsetHeight + stepRef.current.offsetHeight + bottomRef.current.offsetHeight

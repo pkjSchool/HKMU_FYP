@@ -118,3 +118,19 @@
 .step-item.prev {
   background-color: #ffc107;
 }
+
+.tourBtn {
+  border-radius: 50%;
+  font-size: 30px;
+  position: fixed;
+  right: 20px;
+  bottom: 20px;
+  width: 60px;
+  height: 60px;
+  display: block;
+  padding: 0;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}

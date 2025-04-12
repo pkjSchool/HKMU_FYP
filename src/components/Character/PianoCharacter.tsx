@@ -3,6 +3,8 @@ import { useState, useRef, useImperativeHandle, forwardRef } from "react";
 import "../../css/PianoCharacter.css";
 import { CSSProperties } from "styled-components";
 
+import { useTranslation } from 'react-i18next';
+
 export type PianoCharacterRef = {
     changePositionHandler: (position: CSSProperties) => void;
     setMessageHandler: (message: string) => void;
@@ -11,10 +13,13 @@ export type PianoCharacterRef = {
 }
 
 const PianoCharacter = ({}, ref: React.Ref<PianoCharacterRef>) => {
+    const {i18n} = useTranslation();
+
     const [ position, setPosition ] = useState<CSSProperties>({} as CSSProperties);
     const [ message, setMessage ] = useState<string>("");
     const [ visible, setVisible ] = useState<boolean>(false);
 
+    const messagesplit = useRef<any>("");
     const messageTyperInterval = useRef<any>(null);
     const messageSequence = useRef<any>(null);
     const messageTyper = useRef<string>("");
@@ -31,17 +36,24 @@ const PianoCharacter = ({}, ref: React.Ref<PianoCharacterRef>) => {
         if(messageTyperInterval.current){
             clearInterval(messageTyperInterval.current)
         }
+
+        let split = " ";
+        if(i18n.language == "zh-HK") {
+            split = "";
+        }
+        
+        messagesplit.current = split
         messageTyper.current = ""
-        messageSequence.current = message.split(" ")
+        messageSequence.current = message.split(messagesplit.current)
         messageTyperInterval.current = setInterval(() => {
             if(messageSequence.current.length > 0){
-                const x = messageTyper.current + " " + messageSequence.current.shift()
+                const x = messageTyper.current + messagesplit.current + messageSequence.current.shift()
                 messageTyper.current = x
                 setMessage(x)
             } else {
                 clearInterval(messageTyperInterval.current)
             }
-        }, 150)
+        }, 130)
     }
 
     const changePositionHandler = (position: CSSProperties) => {
