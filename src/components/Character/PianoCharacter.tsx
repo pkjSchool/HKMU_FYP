@@ -44,7 +44,7 @@ const PianoCharacter = ({}, ref: React.Ref<PianoCharacterRef>) => {
         <div className="piano-character" style={position} >
             {message && <div className="piano-character-message">{message}</div>}
             <div className="piano-character-image">
-                <img src="/src/assets/Character/Image/piano_character.png" alt="Piano Character" />
+                <img src="/src/assets/Character/Image/piano_character.gif" alt="Piano Character" />
             </div>
         </div>
     )
