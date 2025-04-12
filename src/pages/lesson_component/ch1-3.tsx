@@ -19,88 +19,118 @@ import DMajor from "../../assets/quiz_img/quiz_3/d_major_chord.png";
 // 章節測驗題目
 export const questionsCh1_3 = [
   {
-    questionText: "What is this symbol called?",
+    questionText: {
+      en: "What is this symbol called?",
+      "zh-HK": "這個符號叫什麼？"
+    },
     imageSrc: treble_clef,
     answerOptions: [
-      { answerText: "Bass Clef", isCorrect: false },
-      { answerText: "Treble Clef", isCorrect: true },
-      { answerText: "Alto Clef", isCorrect: false }
+      { answerText: { en: "Bass Clef", "zh-HK": "低音譜號" }, isCorrect: false },
+      { answerText: { en: "Treble Clef", "zh-HK": "高音譜號" }, isCorrect: true },
+      { answerText: { en: "Alto Clef", "zh-HK": "中音譜號" }, isCorrect: false }
     ]
   },
   {
-    questionText: "What is this symbol called?",
+    questionText: {
+      en: "What is this symbol called?",
+      "zh-HK": "這個符號叫什麼？"
+    },
     imageSrc: bass_clef,
     answerOptions: [
-      { answerText: "Bass Clef", isCorrect: true },
-      { answerText: "Treble Clef", isCorrect: false },
-      { answerText: "Tenor Clef", isCorrect: false }
+      { answerText: { en: "Bass Clef", "zh-HK": "低音譜號" }, isCorrect: true },
+      { answerText: { en: "Treble Clef", "zh-HK": "高音譜號" }, isCorrect: false },
+      { answerText: { en: "Tenor Clef", "zh-HK": "次中音譜號" }, isCorrect: false }
     ]
   },
   {
-    questionText: "How many lines are in a standard music staff?",
+    questionText: {
+      en: "How many lines are in a standard music staff?",
+      "zh-HK": "標準五線譜有多少條線？"
+    },
     imageSrc: staffLines,
     answerOptions: [
-      { answerText: "4", isCorrect: false },
-      { answerText: "5", isCorrect: true },
-      { answerText: "6", isCorrect: false }
+      { answerText: { en: "4", "zh-HK": "4" }, isCorrect: false },
+      { answerText: { en: "5", "zh-HK": "5" }, isCorrect: true },
+      { answerText: { en: "6", "zh-HK": "6" }, isCorrect: false }
     ]
   },
   {
-    questionText: "What does the top number in a time signature represent?",
+    questionText: {
+      en: "What does the top number in a time signature represent?",
+      "zh-HK": "拍號上面的數字代表什麼？"
+    },
     imageSrc: timeSignature,
     answerOptions: [
-      { answerText: "Number of beats per measure", isCorrect: true },
-      { answerText: "Tempo of the piece", isCorrect: false },
-      { answerText: "Note value that gets one beat", isCorrect: false }
+      { answerText: { en: "Number of beats per measure", "zh-HK": "每小節的拍子數" }, isCorrect: true },
+      { answerText: { en: "Tempo of the piece", "zh-HK": "樂曲的速度" }, isCorrect: false },
+      { answerText: { en: "Note value that gets one beat", "zh-HK": "一拍的音符時值" }, isCorrect: false }
     ]
   },
   {
-    questionText: "Which note has a filled-in head and a stem?",
+    questionText: {
+      en: "Which note has a filled-in head and a stem?",
+      "zh-HK": "哪個音符有實心符頭和符干？"
+    },
     imageSrc: quarterNote,
     answerOptions: [
-      { answerText: "Whole Note", isCorrect: false },
-      { answerText: "Half Note", isCorrect: false },
-      { answerText: "Quarter Note", isCorrect: true }
+      { answerText: { en: "Whole Note", "zh-HK": "全音符" }, isCorrect: false },
+      { answerText: { en: "Half Note", "zh-HK": "二分音符" }, isCorrect: false },
+      { answerText: { en: "Quarter Note", "zh-HK": "四分音符" }, isCorrect: true }
     ]
   },
   {
-    questionText: "Which note has a hollow head and a stem?",
+    questionText: {
+      en: "Which note has a hollow head and a stem?",
+      "zh-HK": "哪個音符有空心符頭和符干？"
+    },
     imageSrc: halfNote,
     answerOptions: [
-      { answerText: "Whole Note", isCorrect: false },
-      { answerText: "Half Note", isCorrect: true },
-      { answerText: "Quarter Note", isCorrect: false }
+      { answerText: { en: "Whole Note", "zh-HK": "全音符" }, isCorrect: false },
+      { answerText: { en: "Half Note", "zh-HK": "二分音符" }, isCorrect: true },
+      { answerText: { en: "Quarter Note", "zh-HK": "四分音符" }, isCorrect: false }
     ]
   },
   {
-    questionText: "Which note has a hollow head and no stem?",
+    questionText: {
+      en: "Which note has a hollow head and no stem?",
+      "zh-HK": "哪個音符有空心符頭但沒有符干？"
+    },
     imageSrc: wholeNote,
     answerOptions: [
-      { answerText: "Whole Note", isCorrect: true },
-      { answerText: "Half Note", isCorrect: false },
-      { answerText: "Eighth Note", isCorrect: false }
+      { answerText: { en: "Whole Note", "zh-HK": "全音符" }, isCorrect: true },
+      { answerText: { en: "Half Note", "zh-HK": "二分音符" }, isCorrect: false },
+      { answerText: { en: "Eighth Note", "zh-HK": "八分音符" }, isCorrect: false }
     ]
   },
   {
-    questionText: "What separates measures in sheet music?",
+    questionText: {
+      en: "What separates measures in sheet music?",
+      "zh-HK": "在樂譜中用什麼來分隔小節？"
+    },
     imageSrc: measureExample,
     answerOptions: [
-      { answerText: "Double lines", isCorrect: false },
-      { answerText: "Bar lines", isCorrect: true },
-      { answerText: "Clef symbols", isCorrect: false }
+      { answerText: { en: "Double lines", "zh-HK": "雙線" }, isCorrect: false },
+      { answerText: { en: "Bar lines", "zh-HK": "小節線" }, isCorrect: true },
+      { answerText: { en: "Clef symbols", "zh-HK": "譜號" }, isCorrect: false }
     ]
   },
   {
-    questionText: "Please play Middle C",
+    questionText: {
+      en: "Please play Middle C",
+      "zh-HK": "請彈奏中央C"
+    },
     imageSrc: middleCPosition,
     isPianoQuestion: true,
-    requiredNotes: [60] // MIDI note for Middle C
+    requiredNotes: [60]
   },
   {
-    questionText: "Please play the D Major chord",
+    questionText: {
+      en: "Please play the D Major chord",
+      "zh-HK": "請彈奏D大調和弦"
+    },
     imageSrc: DMajor,
     isPianoQuestion: true,
-    requiredNotes: [62, 66, 69], // MIDI notes for D-F#-A
+    requiredNotes: [62, 66, 69],
     showNoteNames: true
   }
 ];
@@ -108,23 +138,47 @@ export const questionsCh1_3 = [
 // Tutorial content
 const tutorialCards = [
   {
-    title: "Staff Lines",
-    content: "Music is written on five horizontal lines called a staff. Notes are placed on or between these lines to show their pitch.",
+    title: {
+      en: "Staff Lines",
+      "zh-HK": "五線譜"
+    },
+    content: {
+      en: "Music is written on five horizontal lines called a staff. Notes are placed on or between these lines to show their pitch.",
+      "zh-HK": "音樂記譜是基於五條水平線，稱為五線譜。音符放置在這些線上或之間以顯示其音高。"
+    },
     imageSrc: staffLines
   },
   {
-    title: "Clefs",
-    content: "The treble clef is used for higher notes (right hand), while the bass clef is for lower notes (left hand). They tell us which notes each line represents.",
+    title: {
+      en: "Clefs",
+      "zh-HK": "譜號"
+    },
+    content: {
+      en: "The treble clef is used for higher notes (right hand), while the bass clef is for lower notes (left hand). They tell us which notes each line represents.",
+      "zh-HK": "高音譜號用於較高的音符（右手），而低音譜號用於較低的音符（左手）。它們告訴我們每條線代表的音符。"
+    },
     imageSrc: treble_clef
   },
   {
-    title: "Note Values",
-    content: "Different note shapes indicate how long to hold each note. A whole note (4 beats), half note (2 beats), and quarter note (1 beat) are fundamental.",
+    title: {
+      en: "Note Values",
+      "zh-HK": "音符時值"
+    },
+    content: {
+      en: "Different note shapes indicate how long to hold each note. A whole note (4 beats), half note (2 beats), and quarter note (1 beat) are fundamental.",
+      "zh-HK": "不同的音符形狀表示每個音符的持續時間。全音符（4拍）、二分音符（2拍）和四分音符（1拍）是基本的。"
+    },
     imageSrc: wholeNote
   },
   {
-    title: "Time Signatures",
-    content: "The time signature (like 4/4) tells us how many beats are in each measure and which note value gets one beat.",
+    title: {
+      en: "Time Signatures",
+      "zh-HK": "拍號"
+    },
+    content: {
+      en: "The time signature (like 4/4) tells us how many beats are in each measure and which note value gets one beat.",
+      "zh-HK": "拍號（如4/4）告訴我們每小節有多少拍，以及哪個音符時值為一拍。"
+    },
     imageSrc: timeSignature
   }
 ];
@@ -157,7 +211,7 @@ function Ch1_3() {
             videoSrc={quiz_video}
             onVideoEnd={handleVideoEnd}
             autoPlay={true}
-            controls={true}
+            controls={false}
           />
         );
       case 'memo':
@@ -172,7 +226,10 @@ function Ch1_3() {
           <Quiz
             lesson_ref_id={lesson_ref_id}
             chapter_ref_id={chapter_ref_id}
-            title="Lesson 3: Basic Music Notation"
+            title={{
+              en: "Lesson 3: Basic Music Notation",
+              "zh-HK": "第三課：基本樂理符號"
+            }}
             questions={questionsCh1_3}
             onExit={handleExitQuiz}
           />

@@ -5,9 +5,10 @@ import JoyrideWrapper from "./JoyrideWrapper";
 import sampleTasks from "../data/task";
 import { user_task_get } from "../api_request/request";
 import { getLoginedUser } from "../access_control/user";
-import "../css/taskProgress.css";
+import { useTranslation } from 'react-i18next';
 
 const TaskProgress: React.FC = () => {
+    const { i18n } = useTranslation();
     const userInfo = getLoginedUser();
     const [userTasks, setUserTasks] = useState<any[]>([]);
 
@@ -74,10 +75,10 @@ const TaskProgress: React.FC = () => {
       <div className="task-progress">
         {userTasks.map((taskGroup, groupIdx) => {
             return <div key={groupIdx} className="progress-bar-group">
-                      <h2 className="progress-title">{taskGroup.title}</h2>
+                      <h2 className="progress-title">{taskGroup.title_trans[i18n.language]}</h2>
                       {taskGroup.tasks.map((task:any, i:number) => {
                         return  <div key={i} className="progress-bar-item animate__animated animate__fadeIn" style={{"animationDelay": `${(groupIdx+i)*0.1}s`}}>
-                                  <p className="progress-bar-name">{task.name}</p>
+                                  <p className="progress-bar-name">{task.name_trans[i18n.language]}</p>
                                   <div style={{display: "flex", "alignItems": "center", height: "32px"}}>
                                     <div className="progress-bar-bg" style={{width: "calc(100% - 20px)"}}>
                                       <div className="progress-bar-stick" style={{

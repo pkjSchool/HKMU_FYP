@@ -13,8 +13,8 @@ export const sampleChapters = [
     ref_id: 1,
     title: "Chapter 1",
     lessons: [
-      { id: "ch1-1", ref_id: 1, completed: true, stars: 3 },
-      { id: "ch1-2", ref_id: 2, completed: false, stars: 2 },
+      { id: "ch1-1", ref_id: 1, completed: false },
+      { id: "ch1-2", ref_id: 2, completed: false },
       { id: "ch1-3", ref_id: 3, completed: false },
       { id: "ch1-4", ref_id: 4, completed: false },
     ],

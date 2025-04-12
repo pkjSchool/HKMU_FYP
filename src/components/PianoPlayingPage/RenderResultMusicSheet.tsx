@@ -5,6 +5,8 @@ import { formatTime } from "../../util/utils.js";
 
 import Chart from 'chart.js/auto';
 
+import { useTranslation } from 'react-i18next';
+
 import {
   OpenSheetMusicDisplay,
 } from "opensheetmusicdisplay";
@@ -34,6 +36,8 @@ const RenderResultMusicSheet = (props: RenderResultMusicSheetProps,ref: React.Re
     setMusicSheet,
   }));
   
+  const { t } = useTranslation();
+
   const chartRef_1 = useRef<HTMLCanvasElement>(null);
 
   const containerRef = useRef<HTMLDivElement>(null);
@@ -192,8 +196,8 @@ const RenderResultMusicSheet = (props: RenderResultMusicSheetProps,ref: React.Re
     if (isHistorySummaryExist() && chartRef_1.current) {
         const data = [];
 
-        data.push({date: "Note Played", value: formatNoteEntered()})
-        data.push({date: "Note Missed", value: (formatTotalNote() - formatNoteEntered())})
+        data.push({date: t("note_entered"), value: formatNoteEntered()})
+        data.push({date: t("note_missed"), value: (formatTotalNote() - formatNoteEntered())})
     
         const chart = Chart.getChart(chartRef_1.current);
         if(chart !== undefined) {
@@ -220,7 +224,7 @@ const RenderResultMusicSheet = (props: RenderResultMusicSheetProps,ref: React.Re
                     labels: { font: { size: 16 } },
                     onClick: () => {}
                   },
-                  title: { display: true, text: "Note Played", font: { size: 20 } }
+                  title: { display: true, text: t("note_played"), font: { size: 20 } }
                 }
             },
             }
@@ -228,17 +232,17 @@ const RenderResultMusicSheet = (props: RenderResultMusicSheetProps,ref: React.Re
     }
   }
 
-  let xxx = null
+  let titleEle = null
   if(isHistorySummaryExist()){
-    xxx = <><h2 className="text-center">{ formatDatetime() }</h2>
+    titleEle = <><h2 className="text-center">{ formatDatetime() }</h2>
 
     <div className="row">
       <div className="col-5">
         <div style={{"position": "relative", "width": "100%", "maxWidth": "200px", "marginLeft": "auto", "paddingTop": "40px"}}>
-          <div>Total Note: {formatTotalNote()}</div>
-          <div>Music Time: {formatMusicTime()}</div>
-          <div>Score: {formatScore()}</div>
-          <div>Note Played: {formatNoteEntered()}</div>
+          <div>{t("total_note")} : {formatTotalNote()}</div>
+          <div>{t("music_time")} : {formatMusicTime()}</div>
+          <div>{t("score")} : {formatScore()}</div>
+          <div>{t("note_played")} : {formatNoteEntered()}</div>
         </div>
       </div>
       <div className="col-7"><div style={{"position": "relative", "width": "100%", "height": "300px", "maxWidth": "350px"}}><canvas ref={chartRef_1}></canvas></div></div>
@@ -253,7 +257,7 @@ const RenderResultMusicSheet = (props: RenderResultMusicSheetProps,ref: React.Re
           <div className="pb-0 text-end">
             <button type="button" className="btn btn-danger text-center" style={{padding: "10px 18px", margin:"0"}} onClick={closeThis}>X</button>
           </div>
-          { xxx }
+          { titleEle }
         <div ref={resultOsmdContainerRef} ></div>
         </div>
     </div>

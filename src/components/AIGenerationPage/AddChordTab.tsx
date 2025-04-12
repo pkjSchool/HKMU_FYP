@@ -6,6 +6,8 @@ import RenderMusicSheet2 from '../PianoPlayingPage/RenderMusicSheet2';
 import { api_fileMidiToXml } from '../../api_request/request';
 import { Link } from 'react-router-dom';
 
+import { useTranslation } from 'react-i18next';
+
 import ChordProgressionInfoDialog from './ChordProgressionInfoDialog';
 import progression_info1 from '../../assets/chord_progression/progression_1_2_5_3.png'
 import progression_info2 from '../../assets/chord_progression/progression_1_5_4_5.png'
@@ -14,14 +16,31 @@ import progression_info4 from '../../assets/chord_progression/progression_2_5_1.
 import progression_info5 from '../../assets/chord_progression/progression_1_6_2_5.png'
 
 const FIELD_INFO = {
-    key: "The musical key determines the root note and scale for the composition (e.g., C Major, G Minor).",
-    mode: "Major = happy/bright sound, Minor = sad/melancholic sound. Determines chord quality.",
-    progression: "Chord sequence using scale degree numbers (e.g., 1-4-5 for I-IV-V). Numbers correspond to positions in the chosen scale. Example: In C Major, 1=C, 4=F, 5=G",
-    time_sig: "Format: beats per measure/note value. Common: 4/4 (four quarter notes), 3/4 (waltz time)",
-    tempo: "Speed of the music in beats per minute (BPM). Typical range: 60-200 BPM"
-  };
+  key: {
+    en: "The musical key determines the root note and scale for the composition (e.g., C Major, G Minor).",
+    "zh-HK": "音樂調決定了樂曲的根音和音階（例如，C 大調、G 小調）。"
+  },
+  mode: {
+    en: "Major = happy/bright sound, Minor = sad/melancholic sound. Determines chord quality.",
+    "zh-HK": "大調 = 歡快/明亮的聲音，小調 = 悲傷/憂鬱的聲音。決定和弦品質。"
+  },
+  progression: {
+    en: "Chord sequence using scale degree numbers (e.g., 1-4-5 for I-IV-V). Numbers correspond to positions in the chosen scale. Example: In C Major, 1=C, 4=F, 5=G",
+    "zh-HK": "使用音階度數數字的和弦序列（例如，I-IV-V 的和弦度數為 1-4-5）。數字對應於所選音階中的位置。例如：在 C 大調中，1=C，4=F，5=G"
+  },
+  time_sig: {
+    en: "Format: beats per measure/note value. Common: 4/4 (four quarter notes), 3/4 (waltz time)",
+    "zh-HK": "格式：每小節/音符值的拍子數。常見：4/4（四個四分音符）、3/4（華爾滋拍子）"
+  },
+  tempo: {
+    en: "Speed of the music in beats per minute (BPM). Typical range: 60-200 BPM",
+    "zh-HK": "音樂的速度，以每分鐘節拍數 (BPM) 為單位。典型範圍：60-200 BPM"
+  }
+};
 
 const AddChordTab = () => {
+    const { t, i18n } = useTranslation();
+
     const [uploadFile, setUploadFile] = useState<File | null>(null);
     const [respFile, setRespFile] = useState<File>();
     const [xmlFile, setXmlFile] = useState<string>();
@@ -47,6 +66,12 @@ const AddChordTab = () => {
         progression_info4,
         progression_info5
     ];
+
+    const getInfo = (showHelp:keyof typeof FIELD_INFO) => {
+      if(FIELD_INFO[showHelp]){
+        return FIELD_INFO[showHelp][i18n.language]
+      }
+    }
 
     const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         if (e.target.files && e.target.files[0]) {
@@ -121,7 +146,7 @@ const AddChordTab = () => {
           onClick={() => setShowHelp(field)}
           aria-label="Show help"
         >
-          Info
+          {t("info")}
         </button>
       );
 
@@ -129,13 +154,13 @@ const AddChordTab = () => {
         <div className="container py-5">
         <div className="card shadow">
           <div className="card-body p-4">
-            <h1 className="card-title mb-4">Add Chord Progression</h1>
+            <h1 className="card-title mb-4">{t("Add Chord Progression")}</h1>
             
             <form onSubmit={handleSubmit}>
               <div className="row g-3 mb-4">
                 {/* MIDI File Upload */}
                 <div className="col-12">
-                  <label className="form-label">MIDI File (Optional)</label>
+                  <label className="form-label">{t("MIDI File (Optional)")}</label>
                   <input 
                     type="file"
                     onChange={handleFileChange}
@@ -146,7 +171,7 @@ const AddChordTab = () => {
   
                 {/* Chord Progression Options */}
                 <div className="col-12">
-                  <label className="form-label">Default Progression Options</label>
+                  <label className="form-label">{t("Default Progression Options")}</label>
                   <div className="d-flex flex-wrap gap-2">
                     {chordProgressionOptions.map((option, index) => (
                       <div key={index} className="form-check form-check-inline">
@@ -172,7 +197,7 @@ const AddChordTab = () => {
                 {/* Key */}
                 <div className="col-md-6">
                   <label className="form-label d-flex align-items-center">
-                    Key
+                    {t("key")}
                     <HelpButton field="key" />
                   </label>
                   <select
@@ -190,7 +215,7 @@ const AddChordTab = () => {
                 {/* Mode */}
                 <div className="col-md-6">
                   <label className="form-label d-flex align-items-center">
-                    Mode
+                    {t("Mode")}
                     <HelpButton field="mode" />
                   </label>
                   <select
@@ -199,15 +224,15 @@ const AddChordTab = () => {
                     onChange={handleInputChange}
                     className="form-select"
                   >
-                    <option value="Major">Major</option>
-                    <option value="Minor">Minor</option>
+                    <option value="Major">{t("Major")}</option>
+                    <option value="Minor">{t("Minor")}</option>
                   </select>
                 </div>
   
                 {/* Chord Progression */}
                 <div className="col-md-6">
                   <label className="form-label d-flex align-items-center">
-                    Chord Progression (comma separated)
+                    {t("Chord Progression (comma separated)")}
                     <HelpButton field="progression" />
                   </label>
                   <input
@@ -222,7 +247,7 @@ const AddChordTab = () => {
                 {/* Time Signature */}
                 <div className="col-md-6">
                   <label className="form-label d-flex align-items-center">
-                    Time Signature (comma separated)
+                    {t("Time Signature (comma separated)")}
                     <HelpButton field="time_sig" />
                   </label>
                   <input
@@ -237,7 +262,7 @@ const AddChordTab = () => {
                 {/* Tempo */}
                 <div className="col-md-6">
                   <label className="form-label d-flex align-items-center">
-                    Tempo (BPM)
+                    {t("Tempo (BPM)")}
                     <HelpButton field="tempo" />
                   </label>
                   <input
@@ -260,9 +285,9 @@ const AddChordTab = () => {
                   {isLoading ? (
                     <>
                       <span className="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
-                      Generating...
+                      {t("Generating...")}
                     </>
-                  ) : 'Generate MIDI'}
+                  ) : t('Generate MIDI')}
                 </button>
               </div>
             </form>
@@ -273,7 +298,7 @@ const AddChordTab = () => {
                 <div className="modal-dialog modal-dialog-centered">
                   <div className="modal-content">
                     <div className="modal-header">
-                      <h5 className="modal-title">Help Information</h5>
+                      <h5 className="modal-title">{t("Help Information")}</h5>
                       <button
                         type="button"
                         className="btn-close"
@@ -282,7 +307,7 @@ const AddChordTab = () => {
                       ></button>
                     </div>
                     <div className="modal-body">
-                      {FIELD_INFO[showHelp]}
+                      {getInfo(showHelp)}
                     </div>
                     <div className="modal-footer">
                       <button
@@ -290,7 +315,7 @@ const AddChordTab = () => {
                         className="btn btn-secondary"
                         onClick={() => setShowHelp(null)}
                       >
-                        Close
+                        {t("close")}
                       </button>
                     </div>
                   </div>
@@ -307,7 +332,7 @@ const AddChordTab = () => {
   
             {generatedMidi && (
               <div className="mt-4 p-4 bg-light rounded border">
-                <h2 className="h5 mb-3">Your Generated MIDI</h2>
+                <h2 className="h5 mb-3">{t("Your Generated MIDI")}</h2>
                 <div className="d-flex justify-content-between align-items-center mb-3">
                   <div className="d-flex align-items-center gap-3">
                     <a
@@ -315,11 +340,11 @@ const AddChordTab = () => {
                       download="chord_progression.mid"
                       className="btn btn-success"
                     >
-                      Download MIDI
+                      {t("Download MIDI")}
                     </a>
                   </div>
                   <div>
-                    <Link to='/playing' className="btn btn-secondary mt-3" state={{respFile: respFile}}>Play Music</Link>
+                    <Link to='/playing' className="btn btn-secondary mt-3" state={{respFile: respFile}}>{t("Play Music")}</Link>
                   </div>
                 </div>
                 <RenderMusicSheet2 musicXML={xmlFile} cssProps={{top: 0}}/>

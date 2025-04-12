@@ -3,10 +3,13 @@ import { TiTick } from "react-icons/ti";
 import sampleTasks from "../data/task";
 import { user_task_get } from "../api_request/request";
 import { getLoginedUser } from "../access_control/user";
+import { useTranslation } from 'react-i18next';
 
 function TaskPage() {
+    const { i18n } = useTranslation();
     const userInfo = getLoginedUser();
     const [userTasks, setUserTasks] = useState<any[]>([]);
+    const [lang, setLang] = useState<any[]>([]);
 
     useEffect(() => {
         user_task_get(parseInt(userInfo.user_id)).then((response) => {
@@ -29,12 +32,15 @@ function TaskPage() {
 
                     {userTasks.map((taskGroup, groupIdx) => {
                         return  <div key={groupIdx}>
-                                    <h3>{taskGroup.title}</h3>
+                                    <h3>{taskGroup.title_trans[i18n.language]}</h3>
                                     <ul className="list-group">
                                         {taskGroup.tasks.map((task:any, i:number) => {
                                             // animate__animated animate__fadeInRight
                                             return <li key={i} className="list-group-item animate__animated animate__fadeIn" style={{"animationDelay": `${i*0.05}s`}}>
-                                                        <h5>{task.name}</h5>
+                                                        <div className="d-flex justify-content-between">
+                                                            <h5>{task.name_trans[i18n.language]}</h5>
+                                                            <h5>{task.progressPerc} %</h5>
+                                                        </div>
                                                         <div style={{display: "flex", "alignItems": "center"}}>
                                                             <div className="progress" role="progressbar" style={{width: "calc(100% - 20px)"}}>
                                                                 <div className="progress-bar" style={{width: `${task.progressPerc}%`, backgroundColor:((task.is_finished)?"var(--bs-success)":"var(--bs-warning)")}}></div>

@@ -5,18 +5,21 @@ import JoyrideWrapper from '../components/JoyrideWrapper';
 import AddChordTab from '../components/AIGenerationPage/AddChordTab';
 import FormatConvertionTab from '../components/AIGenerationPage/FormatConvertionTab';
 
+import { useTranslation } from 'react-i18next';
+
 import '../css/AiGenerationPage.css';
 
 const AiGenerationPage = () => {
+  const { t } = useTranslation();
   const [activeTab, setActiveTab] = useState(0);
 
   const tabs = [
     {
-      name: 'Add Chord',
+      name: t('Add Chord'),
       component: <AddChordTab />
     },
     {
-      name: 'Wav to Midi Conversion',
+      name: t('Wav to Midi Conversion'),
       component: <FormatConvertionTab/>
     }
   ]
@@ -149,13 +152,17 @@ const AiGenerationPage = () => {
     <JoyrideWrapper steps={getCurrentSteps()} tourName={`AIGeneration${activeTab === 0 ? 'AddChord' : 'FormatConversion'}Tour`}>
       <div className="tab-container" >
         <div className="tab-navbar">
-          <tr>
-            {tabs.map((tab, index) => {
-              return <td key={index} onClick={() => handleTabClick(index)} 
-              style={activeTab === index ? {backgroundColor: "#4CAF50"} : {}}>
-                {tab.name}</td>}
-            )}
-          </tr>
+          <table>
+            <tbody>
+              <tr>
+                {tabs.map((tab, index) => {
+                  return <td key={index} onClick={() => handleTabClick(index)} 
+                  style={activeTab === index ? {backgroundColor: "#4CAF50"} : {}}>
+                    {tab.name}</td>}
+                )}
+              </tr>
+            </tbody>
+          </table>
         </div>
         <div className="tab-content">
           {tabs[activeTab].component}

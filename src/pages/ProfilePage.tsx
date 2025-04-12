@@ -3,6 +3,7 @@ import { useForm } from 'react-hook-form';
 import { useDispatch } from "react-redux";
 import { user_info_get, user_info_update } from "../api_request/request";
 import { setLoginedUser, getLoginedUser } from "../access_control/user";
+import { useTranslation } from 'react-i18next';
 
 interface IFormInput {
   user_id: number
@@ -12,6 +13,7 @@ interface IFormInput {
 }
 
 function ProfilePage() {
+  const { t } = useTranslation();
   const userInfo = getLoginedUser();
   const dispatch = useDispatch();
 
@@ -73,22 +75,22 @@ function ProfilePage() {
 
         <form onSubmit={handleSubmit(onSubmit)}>
           <div className="card">
-            <h2 className="card-header">Information</h2>
+            <h2 className="card-header">{t("information")}</h2>
             <div className="card-body">
-              <div className="mb-3"><b>Username</b>: user1</div>
-              <div className="mb-3"><label className="form-label">Display Name</label><input type="text" className="form-control" {...register("displayName", { required: true })} /></div>
-                {errors.displayName?.type === "required" && (<p role="alert" className="errorText">Display Name is required</p>)}
+              <div className="mb-3"><b>{t("username")}</b>: {userInfo.login_id}</div>
+              <div className="mb-3"><label className="form-label">{t("displayName")}</label><input type="text" className="form-control" {...register("displayName", { required: true })} /></div>
+                {errors.displayName?.type === "required" && (<p role="alert" className="errorText">{t("displayName_required")}</p>)}
               <div className='row'>
                 <div className='col-6'>
-                  <div className="mb-3"><label className="form-label">New Password</label><input type="password" className="form-control" {...register("password")} /></div>
-                  {errors.password?.type === "required" && (<p role="alert" className="errorText">New Password is required</p>)}
+                  <div className="mb-3"><label className="form-label">{t("newPassword")}</label><input type="password" className="form-control" {...register("password")} /></div>
+                  {errors.password?.type === "required" && (<p role="alert" className="errorText">{t("newPassword_required")}</p>)}
                 </div>
                 <div className='col-6'>
-                  <div className="mb-3"><label className="form-label">Conform Password</label><input type="password" className="form-control" {...register("conformPassword", { required: (watch('password')) })} /></div>
-                  {errors.conformPassword?.type === "required" && (<p role="alert" className="errorText">Conform Password is required</p>)}
+                  <div className="mb-3"><label className="form-label">{t("conformPassword")}</label><input type="password" className="form-control" {...register("conformPassword", { required: (watch('password')) })} /></div>
+                  {errors.conformPassword?.type === "required" && (<p role="alert" className="errorText">{t("conformPassword_required")}</p>)}
                 </div>
               </div>
-              <input type="submit" className="btn btn-primary mb-3" />
+              <input type="submit" className="btn btn-primary mb-3" value={t("submit")}/>
             </div>
           </div>
         </form>

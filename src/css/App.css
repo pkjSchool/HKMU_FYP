@@ -72,3 +72,49 @@
   0% { transform: rotate(0deg); }
   100% { transform: rotate(360deg); }
 }
+
+.charts-wrapper {
+  border-radius: 20px;
+  border: 1px solid #CCC;
+  padding: 0 10px 10px;
+  box-shadow: 0px 0px 8px #CCC;
+}
+
+.step-list {
+  width: 100%;
+  display: flex;
+  justify-content:space-between;
+  position: relative;
+  z-index: 1;
+}
+
+.step-list:before {
+  content: "";
+  width: calc(100% - 40px);
+  height: 8px;
+  position: absolute;
+  top: calc(50% - 4px);
+  left: 20px;
+  background-color: #ffc107;
+  z-index: -1;
+}
+
+.step-item {
+  text-align: center;
+  font-size: 20px;
+  border-radius: 50%;
+  border: 2px solid #000;
+  width: 40px;
+  height: 40px;
+  background-color: #fff;
+  display: grid;
+  align-items: center;
+}
+
+.step-item.active {
+  background-color: var(--bs-success);
+}
+
+.step-item.prev {
+  background-color: #ffc107;
+}

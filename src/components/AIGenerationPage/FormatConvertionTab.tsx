@@ -5,7 +5,11 @@ import { api_fileMidiToXml, api_piano_transcribe } from '../../api_request/reque
 import RenderMusicSheet2 from '../PianoPlayingPage/RenderMusicSheet2';
 import { Link } from 'react-router-dom';
 
+import { useTranslation } from 'react-i18next';
+
 const FormatConvertionTab = () => {
+    const { t } = useTranslation();
+
     const [upLoadfile, setUploadFile] = useState<File | null>(null);
     const [respFile, setRespFile] = useState<File>();
     const [xmlFile, setXmlFile] = useState<string>();
@@ -75,12 +79,12 @@ const FormatConvertionTab = () => {
         <div className="container py-5">
             <div className="card shadow">
                 <div className="card-body p-4">
-                    <h1 className="card-title mb-4">Wav to Midi Conversion</h1>
+                    <h1 className="card-title mb-4">{t("Wav to Midi Conversion")}</h1>
                     
                     <form onSubmit={handleSubmit}>
                         <div className="mb-4">
                             <label htmlFor="audioFile" className="form-label">
-                                Upload WAV File
+                                {t("Upload WAV File")}
                             </label>
                             <input
                                 type="file"
@@ -91,7 +95,7 @@ const FormatConvertionTab = () => {
                                 disabled={isLoading}
                             />
                             <div className="form-text">
-                                Only WAV audio files are supported for conversion
+                                {t("Only WAV audio files are supported for conversion")}
                             </div>
                         </div>
 
@@ -108,7 +112,7 @@ const FormatConvertionTab = () => {
                                             role="status" 
                                             aria-hidden="true"
                                         ></span>
-                                        Converting...
+                                        {t("Converting...")}
                                     </>
                                 ) : 'Convert to MIDI'}
                             </button>
@@ -123,7 +127,7 @@ const FormatConvertionTab = () => {
 
                     {downloadUrl && (
                         <div className="mt-4 p-4 bg-light rounded border">
-                            <h2 className="h5 mb-3">Conversion Complete</h2>
+                            <h2 className="h5 mb-3">{t("Conversion Complete")}</h2>
                             <div className="d-flex justify-content-between align-items-center mb-3">
                                 <div className="d-flex align-items-center gap-3">
                                     <a
@@ -131,11 +135,11 @@ const FormatConvertionTab = () => {
                                         download="converted_output.mid"
                                         className="btn btn-success"
                                     >
-                                        Download MIDI
+                                        {t("Download MIDI")}
                                     </a>
                                 </div>
                                 <div>
-                                    <Link to='/playing' className="btn btn-secondary mt-3" state={{respFile: respFile}}>Play Music</Link>
+                                    <Link to='/playing' className="btn btn-secondary mt-3" state={{respFile: respFile}}>{t("Play Music")}</Link>
                                 </div>
                             </div>                            
                             <RenderMusicSheet2 musicXML={xmlFile} cssProps={{top: 0}}/>
