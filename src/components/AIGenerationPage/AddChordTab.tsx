@@ -357,12 +357,13 @@ const AddChordTab = () => {
                     >
                       {t("Download MIDI")}
                     </a>
+
                   </div>
                   <div>
-                    <Link to='/playing' className="btn btn-secondary mt-3" state={{respFile: respFile}}>{t("Play Music")}</Link>
+                    <Link to='/playing' className="btn btn-warning mt-3" state={{respFile: respFile}}>{t("upload_study")}</Link>
                   </div>
                 </div>
-                <RenderMusicSheet2 musicXML={xmlFile} cssProps={{top: 0}}/>
+                <RenderMusicSheet2 musicXML={xmlFile} cssProps={{top: 0}} singleHorizontalStaffline={false}/>
               </div>
             )}
           </div>
