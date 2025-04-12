@@ -21,7 +21,7 @@
     position: absolute;
     top: 0;
     height: 100%;
-    width: 50%;
+    width: 40%;
     padding: 0 20px;
     display: flex;
     justify-content: center;
@@ -29,7 +29,7 @@
   }
   
   .chapter-container:nth-of-type(odd)>.lessons-wrapper>.chapter-image {
-    left: 50%;
+    left: 60%;
   }
 
   .chapter-container:nth-of-type(even)>.lessons-wrapper>.chapter-image {
