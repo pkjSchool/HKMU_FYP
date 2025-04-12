@@ -34,11 +34,17 @@ const PianoCharacter = ({}, ref: React.Ref<PianoCharacterRef>) => {
     }));
 
     const setAnimate = () => {
-        characterImage.current.classList.add("animate__bounce")
-
         setTimeout(()=> {
-            characterImage.current.classList.remove("animate__bounce")
-        }, 1000)
+            if(characterImage.current){
+                characterImage.current.classList.add("animate__bounce")
+
+                setTimeout(()=> {
+                    if(characterImage.current){
+                        characterImage.current.classList.remove("animate__bounce")
+                    }
+                }, 1000)
+            }
+        }, 100)
     }
 
     const setMessageHandler = (message: string) => {
