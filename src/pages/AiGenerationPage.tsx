@@ -152,13 +152,17 @@ const AiGenerationPage = () => {
     <JoyrideWrapper steps={getCurrentSteps()} tourName={`AIGeneration${activeTab === 0 ? 'AddChord' : 'FormatConversion'}Tour`}>
       <div className="tab-container" >
         <div className="tab-navbar">
-          <tr>
-            {tabs.map((tab, index) => {
-              return <td key={index} onClick={() => handleTabClick(index)} 
-              style={activeTab === index ? {backgroundColor: "#4CAF50"} : {}}>
-                {tab.name}</td>}
-            )}
-          </tr>
+          <table>
+            <tbody>
+              <tr>
+                {tabs.map((tab, index) => {
+                  return <td key={index} onClick={() => handleTabClick(index)} 
+                  style={activeTab === index ? {backgroundColor: "#4CAF50"} : {}}>
+                    {tab.name}</td>}
+                )}
+              </tr>
+            </tbody>
+          </table>
         </div>
         <div className="tab-content">
           {tabs[activeTab].component}

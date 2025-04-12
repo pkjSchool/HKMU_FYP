@@ -5,8 +5,8 @@ import placeholderImage from "../assets/ERRORIMG.png";
 import { useTranslation } from 'react-i18next';
 
 interface TutorialCard {
-  title: string;
-  content: string;
+  title: Record<string, string>;
+  content: Record<string, string>;
   imageSrc?: string;
 }
 
@@ -16,7 +16,7 @@ interface TutorialProps {
 }
 
 const MemoBeforeQuiz: React.FC<TutorialProps> = ({ cards, onComplete }) => {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const [currentCardIndex, setCurrentCardIndex] = useState(0);
 
   const handleNextCard = () => {
@@ -60,7 +60,7 @@ const MemoBeforeQuiz: React.FC<TutorialProps> = ({ cards, onComplete }) => {
           }}
         >
           <div className="card-header text-center">
-            <h5 className="fw-bold">{cards[currentCardIndex].title}</h5>
+            <h5 className="fw-bold">{cards[currentCardIndex].title[i18n.language]}</h5>
           </div>
           <div className="card-body text-center">
             {cards[currentCardIndex].imageSrc && (
@@ -72,7 +72,7 @@ const MemoBeforeQuiz: React.FC<TutorialProps> = ({ cards, onComplete }) => {
                 onError={handleImageError} 
               />
             )}
-            <p className="card-text fs-5">{cards[currentCardIndex].content}</p>
+            <p className="card-text fs-5">{cards[currentCardIndex].content[i18n.language]}</p>
           </div>
           <div className="card-footer d-flex justify-content-between align-items-center">
             <span className="text-muted">

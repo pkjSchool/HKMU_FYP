@@ -66,6 +66,11 @@ export const Sidebar: React.FC<SidebarProps> = ({ onResize }) => {
     window.removeEventListener("mouseup", stopResize);
   };
 
+  const changeLang = (lang:string): void => {
+    i18n.changeLanguage(lang)
+    localStorage.setItem("lang", lang)
+  };
+
   const userInfo = getLoginedUser();
 
   return (
@@ -92,8 +97,8 @@ export const Sidebar: React.FC<SidebarProps> = ({ onResize }) => {
           ))}
 
           <div style={{display:"grid", gridTemplateColumns:"1fr 1fr", gap: "4px", "marginTop": "10px"}}>
-            <button onClick={()=>{i18n.changeLanguage('en')}}>English</button>
-            <button onClick={()=>{i18n.changeLanguage('zh-HK')}}>繁體中文</button>
+            <button onClick={()=>{changeLang('en')}}>English</button>
+            <button onClick={()=>{changeLang('zh-HK')}}>繁體中文</button>
           </div>
         </nav>
       </div>

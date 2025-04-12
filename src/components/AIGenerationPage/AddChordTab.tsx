@@ -16,15 +16,30 @@ import progression_info4 from '../../assets/chord_progression/progression_2_5_1.
 import progression_info5 from '../../assets/chord_progression/progression_1_6_2_5.png'
 
 const FIELD_INFO = {
-  key: "The musical key determines the root note and scale for the composition (e.g., C Major, G Minor).",
-  mode: "Major = happy/bright sound, Minor = sad/melancholic sound. Determines chord quality.",
-  progression: "Chord sequence using scale degree numbers (e.g., 1-4-5 for I-IV-V). Numbers correspond to positions in the chosen scale. Example: In C Major, 1=C, 4=F, 5=G",
-  time_sig: "Format: beats per measure/note value. Common: 4/4 (four quarter notes), 3/4 (waltz time)",
-  tempo: "Speed of the music in beats per minute (BPM). Typical range: 60-200 BPM"
+  key: {
+    en: "The musical key determines the root note and scale for the composition (e.g., C Major, G Minor).",
+    "zh-HK": "音樂調決定了樂曲的根音和音階（例如，C 大調、G 小調）。"
+  },
+  mode: {
+    en: "Major = happy/bright sound, Minor = sad/melancholic sound. Determines chord quality.",
+    "zh-HK": "大調 = 歡快/明亮的聲音，小調 = 悲傷/憂鬱的聲音。決定和弦品質。"
+  },
+  progression: {
+    en: "Chord sequence using scale degree numbers (e.g., 1-4-5 for I-IV-V). Numbers correspond to positions in the chosen scale. Example: In C Major, 1=C, 4=F, 5=G",
+    "zh-HK": "使用音階度數數字的和弦序列（例如，I-IV-V 的和弦度數為 1-4-5）。數字對應於所選音階中的位置。例如：在 C 大調中，1=C，4=F，5=G"
+  },
+  time_sig: {
+    en: "Format: beats per measure/note value. Common: 4/4 (four quarter notes), 3/4 (waltz time)",
+    "zh-HK": "格式：每小節/音符值的拍子數。常見：4/4（四個四分音符）、3/4（華爾滋拍子）"
+  },
+  tempo: {
+    en: "Speed of the music in beats per minute (BPM). Typical range: 60-200 BPM",
+    "zh-HK": "音樂的速度，以每分鐘節拍數 (BPM) 為單位。典型範圍：60-200 BPM"
+  }
 };
 
 const AddChordTab = () => {
-    const { t } = useTranslation();
+    const { t, i18n } = useTranslation();
 
     const [uploadFile, setUploadFile] = useState<File | null>(null);
     const [respFile, setRespFile] = useState<File>();
@@ -51,6 +66,12 @@ const AddChordTab = () => {
         progression_info4,
         progression_info5
     ];
+
+    const getInfo = (showHelp:keyof typeof FIELD_INFO) => {
+      if(FIELD_INFO[showHelp]){
+        return FIELD_INFO[showHelp][i18n.language]
+      }
+    }
 
     const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         if (e.target.files && e.target.files[0]) {
@@ -286,7 +307,7 @@ const AddChordTab = () => {
                       ></button>
                     </div>
                     <div className="modal-body">
-                      {FIELD_INFO[showHelp]}
+                      {getInfo(showHelp)}
                     </div>
                     <div className="modal-footer">
                       <button

@@ -16,7 +16,7 @@ import PianoCharacter, {PianoCharacterRef} from "./Character/PianoCharacter";
 
 const Quiz: React.FC<QuizProps> = ({ lesson_ref_id, chapter_ref_id, title, questions, onExit }) => {
 
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const userInfo = getLoginedUser();
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [answered, setAnswered] = useState(false);
@@ -199,7 +199,7 @@ const Quiz: React.FC<QuizProps> = ({ lesson_ref_id, chapter_ref_id, title, quest
             }}
           >
             <div className="card-header d-flex justify-content-between align-items-center">
-              <span className="fw-bold fs-4">{title}</span>
+              <span className="fw-bold fs-4">{title[i18n.language]}</span>
               <button
                 className="btn btn-danger btn-sm"
                 onClick={onExit}
@@ -251,7 +251,7 @@ const Quiz: React.FC<QuizProps> = ({ lesson_ref_id, chapter_ref_id, title, quest
                       />
                     )}
                     <p className="card-text fs-5">
-                      {questions[currentQuestion].questionText}
+                      {questions[currentQuestion].questionText[i18n.language]}
                     </p>
                   </div>
 
@@ -321,7 +321,7 @@ const Quiz: React.FC<QuizProps> = ({ lesson_ref_id, chapter_ref_id, title, quest
                                 : "btn-outline-secondary"
                             } ${answered ? "disabled" : ""}`}
                           >
-                            {option.answerText}
+                            {option.answerText?option.answerText[i18n.language]:""}
                           </button>
                         )
                       )}
