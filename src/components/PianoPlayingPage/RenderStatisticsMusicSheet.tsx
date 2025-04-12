@@ -338,8 +338,8 @@ const RenderStatisticsMusicSheet = (props: RenderStatisticsMusicSheetProps,ref: 
                                 }
 
                                 _noteEventList.push({
-                                    x: (bbox.x * 1.3) - 5,
-                                    y: (bbox.y * 1.3) - 5,
+                                    x: (bbox.x * 1.3) - -8,
+                                    y: (bbox.y * 1.3) - 3,
                                     statistics: _statistics
                                 })
                             }
@@ -653,23 +653,25 @@ const RenderStatisticsMusicSheet = (props: RenderStatisticsMusicSheetProps,ref: 
                     {countSheetHistory() > 6?<button className="btn btn-secondary btn-sm w-100" onClick={toggleShowHistoryButton}>{isShowHistoryButton?<FaAnglesUp/>:<FaAnglesDown/>}</button>:null}
                     <div>Total History: {countSheetHistory()}</div>
                     <hr/>
-                    {(countSheetHistory() > 0)?<>
-                    <div>Total Note: {getFormatedTotalNote()}</div>
-                    <div>Music Time: {getFormatedMusicTime()}</div>
-
-                    <div>Score | Average: {getAverageScore()} | Max: {getMaxScore()} | Min: {getMinScore()}</div>
-                    <div>Note Played | Average: {getAverageNoteEntered()} | Max: {getMaxNoteEntered()} | Min: {getMinNoteEntered()}</div>
-
-                    <div className="row">
-                        <div className="col-6"><div style={{"position": "relative", "width": "100%", "height": "400px", "maxWidth": "100%"}}><canvas ref={chartRef_1}></canvas></div></div>
-                        <div className="col-6"><div style={{"position": "relative", "width": "100%", "height": "400px", "maxWidth": "100%"}}><canvas ref={chartRef_2}></canvas></div></div>
-                    </div>
-
-                    </>:null
+                    {(countSheetHistory() > 0)?
+                        <>
+                        <table>
+                            <tbody>
+                                <tr><th>Total Note : </th><td>{getFormatedTotalNote()}</td><th>Music Time : </th><td>{getFormatedMusicTime()}</td></tr>
+                                <tr><th>Score: </th><td>Average: {getAverageScore()} | Max: {getMaxScore()} | Min: {getMinScore()}</td></tr>
+                                <tr><th>Note Played : </th><td>Average: {getAverageNoteEntered()} | Max: {getMaxNoteEntered()} | Min: {getMinNoteEntered()}</td></tr>
+                            </tbody>
+                        </table>
+                        <hr/>
+                        <div className="row">
+                            <div className="col-6"><div className="charts-wrapper" style={{"position": "relative", "width": "100%", "height": "400px", "maxWidth": "100%"}}><canvas ref={chartRef_1}></canvas></div></div>
+                            <div className="col-6"><div className="charts-wrapper" style={{"position": "relative", "width": "100%", "height": "400px", "maxWidth": "100%"}}><canvas ref={chartRef_2}></canvas></div></div>
+                        </div>
+                        <hr/>
+                        </>:null
                     }
-
                     <div style={{position: "relative"}}>
-                        <div ref={resultOsmdContainerRef}></div>
+                        <div className="charts-wrapper"><div ref={resultOsmdContainerRef}></div></div>
                         { noteEventList.map((event, index) => (
                             <div key={index} className="noteEvent-wrapper" style={{ position: 'absolute', left: event.x, top: event.y }}>
                                 <div className={getNoteEventButtonClassName(event.statistics)}></div>

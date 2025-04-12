@@ -73,9 +73,9 @@ export const Sidebar: React.FC<SidebarProps> = ({ onResize }) => {
 
           <div className="card">
             <div className="card-body">
-              login_id: {userInfo.login_id}
-              <br/>user_id: {userInfo.user_id}
-              <br/>username: {userInfo.displayName}
+              {/* login_id: {userInfo.login_id}<br/>
+              user_id: {userInfo.user_id}<br/> */}
+              Welcome, {userInfo.displayName}
             </div>
           </div>
 

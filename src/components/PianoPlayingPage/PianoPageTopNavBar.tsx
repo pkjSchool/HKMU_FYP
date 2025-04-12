@@ -10,6 +10,8 @@ import { Player, getPlayer } from "../MusicNotePlayer/player/Player.js";
 import { api_user_music_list } from "../../api_request/request.tsx";
 import { getLoginedUser } from "../../access_control/user";
 
+import { HiMiniCalendarDateRange } from "react-icons/hi2";
+
 import "../../css/VolumeSlider.css";
 
 export type CollapsibleNavBarRef = {
@@ -359,18 +361,21 @@ const CollapsibleNavBar = (props: CollapsibleNavBarProps,ref: React.Ref<Collapsi
       <div className="PianoPageTopNavBarMusicList-Wrapper" style={{ display: isMusicListOpened ? "flex" : "none" }}>
         <div className="PianoPageTopNavBarMusicList-Container">
           <div className="pb-0 text-end">
+            <div className="" style={{"float": "left", "marginTop": "10px", "fontWeight": 700, "fontSize": "1.4em"}}>My Music List</div>
             <button type="button" className="btn btn-danger text-center" style={{padding: "10px 18px", margin:"0"}} onClick={closeMusicListOpened}>X</button>
           </div>
-          {userStortedMusicList.map((musicSheet, index) => (
-            <div 
-              key={index} 
-              className={(selectedStortedMusicId === musicSheet.user_music_id)?"PianoPageTopNavBarMusicList-Item active":"PianoPageTopNavBarMusicList-Item"} 
-              onClick={() => {selectStortedMusic(musicSheet.user_music_id)}}
-            >
-              <div className="PianoPageTopNavBarMusicList-Item-Title">{ musicSheet.filename }</div>
-              <div className="PianoPageTopNavBarMusicList-Item-Date">{ musicSheet.datetime }</div>
-            </div>
-          ))}
+          <div className="PianoPageTopNavBarMusicList-ItemList">
+            {userStortedMusicList.map((musicSheet, index) => (
+              <div 
+                key={index} 
+                className={(selectedStortedMusicId === musicSheet.user_music_id)?"PianoPageTopNavBarMusicList-Item active":"PianoPageTopNavBarMusicList-Item"} 
+                onClick={() => {selectStortedMusic(musicSheet.user_music_id)}}
+              >
+                <div className="PianoPageTopNavBarMusicList-Item-Title">{ musicSheet.filename }</div>
+                <div className="PianoPageTopNavBarMusicList-Item-Date"><HiMiniCalendarDateRange /> { musicSheet.datetime }</div>
+              </div>
+            ))}
+          </div>
           
         </div>
         <div className="PianoPageTopNavBarMusicList-Overlay" onClick={closeMusicListOpened}></div>

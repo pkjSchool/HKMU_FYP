@@ -87,7 +87,7 @@ function StatisticsPage() {
       //         // title: {
       //         //     display: true, 
       //         //     text: "Number Of Lessons Completed Recently",
-      //         //     font: { size: 20 }
+      //         //     font: { size: 28 }
       //         // }
       //       },
       //       scales: {
@@ -127,7 +127,7 @@ function StatisticsPage() {
               title: {
                   display: true, 
                   text: "Number Of Lessons Completed Recently",
-                  font: { size: 20 }
+                  font: { size: 28 }
               }
             },
             // scales: {
@@ -189,7 +189,7 @@ function StatisticsPage() {
       //         // title: {
       //         //     display: true,
       //         //     text: "Number Of Music Played Recently",
-      //         //     font: { size: 20 }
+      //         //     font: { size: 28 }
       //         // }
       //       },
       //       scales: {
@@ -229,7 +229,7 @@ function StatisticsPage() {
               title: {
                   display: true, 
                   text: "Number Of Music Played Recently",
-                  font: { size: 20 }
+                  font: { size: 28 }
               }
             },
             scale: {
@@ -295,7 +295,7 @@ function StatisticsPage() {
               title: {
                 display: true,
                 text: "Number Of Task Finish Recently",
-                font: { size: 20 }
+                font: { size: 28 }
               }
             },
             scales: {
@@ -365,7 +365,7 @@ function StatisticsPage() {
               title: {
                   display: true,
                   text: "Best note played accuracy per music (%)",
-                  font: { size: 20 }
+                  font: { size: 28 }
               }
             },
             scales: {
@@ -433,7 +433,7 @@ function StatisticsPage() {
               title: {
                 display: true,
                 text: "Compare Number Of Lessons, Music Played and Task Finish",
-                font: { size: 20 }
+                font: { size: 28 }
               }
             },
             scale: {
@@ -522,16 +522,16 @@ function StatisticsPage() {
     <>
       <div className="card">
           <div className="card-body">
-            <div className="row mb-5">
-              <div className="col-6"><div style={{"position": "relative", "width": "100%", "height": "450px", "maxWidth": "100%"}}><canvas ref={chartRef_1}></canvas></div></div>
-              <div className="col-6"><div style={{"position": "relative", "width": "100%", "height": "450px", "maxWidth": "100%"}}><canvas ref={chartRef_2}></canvas></div></div>
+            <div className="row mb-4">
+              <div className="col-6"><div className="statistic-charts-wrapper" style={{"position": "relative", "width": "100%", "height": "100%", "maxWidth": "100%"}}><canvas ref={chartRef_1}></canvas></div></div>
+              <div className="col-6"><div className="statistic-charts-wrapper" style={{"position": "relative", "width": "100%", "height": "100%", "maxWidth": "100%"}}><canvas ref={chartRef_2}></canvas></div></div>
             </div>
-            <div className="row mb-5">
-              <div className="col-6"><div style={{"position": "relative", "width": "100%", "height": "450px", "maxWidth": "100%"}}><canvas ref={chartRef_3}></canvas></div></div>
-              <div className="col-6"><div style={{"position": "relative", "width": "100%", "height": "600px", "maxWidth": "100%"}}><canvas ref={chartRef_5}></canvas></div></div>
+            <div className="row mb-4">
+              <div className="col-6"><div className="statistic-charts-wrapper" style={{"position": "relative", "width": "100%", "height": "100%", "maxWidth": "100%"}}><canvas ref={chartRef_3}></canvas></div></div>
+              <div className="col-6"><div className="statistic-charts-wrapper" style={{"position": "relative", "width": "100%", "height": "100%", "maxWidth": "100%"}}><canvas ref={chartRef_5}></canvas></div></div>
             </div>
-            <div className="row mb-5">
-              <div className="col-12"><div style={{"position": "relative", "width": "100%", "height": "600px", "maxWidth": "100%"}}><canvas ref={chartRef_4}></canvas></div></div>
+            <div className="row mb-4">
+              <div className="col-12"><div className="statistic-charts-wrapper" style={{"position": "relative", "width": "100%", "height": "600px", "maxWidth": "100%"}}><canvas ref={chartRef_4}></canvas></div></div>
             </div>
           </div>
         </div>

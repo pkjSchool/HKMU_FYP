@@ -1,4 +1,4 @@
-.lesson-map-container {
+  .lesson-map-container {
     padding: 20px;
     overflow-y: auto;
     background-color: #ffffff;
@@ -10,11 +10,42 @@
   .chapter-container {
     margin: 0 auto;
     margin-bottom: 40px;
-    max-width: 200px;
+    /* max-width: 80%; */
+  }
+
+  .lessons-wrapper {
+    position: relative;
+  }
+
+  .lessons-wrapper>.chapter-image {
+    position: absolute;
+    top: 0;
+    height: 100%;
+    width: 50%;
+    padding: 0 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
   }
   
+  .chapter-container:nth-of-type(odd)>.lessons-wrapper>.chapter-image {
+    left: 50%;
+  }
+
+  .chapter-container:nth-of-type(even)>.lessons-wrapper>.chapter-image {
+    left: 0;
+  }
+
+  .lessons-wrapper>.chapter-image img {
+    max-width: 100%;
+    max-height: 100%;
+    border-radius: 8px;
+    box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
+    object-fit: cover;
+  }
+
   .chapter-title {
-    font-size: 1.4rem;
+    font-size: 1.8em;
     margin-bottom: 20px;
     color: #8477c2;
     font-weight: 600;
@@ -28,8 +59,19 @@
     flex-direction: column;
     gap: 10px;
     padding-left: 20px;
+    max-width: 50%;
   }
-  
+
+  .chapter-container:nth-of-type(odd)>.lessons-wrapper>.lessons-container {
+    margin-left: 0;
+    margin-right: auto;
+  }
+
+  .chapter-container:nth-of-type(even)>.lessons-wrapper>.lessons-container {
+    margin-left: auto;
+    margin-right: 0;
+  }
+
   .lesson-item {
     display: flex;
     flex-direction: column;
@@ -49,8 +91,8 @@
   }
   
   .lesson-node {
-    width: 50px;
-    height: 50px;
+    width: 80px;
+    height: 72px;
     border-radius: 50%;
     /* border: 2px solid #4CAF50; */
     background: white;
@@ -59,10 +101,10 @@
     justify-content: center;
     cursor: pointer;
     transition: box-shadow 0.1s ease, transform 0.1s ease;
-    font-size: 1rem;
+    font-size: 1.6em;
     font-weight: 500;
-    box-shadow: 0px 4px #39793c;
-    transform: translate(-0px, -4px);
+    box-shadow: 0px 8px #39793c;
+    transform: translate(-0px, -8px);
   }
   
   .lesson-node:hover {
@@ -80,6 +122,10 @@
     box-shadow: 0px 2px #39793c;
     transform: translate(-0px, -2px);
   }
+
+  .lesson-score {
+    font-size: 1.2em;
+  }
   
   .connector-wrapper {
     position: relative;
@@ -94,25 +140,26 @@
   }
 
   .connector-line-1 {
-    width: 100%;
+    width: calc(100% - 40px);
+    margin: 0 auto;
     height: 2px;
     background: #baafef;
   }
   .connector-line-2 {
     position: absolute;
-    width: calc(40px - 25px);
+    width: 20px;
     height: calc(50% + 1px);
     border: 0 solid #baafef;
   }
   .connector-line-3 {
     position: absolute;
-    width: calc(40px - 25px);
+    width: 20px;
     height: calc(50% + 1px);
     border: 0 solid #baafef;
   }
 
   .connector-left .connector-line-2 {
-    left: 25px;
+    left: 40px;
     top: 0;
     border-bottom-left-radius: 600px;
     border-bottom-width: 2px;
@@ -120,7 +167,7 @@
   }
 
   .connector-left .connector-line-3 {
-    right: 25px;
+    right: 40px;
     bottom: 0;
     border-top-right-radius: 600px;
     border-top-width: 2px;
@@ -128,7 +175,7 @@
   }
 
   .connector-right .connector-line-2 {
-    left: 25px;
+    left: 40px;
     bottom: 0;
     border-top-left-radius: 600px;
     border-top-width: 2px;
@@ -136,7 +183,7 @@
   }
 
   .connector-right .connector-line-3 {
-    right: 25px;
+    right: 40px;
     top: 0;
     border-bottom-right-radius: 600px;
     border-bottom-width: 2px;
@@ -144,7 +191,7 @@
   }
   
   .lesson-status {
-    font-size: 0.8rem;
+    font-size: 1.1em;
     color: #ffd700;
   }
   

@@ -15,6 +15,7 @@ import './css/LessonMap.css';
 import "./css/Sidebar.css";
 import "./css/taskProgress.css";
 import "./css/PianoPageTopNavBar.css";
+import "./css/statistics.css";
 
 // @ts-ignore
 import store from './store/globalConfig.tsx'
