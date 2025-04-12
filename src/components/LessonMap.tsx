@@ -6,6 +6,8 @@ import { getLoginedUser } from "../access_control/user";
 
 import { calcLessonStarNumber, printLessonStar } from "../util/lessonStar";
 
+import { useTranslation } from "react-i18next";
+
 import { FaBook } from "react-icons/fa";
 
 import { questionsCh1_1 } from "../pages/lesson_component/ch1-1";
@@ -30,17 +32,14 @@ interface LessonMapProps {
 }
 
 const LessonMap: FC<LessonMapProps> = ({ chapters }) => {
-    const userInfo = getLoginedUser();
-    // const [isLoad, setIsload] = useState<boolean>(false);
-    const [userLessonRecord, setUserLessonRecord] = useState([]);
+  const { t } = useTranslation();
+
+  const userInfo = getLoginedUser();
+  const [userLessonRecord, setUserLessonRecord] = useState([]);
 
   const getConnectorDirectionClass = (idx:number) => {
     return (idx%2==0)?"connector-left":"connector-right"
   }
-
-  // const setUserLessonRecord = (list:any) => {
-  //   return userLessonRecord.current = list
-  // }
 
   const getLessonMaxScore = (chapter_id:number, lesson_id:number) => {
     const record: { [key: number]: { [key: number]: any[] } } = {
@@ -105,7 +104,7 @@ const LessonMap: FC<LessonMapProps> = ({ chapters }) => {
     <div className="lesson-map-container">
       {chapters.map((chapter, chapterIndex) => (
         <div key={chapterIndex} className="chapter-container animate__animated animate__fadeIn">
-          <h3 className="chapter-title"><FaBook style={{color:"green", fontSize: "1.2em"}}/> {chapter.title}</h3>
+          <h3 className="chapter-title"><FaBook style={{color:"green", fontSize: "1.2em"}}/> {t(chapter.title)}</h3>
           <div className="lessons-wrapper">
             <div className="lessons-container">
               {chapter.lessons.map((lesson, lessonIndex) => (

@@ -12,6 +12,7 @@ import { ImStatsDots } from "react-icons/im";
 import { GrTasks } from "react-icons/gr";
 import { NavLink } from "react-router-dom";
 import { getLoginedUser } from "../access_control/user";
+import { useTranslation } from 'react-i18next';
 
 interface SidebarItem {
   name: string;
@@ -24,10 +25,10 @@ const items: SidebarItem[] = [
   // { name: "learning", icon: <FaBook />, link: "/learning" },
   { name: "self study", icon: <FaGraduationCap />, link: "/self-study" },
   { name: "self study record", icon: <FaHistory />, link: "/playing-record" },
-  { name: "Task", icon: <GrTasks />, link: "/task" },
+  { name: "task", icon: <GrTasks />, link: "/task" },
   { name: "profile", icon: <FaUser />, link: "/profile" },
   { name: "ai generation", icon: <FaRobot />, link: "/ai-generation" },
-  { name: "Statistics", icon: <ImStatsDots />, link: "/statistics" },
+  { name: "statistics", icon: <ImStatsDots />, link: "/statistics" },
   { name: "logout", icon: <FaEllipsisH />, link: "/logout" }
 ];
 
@@ -36,6 +37,8 @@ interface SidebarProps {
 }
 
 export const Sidebar: React.FC<SidebarProps> = ({ onResize }) => {
+  const { t, i18n } = useTranslation();
+
   const [width, setWidth] = useState<number>(260);
   const sidebarRef = useRef<HTMLElement | null>(null);
 
@@ -75,7 +78,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ onResize }) => {
             <div className="card-body">
               {/* login_id: {userInfo.login_id}<br/>
               user_id: {userInfo.user_id}<br/> */}
-              Welcome, {userInfo.displayName}
+              {t('welcome')}, {userInfo.displayName}
             </div>
           </div>
 
@@ -84,9 +87,14 @@ export const Sidebar: React.FC<SidebarProps> = ({ onResize }) => {
           {items.map(item => (
             <NavLink to={item.link} key={item.name} className={({ isActive }) => isActive ? 'router-link-active' : '' }>
               {item.icon}
-              <p>{item.name}</p>
+              <p>{t(item.name)}</p>
             </NavLink>
           ))}
+
+          <div style={{display:"grid", gridTemplateColumns:"1fr 1fr", gap: "4px", "marginTop": "10px"}}>
+            <button onClick={()=>{i18n.changeLanguage('en')}}>English</button>
+            <button onClick={()=>{i18n.changeLanguage('zh-HK')}}>繁體中文</button>
+          </div>
         </nav>
       </div>
     </aside>
