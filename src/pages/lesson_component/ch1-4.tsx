@@ -370,6 +370,10 @@ function Ch1_4() {
         return (
           <MemoBeforeQuiz
             cards={tutorialCards}
+            title={{
+              en: "Lesson 4: Rhythm and Time",
+              "zh-HK": "第四課：節奏與拍子"
+            }}
             onComplete={handleMemoComplete}
           />
         );

@@ -37,14 +37,19 @@ const VideoWithQuiz: React.FC<VideoWithQuizProps> = ({
   useEffect(() => {
     if(vdoRef.current) {
       setVdoPlay(autoPlay)
+
       vdoRef.current.onloadeddata = function() {
-        setPlayTime(parseInt(vdoRef.current.currentTime))
-        setTotalTime(parseInt(vdoRef.current.duration))
+        if(vdoRef.current){
+          setPlayTime(parseInt(vdoRef.current.currentTime))
+          setTotalTime(parseInt(vdoRef.current.duration))
+        }
       };
-  
-      vdoRef.current.addEventListener("timeupdate", ()=>{
-        setPlayTime(parseInt(vdoRef.current.currentTime))
-        setTotalTime(parseInt(vdoRef.current.duration))
+
+      vdoRef.current.addEventListener("timeupdate", () => {
+        if(vdoRef.current){
+          setPlayTime(parseInt(vdoRef.current.currentTime))
+          setTotalTime(parseInt(vdoRef.current.duration))
+        }
       })
     }
   }, [])

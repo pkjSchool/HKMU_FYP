@@ -2,13 +2,34 @@
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 20px;
-    max-width: 600px;
+    /* max-width: 80%; */
     margin: 0 auto;
 }
 
 .answer-btn-list > button {
     height: 100px;
     color: #000 !important;
-    font-size: 28px;
+    font-size: 20px;
     height: auto;
+}
+
+.leature-title {
+    color: #000;
+    background-color: rgba(255, 255, 255, 0.9);
+    font-weight: 700;
+    font-size: 1.3em;
+    width: 100%;
+    padding: 20px 0;
+    text-align: center;
+}
+
+.quiz-bottom-panel {
+    background-color: rgba(255, 255, 255, 0.9);
+    width: 100%;
+}
+
+.quiz-bottom-panel-inner {
+    width: 80%;
+    margin: 0 auto;
+    padding: 30px 0;
 }

@@ -206,6 +206,10 @@ function Ch1_5() {
         return (
           <MemoBeforeQuiz
             cards={tutorialCards}
+            title={{
+              en: "Lesson 5: Basic Fingering and Hand Positions",
+              "zh-HK": "課堂 5：基本指法和手部位置"
+            }}
             onComplete={handleMemoComplete}
           />
         );

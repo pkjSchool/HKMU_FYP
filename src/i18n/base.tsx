@@ -29,7 +29,8 @@ i18n
                 "key": "Key",
                 "Mode": "Mode",
                 "Major": "Major",
-                "Minor": "Minor"
+                "Minor": "Minor",
+                "exit": "Exit"
             }
         },
         "zh-HK": {
@@ -55,7 +56,8 @@ i18n
                 "key": "調",
                 "Mode": "模式",
                 "Major": "主要",
-                "Minor": "次要"
+                "Minor": "次要",
+                "exit": "退出"
             }
         }
     },

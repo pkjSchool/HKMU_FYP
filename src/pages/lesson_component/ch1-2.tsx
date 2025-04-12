@@ -163,6 +163,10 @@ function Ch1_2() {
         return (
           <MemoBeforeQuiz
             cards={tutorialCards}
+            title={{
+              en: "Lesson 2: Chords and Scales",
+              "zh-HK": "課堂 2: 和弦與音階"
+            }}
             onComplete={handleMemoComplete}
           />
         );
