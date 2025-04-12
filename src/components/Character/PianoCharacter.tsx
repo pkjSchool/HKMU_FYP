@@ -1,4 +1,4 @@
-import { useState, useImperativeHandle, forwardRef } from "react";
+import { useState, useRef, useImperativeHandle, forwardRef } from "react";
 
 import "../../css/PianoCharacter.css";
 import { CSSProperties } from "styled-components";
@@ -15,6 +15,10 @@ const PianoCharacter = ({}, ref: React.Ref<PianoCharacterRef>) => {
     const [ message, setMessage ] = useState<string>("");
     const [ visible, setVisible ] = useState<boolean>(false);
 
+    const messageTyperInterval = useRef<any>(null);
+    const messageSequence = useRef<any>(null);
+    const messageTyper = useRef<string>("");
+
     useImperativeHandle(ref, () => ({
         changePositionHandler,
         setMessageHandler,
@@ -23,7 +27,21 @@ const PianoCharacter = ({}, ref: React.Ref<PianoCharacterRef>) => {
     }));
 
     const setMessageHandler = (message: string) => {
-        setMessage(message);
+        setMessage("")
+        if(messageTyperInterval.current){
+            clearInterval(messageTyperInterval.current)
+        }
+        messageTyper.current = ""
+        messageSequence.current = message.split(" ")
+        messageTyperInterval.current = setInterval(() => {
+            if(messageSequence.current.length > 0){
+                const x = messageTyper.current + " " + messageSequence.current.shift()
+                messageTyper.current = x
+                setMessage(x)
+            } else {
+                clearInterval(messageTyperInterval.current)
+            }
+        }, 150)
     }
 
     const changePositionHandler = (position: CSSProperties) => {
