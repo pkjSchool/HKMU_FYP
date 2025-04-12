@@ -11,6 +11,7 @@ import MIDIController, {
   MidiControllerRef,
 } from "../components/PianoPlayingPage/MidiController.js";
 import { useTranslation } from 'react-i18next';
+import i18next from 'i18next';
 
 import PianoCharacter, {PianoCharacterRef} from "./Character/PianoCharacter";
 
@@ -35,6 +36,10 @@ const Quiz: React.FC<QuizProps> = ({ lesson_ref_id, chapter_ref_id, title, quest
 
   useEffect(() => {
     window.addEventListener('resize', updateSize);
+
+    i18next.on('languageChanged', function(lng) {
+      if (showScore){ pianoCharacterSpeak() }
+    })
   }, []);
 
   useEffect(() => {

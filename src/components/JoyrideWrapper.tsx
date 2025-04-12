@@ -22,7 +22,11 @@ const JoyrideWrapper = ({ steps, tourName, children }: JoyrideWrapperProps,ref: 
 
   // Joyride callback
   const handleJoyrideCallback = (data: CallBackProps) => {
-    const { status } = data;
+    const { action, status } = data;
+    console.log(data);
+    if (action === 'close') {
+      setRunTour(false);
+    }
     if (status === STATUS.FINISHED || status === STATUS.SKIPPED) {
       console.log(`${tourName} tour finished or skipped`);
       setRunTour(false);
@@ -52,6 +56,7 @@ const JoyrideWrapper = ({ steps, tourName, children }: JoyrideWrapperProps,ref: 
         showSkipButton={true}
         disableOverlayClose={true}
         spotlightClicks={false}
+        hideCloseButton={true}
         callback={handleJoyrideCallback}
         styles={{
           options: {

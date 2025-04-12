@@ -6,6 +6,7 @@ import TaskProgress from '../components/TaskProgress';
 import PianoCharacter, {PianoCharacterRef} from '../components/Character/PianoCharacter.tsx';
 
 import { useTranslation } from 'react-i18next';
+import i18next from 'i18next';
 
 import { CiCircleQuestion } from "react-icons/ci";
 
@@ -152,6 +153,10 @@ function App() {
       pianoCharacterRef.current?.showCharacterHandler();
       pianoCharacterRef.current?.changePositionHandler({ right: "50px", bottom: "0px" });
     }
+
+    i18next.on('languageChanged', function(lng) {
+      updateWeloomeMessage()
+    })
   }, []);
 
   // Welcome message update interval
@@ -174,7 +179,7 @@ function App() {
         />
         <TaskProgress />
         <PianoCharacter ref={pianoCharacterRef}/> 
-        <button className="tourBtn" onClick={()=>{JoyrideRef.current.setRunTour(true)}}><CiCircleQuestion/></button>
+        {/* <button className="tourBtn" onClick={()=>{JoyrideRef.current.setRunTour(true)}}><CiCircleQuestion/></button> */}
       </div>
     </JoyrideWrapper>
   );
