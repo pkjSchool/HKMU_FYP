@@ -135,7 +135,7 @@ const AddChordTab = () => {
               <div className="row g-3 mb-4">
                 {/* MIDI File Upload */}
                 <div className="col-12">
-                  <label className="form-label">MIDI File (Optional)</label>
+                  <label className="form-label fs-4">MIDI File (Optional)</label>
                   <input 
                     type="file"
                     onChange={handleFileChange}
@@ -146,7 +146,7 @@ const AddChordTab = () => {
   
                 {/* Chord Progression Options */}
                 <div className="col-12">
-                  <label className="form-label">Default Progression Options</label>
+                  <label className="form-label fs-4">Default Progression Options</label>
                   <div className="d-flex flex-wrap gap-2">
                     {chordProgressionOptions.map((option, index) => (
                       <div key={index} className="form-check form-check-inline">
@@ -159,7 +159,7 @@ const AddChordTab = () => {
                           className="form-check-input"
                           id={`option-${index}`}
                         />
-                        <label htmlFor={`option-${index}`} className="form-check-label">{option}</label>
+                        <label htmlFor={`option-${index}`} className="form-check-label fs-5">{option}</label>
                         <ChordProgressionInfoDialog
                           progressionIndex={index}
                           chordProgressionInfo={chordProgressionInfo}
@@ -171,7 +171,7 @@ const AddChordTab = () => {
   
                 {/* Key */}
                 <div className="col-md-6">
-                  <label className="form-label d-flex align-items-center">
+                  <label className="form-label d-flex align-items-center fs-4">
                     Key
                     <HelpButton field="key" />
                   </label>
@@ -179,7 +179,7 @@ const AddChordTab = () => {
                     name="key"
                     value={formData.key}
                     onChange={handleInputChange}
-                    className="form-select"
+                    className="form-select fs-5"
                   >
                     {['C', 'D', 'E', 'F', 'G', 'A', 'B'].map(key => (
                       <option key={key} value={key}>{key}</option>
@@ -189,7 +189,7 @@ const AddChordTab = () => {
   
                 {/* Mode */}
                 <div className="col-md-6">
-                  <label className="form-label d-flex align-items-center">
+                  <label className="form-label d-flex align-items-center fs-4">
                     Mode
                     <HelpButton field="mode" />
                   </label>
@@ -197,7 +197,7 @@ const AddChordTab = () => {
                     name="mode"
                     value={formData.mode}
                     onChange={handleInputChange}
-                    className="form-select"
+                    className="form-select fs-5"
                   >
                     <option value="Major">Major</option>
                     <option value="Minor">Minor</option>
@@ -206,7 +206,7 @@ const AddChordTab = () => {
   
                 {/* Chord Progression */}
                 <div className="col-md-6">
-                  <label className="form-label d-flex align-items-center">
+                  <label className="form-label d-flex align-items-center fs-4">
                     Chord Progression (comma separated)
                     <HelpButton field="progression" />
                   </label>
@@ -215,13 +215,13 @@ const AddChordTab = () => {
                     name="progression"
                     value={formData.progression}
                     onChange={handleInputChange}
-                    className="form-control"
+                    className="form-control fs-5"
                   />
                 </div>
   
                 {/* Time Signature */}
                 <div className="col-md-6">
-                  <label className="form-label d-flex align-items-center">
+                  <label className="form-label d-flex align-items-center fs-4">
                     Time Signature (comma separated)
                     <HelpButton field="time_sig" />
                   </label>
@@ -230,13 +230,13 @@ const AddChordTab = () => {
                     name="time_sig"
                     value={formData.time_sig}
                     onChange={handleInputChange}
-                    className="form-control"
+                    className="form-control fs-5"
                   />
                 </div>
   
                 {/* Tempo */}
                 <div className="col-md-6">
-                  <label className="form-label d-flex align-items-center">
+                  <label className="form-label d-flex align-items-center fs-4">
                     Tempo (BPM)
                     <HelpButton field="tempo" />
                   </label>
@@ -245,7 +245,7 @@ const AddChordTab = () => {
                     name="tempo"
                     value={formData.tempo}
                     onChange={handleInputChange}
-                    className="form-control"
+                    className="form-control fs-5"
                   />
                 </div>
               </div>
@@ -281,7 +281,7 @@ const AddChordTab = () => {
                         aria-label="Close"
                       ></button>
                     </div>
-                    <div className="modal-body">
+                    <div className="modal-body fs-5">
                       {FIELD_INFO[showHelp]}
                     </div>
                     <div className="modal-footer">
@@ -319,7 +319,7 @@ const AddChordTab = () => {
                     </a>
                   </div>
                   <div>
-                    <Link to='/playing' className="btn btn-secondary mt-3" state={{respFile: respFile}}>Play Music</Link>
+                    <Link to='/playing' className="btn btn-secondary mt-3" state={{respFile: respFile}}>Play Piano</Link>
                   </div>
                 </div>
                 <RenderMusicSheet2 musicXML={xmlFile} cssProps={{top: 0}}/>

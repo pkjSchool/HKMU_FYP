@@ -79,7 +79,7 @@ const FormatConvertionTab = () => {
                     
                     <form onSubmit={handleSubmit}>
                         <div className="mb-4">
-                            <label htmlFor="audioFile" className="form-label">
+                            <label htmlFor="audioFile" className="form-label fs-4">
                                 Upload WAV File
                             </label>
                             <input
@@ -135,7 +135,7 @@ const FormatConvertionTab = () => {
                                     </a>
                                 </div>
                                 <div>
-                                    <Link to='/playing' className="btn btn-secondary mt-3" state={{respFile: respFile}}>Play Music</Link>
+                                    <Link to='/playing' className="btn btn-secondary mt-3" state={{respFile: respFile}}>Play Piano</Link>
                                 </div>
                             </div>                            
                             <RenderMusicSheet2 musicXML={xmlFile} cssProps={{top: 0}}/>
