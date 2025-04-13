@@ -4,34 +4,37 @@ import { Outlet } from "react-router-dom";
 import JoyrideWrapper from "../components/JoyrideWrapper";
 import { Step } from "react-joyride";
 
+import { useTranslation } from 'react-i18next';
+
 function App() {
+    const { t } = useTranslation();
   const [sidebarWidth, setSidebarWidth] = useState<number>(260);
 
   // Define sidebar tour steps
   const sidebarSteps: Step[] = [
     {
       target: ".sidebar",
-      content: "This is the sidebar, you can use it to navigate to different pages",
+      content: t("sidebar-1"),
       placement: "right"
     },
     {
       target: ".card",
-      content: "This displays your user information",
+      content: t("sidebar-2"),
       placement: "right"
     },
     {
       target: ".menu a:nth-child(3)", // home button
-      content: "Click here to return to the home page",
+      content: t("sidebar-3"),
       placement: "right"
     },
     {
       target: ".menu a:nth-child(4)", // self study button
-      content: "Click here to enter self-study mode",
+      content: t("sidebar-4"),
       placement: "right"
     },
     {
       target: ".handle",
-      content: "Drag here to adjust the sidebar width",
+      content: t("sidebar-5"),
       placement: "right"
     }
   ];

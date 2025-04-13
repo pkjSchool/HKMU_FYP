@@ -1,6 +1,7 @@
 import {useEffect, useState} from "react";
 import { IoStar, IoStarOutline } from "react-icons/io5";
 import { NavLink } from "react-router-dom";
+import { useTranslation } from 'react-i18next';
 import shine from "../../assets/shine.mp3";
 
 function playSound(audioContext: AudioContext, buffer: AudioBuffer) {
@@ -34,6 +35,7 @@ function processStar() {
 }
 
 const PianoPlayingResult = (props:any) => {
+    const { t } = useTranslation();
     const {againCallback, handleOpenResultDetail, result} = props;
     
     useEffect(()=>{
@@ -78,18 +80,18 @@ const PianoPlayingResult = (props:any) => {
 
                     <div className="row mt-3" style={itemRow}>
                         <div className="col-6" style={itemWrapper}>
-                            <div style={itemLabel}>Music Long</div>
+                            <div style={itemLabel}>{t("music_long")}</div>
                             <div style={itemText}>{getResultData("musicTime")}</div>
                         </div>
                         <div className="col-6" style={itemWrapper}>
-                            <div style={itemLabel}>Play Time</div>
+                            <div style={itemLabel}>{t("note_played")}</div>
                             <div style={itemText}>{getResultData("playTime")}</div>
                         </div>
                     </div>
 
                     <div className="row mt-3" style={itemRow}>
                         <div className="col-12" style={itemWrapper}>
-                            <div style={itemLabel}>Note Played</div>
+                            <div style={itemLabel}>{t("note_played")}</div>
                             <div style={itemText}>{divisionHandle(getResultData("noteEntered"), getResultData("totalNote"))}%</div>
                             <div style={itemText}>{getResultData("noteEntered")} / {getResultData("totalNote")}</div>
                         </div>
@@ -101,12 +103,12 @@ const PianoPlayingResult = (props:any) => {
                     </div>
 
                     <div className="pt-5 text-center">
-                        <button type="button" className="btn btn-warning text-center" style={{padding: "10px 60px", margin:"0 5px"}} onClick={onClickDetail}>Detail</button>
+                        <button type="button" className="btn btn-warning text-center" style={{padding: "10px 60px", margin:"0 5px"}} onClick={onClickDetail}>{t("detail")}</button>
                     </div>
 
                     <div className="pt-5 text-center">
-                        <button type="button" className="btn btn-success text-center" style={{padding: "10px 60px", margin:"0 5px"}} onClick={onClickAgain}>Again</button>
-                        <NavLink to="/" className="btn btn-danger text-center" style={{padding: "10px 60px", margin:"0 5px"}}>Back</NavLink>
+                        <button type="button" className="btn btn-success text-center" style={{padding: "10px 60px", margin:"0 5px"}} onClick={onClickAgain}>{t("again")}</button>
+                        <NavLink to="/" className="btn btn-danger text-center" style={{padding: "10px 60px", margin:"0 5px"}}>{t("back")}</NavLink>
                     </div>
 
                 </div>

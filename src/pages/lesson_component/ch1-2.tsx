@@ -19,75 +19,113 @@ import CMajor from "../../assets/quiz_img/quiz_2/CMajor.jpg"
 // 章節測驗題目
 export const questionsCh1_2 = [
   {
-    questionText: "What is the name of this key?",
+    questionText: {
+      en: "What is the name of this key?",
+      "zh-HK": "這個琴鍵的名稱是什麼？"
+    },
     imageSrc: c5_key,
     answerOptions: [
-      { answerText: "C4", isCorrect: false },
-      { answerText: "C5", isCorrect: true },
-      { answerText: "G4", isCorrect: false }
+      { answerText: { en: "C4", "zh-HK": "C4" }, isCorrect: false },
+      { answerText: { en: "C5", "zh-HK": "C5" }, isCorrect: true },
+      { answerText: { en: "G4", "zh-HK": "G4" }, isCorrect: false }
     ]
   },
   {
-    questionText: "Is this a treble clef?",
+    questionText: {
+      en: "Is this a treble clef?",
+      "zh-HK": "這是高音譜號嗎？"
+    },
     imageSrc: treble_clef,
     answerOptions: [
-      { answerText: "Yes", isCorrect: true },
-      { answerText: "No", isCorrect: false }
+      { answerText: { en: "Yes", "zh-HK": "是" }, isCorrect: true },
+      { answerText: { en: "No", "zh-HK": "否" }, isCorrect: false }
     ]
   },
   {
-    questionText: "What is this musical element?",
+    questionText: {
+      en: "What is this musical element?",
+      "zh-HK": "這是什麼音樂元素？"
+    },
     imageSrc: interval_CEG,
     answerOptions: [
-      { answerText: "Third", isCorrect: false },
-      { answerText: "Chord", isCorrect: true },
-      { answerText: "Fifth", isCorrect: false }
+      { answerText: { en: "Third", "zh-HK": "三度" }, isCorrect: false },
+      { answerText: { en: "Chord", "zh-HK": "和弦" }, isCorrect: true },
+      { answerText: { en: "Fifth", "zh-HK": "五度" }, isCorrect: false }
     ]
   },
   {
-    questionText: "Is this scale ascending or descending?",
+    questionText: {
+      en: "Is this scale ascending or descending?",
+      "zh-HK": "這個音階是上行還是下行？"
+    },
     imageSrc: scaleDirectionImg,
     answerOptions: [
-      { answerText: "Ascending", isCorrect: true },
-      { answerText: "Descending", isCorrect: false }
+      { answerText: { en: "Ascending", "zh-HK": "上行" }, isCorrect: true },
+      { answerText: { en: "Descending", "zh-HK": "下行" }, isCorrect: false }
     ]
   },
   {
-    questionText: "Please play the note",
+    questionText: {
+      en: "Please play the note",
+      "zh-HK": "請彈奏這個音符"
+    },
     imageSrc: quiz8Q,
     isPianoQuestion: true,
     requiredNotes: [60]
   },
   {
-    questionText: "Please play the note",
+    questionText: {
+      en: "Please play the note",
+      "zh-HK": "請彈奏這個音符"
+    },
     imageSrc: quiz9Q,
     isPianoQuestion: true,
     requiredNotes: [62] 
   },
   {
-    questionText: "Please play the C chord",
+    questionText: {
+      en: "Please play the C chord",
+      "zh-HK": "請彈奏C和弦"
+    },
     imageSrc: CMajor,
     isPianoQuestion: true,
     requiredNotes: [60, 64, 67],
     showNoteNames: true
-  },
-  
+  }
 ];
 
 // Tutorial content
 const tutorialCards = [
   {
-    title: "What is a chord?",
-    content: "A chord is three notes played simultaneously, like building blocks",
+    title: {
+      en: "What is a chord?",
+      "zh-HK": "什麼是和弦？"
+    },
+    content: {
+      en: "A chord is three notes played simultaneously, like building blocks",
+      "zh-HK": "和弦是同時彈奏的三個音符，就像搭積木一樣"
+    }
   },
   {
-    title: "Chord Example",
-    content: "The C chord consists of C, E, and G notes",
+    title: {
+      en: "Chord Example",
+      "zh-HK": "和弦範例"
+    },
+    content: {
+      en: "The C chord consists of C, E, and G notes",
+      "zh-HK": "C和弦由C、E和G音符組成"
+    },
     imageSrc: CMajor
   },
   {
-    title: "Scale Direction",
-    content: "Playing from left to right is ascending, like climbing stairs",
+    title: {
+      en: "Scale Direction",
+      "zh-HK": "音階方向"
+    },
+    content: {
+      en: "Playing from left to right is ascending, like climbing stairs",
+      "zh-HK": "從左到右彈奏是上行，就像爬樓梯一樣"
+    },
     imageSrc: scaleDirectionImg
   }
 ];
@@ -118,13 +156,17 @@ function Ch1_2() {
             videoSrc={quiz_video}
             onVideoEnd={handleVideoEnd}
             autoPlay={true}
-            controls={true}
+            controls={false}
           />
         );
       case 'memo':
         return (
           <MemoBeforeQuiz
             cards={tutorialCards}
+            title={{
+              en: "Lesson 2: Chords and Scales",
+              "zh-HK": "課堂 2: 和弦與音階"
+            }}
             onComplete={handleMemoComplete}
           />
         );
@@ -133,11 +175,14 @@ function Ch1_2() {
           <Quiz
             lesson_ref_id={lesson_ref_id}
             chapter_ref_id={chapter_ref_id}
-            title="Lesson 2: Chords and Scales"
+            title={{
+              en: "Lesson 2: Chords and Scales",
+              "zh-HK": "課堂 2: 和弦與音階"
+            }}
             questions={questionsCh1_2}
             onExit={handleExitQuiz}
           />
-          );
+        );
       default:
         return null;
     }

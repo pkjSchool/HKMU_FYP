@@ -15,6 +15,9 @@ import './css/LessonMap.css';
 import "./css/Sidebar.css";
 import "./css/taskProgress.css";
 import "./css/PianoPageTopNavBar.css";
+import "./css/statistics.css";
+import "./css/quiz.css";
+import "./css/VolumeSlider.css";
 
 // @ts-ignore
 import store from './store/globalConfig.tsx'
@@ -40,6 +43,17 @@ import { BrowserRouter, Route, Routes, Navigate } from "react-router-dom";
 import { checkUserLogined } from "./access_control/user";
 import { checkIsInitial } from "./access_control/webStatus";
 
+import './i18n/base.tsx';
+import './i18n/sidebar.tsx';
+import './i18n/lessonList.tsx';
+import './i18n/statistics.tsx';
+import './i18n/user.tsx';
+import './i18n/piano.tsx';
+import './i18n/playRecord.tsx';
+import './i18n/quiz.tsx';
+import './i18n/aiGeneration.tsx';
+import './i18n/tour.tsx';
+
 interface Props {
   children: React.ReactNode;
 }
@@ -58,7 +72,6 @@ const InitialRequired: FC<Props> = ({ children }) => {
   const isInitial = checkIsInitial();
   return isInitial ? <InitialPage /> : children;
 };
-
 
 createRoot(document.getElementById('root')!).render(
   // <StrictMode>

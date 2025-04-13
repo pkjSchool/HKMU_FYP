@@ -1,9 +1,14 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { Step } from "react-joyride";
-import JoyrideWrapper from '../components/JoyrideWrapper';
+import JoyrideWrapper, { JoyrideWrapperRef } from '../components/JoyrideWrapper';
 import LessonMap from '../components/LessonMap';
 import TaskProgress from '../components/TaskProgress';
 import PianoCharacter, {PianoCharacterRef} from '../components/Character/PianoCharacter.tsx';
+
+import { useTranslation } from 'react-i18next';
+import i18next from 'i18next';
+
+import { CiCircleQuestion } from "react-icons/ci";
 
 import { api_piano_transcribe, user_info_get, user_lesson_get } from '../api_request/request.tsx';
 import { getStorageUser } from '../access_control/user.tsx';
@@ -13,8 +18,8 @@ export const sampleChapters = [
     ref_id: 1,
     title: "Chapter 1",
     lessons: [
-      { id: "ch1-1", ref_id: 1, completed: true, stars: 3 },
-      { id: "ch1-2", ref_id: 2, completed: false, stars: 2 },
+      { id: "ch1-1", ref_id: 1, completed: false },
+      { id: "ch1-2", ref_id: 2, completed: false },
       { id: "ch1-3", ref_id: 3, completed: false },
       { id: "ch1-4", ref_id: 4, completed: false },
     ],
@@ -38,6 +43,9 @@ export const sampleChapters = [
 ];
 
 function App() {
+  const { t, i18n } = useTranslation();
+  const JoyrideRef = useRef<JoyrideWrapperRef>(null);
+
   const handleLessonClick = (lessonId: string) => {
     console.log(`Lesson ${lessonId} clicked`);
   };
@@ -47,43 +55,43 @@ function App() {
   const steps: Step[] = [
     {
       target: "body",
-      content: "Welcome to the piano learning platform! Let me guide you through the main features and areas.",
+      content: t("lesson-1"),
       placement: "center",
       disableBeacon: true,
     },
     {
       target: ".lesson-index-container",
-      content: "This is our homepage where you can browse all courses and track your progress.",
+      content: t("lesson-2"),
       placement: "bottom",
     },
     {
       target: ".lesson-map-container",
-      content: "Here you can see all piano course chapters and progress. Click on any course to start learning.",
+      content: t("lesson-3"),
       placement: "bottom",
     },
     {
       target: ".chapter-container",
-      content: "Each chapter contains multiple lessons. Completing them in order provides the best learning experience.",
+      content: t("lesson-4"),
       placement: "bottom",
     },
     {
       target: ".lesson-node",
-      content: "Click on these lesson nodes to access the corresponding learning content. Green indicates completed, gray indicates incomplete.",
+      content: t("lesson-5"),
       placement: "top",
     },
     {
       target: "div:has(> .progress)",
-      content: "This area shows your learning tasks and progress, helping you track your achievements.",
+      content: t("lesson-6"),
       placement: "bottom",
     },
     {
       target: "input[type='file']",
-      content: "You can upload audio files here. The system will analyze and convert them into sheet music to assist your learning and creation.",
+      content: t("lesson-7"),
       placement: "top",
     },
     {
       target: "button:nth-of-type(1)",
-      content: "Click this button to show your learning assistant.",
+      content: t("lesson-8"),
       placement: "top",
     },
   ];
@@ -92,7 +100,7 @@ function App() {
   const updateWeloomeMessage = useCallback(async () => {
     console.log("updateWeloomeMessage")
     const user = getStorageUser();
-    var message = 'Hello! Welcome back!';
+    let message = '';
     if (user) {
       const res = await user_lesson_get(parseInt(user));
       const userRes = await user_info_get(parseInt(user));
@@ -104,9 +112,18 @@ function App() {
 
         const today = new Date();
         const isToday = latestLesson.toDateString() === today.toDateString();
-        message = isToday 
-          ? `Hello! Welcome back!`
-          : `Hello! You haven't completed any lessons today. Let's get started!`;
+
+        switch(i18n.language) {
+          case "zh-HK":
+            message = isToday 
+              ? `你好！歡迎回來！`
+              : `你好！今天還未完成任何課程。讓我們開始學習吧！`;
+            break
+          default:
+            message = isToday 
+              ? `Hello! Welcome back!`
+              : `Hello! You haven't completed any lessons today. Let's get started!`;
+        }
         
         pianoCharacterRef.current?.setMessageHandler(message);
       }
@@ -121,7 +138,14 @@ function App() {
       res.then((response) => {
         const name = response.data.data.name;
         if (name) {
-          const message = `Hello, ${name}! Welcome back!`;
+          let message = "";
+          switch(i18n.language) {
+            case "zh-HK":
+              message = `你好！${name}! 歡迎回來！`;
+              break
+            default:
+              message = `Hello, ${name}! Welcome back!`;
+          }
           pianoCharacterRef.current?.setMessageHandler(message);
         }
       })
@@ -129,6 +153,10 @@ function App() {
       pianoCharacterRef.current?.showCharacterHandler();
       pianoCharacterRef.current?.changePositionHandler({ right: "50px", bottom: "0px" });
     }
+
+    i18next.on('languageChanged', function(lng) {
+      updateWeloomeMessage()
+    })
   }, []);
 
   // Welcome message update interval
@@ -138,7 +166,7 @@ function App() {
   }, [updateWeloomeMessage]);
 
   return (
-    <JoyrideWrapper steps={steps} tourName="HomeTour">
+    <JoyrideWrapper steps={steps} tourName="HomeTour" ref={JoyrideRef}>
       <div className="lesson-index-container">
         <LessonMap 
           chapters={sampleChapters.map(chapter => ({
@@ -151,6 +179,7 @@ function App() {
         />
         <TaskProgress />
         <PianoCharacter ref={pianoCharacterRef}/> 
+        {/* <button className="tourBtn" onClick={()=>{JoyrideRef.current.setRunTour(true)}}><CiCircleQuestion/></button> */}
       </div>
     </JoyrideWrapper>
   );

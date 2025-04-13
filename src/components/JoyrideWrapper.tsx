@@ -1,5 +1,6 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useImperativeHandle, forwardRef } from 'react';
 import Joyride, { CallBackProps, STATUS, Step } from "react-joyride";
+import { useTranslation } from 'react-i18next';
 
 interface JoyrideWrapperProps {
   steps: Step[];
@@ -7,12 +8,25 @@ interface JoyrideWrapperProps {
   children: React.ReactNode;
 }
 
-const JoyrideWrapper: React.FC<JoyrideWrapperProps> = ({ steps, tourName, children }) => {
+export type JoyrideWrapperRef = {
+  setRunTour: React.Dispatch<React.SetStateAction<boolean>>;
+};
+
+const JoyrideWrapper = ({ steps, tourName, children }: JoyrideWrapperProps,ref: React.Ref<JoyrideWrapperRef>) => {
+  const { t } = useTranslation();
   const [runTour, setRunTour] = useState(false);
+
+  useImperativeHandle(ref, () => ({
+    setRunTour
+  }));
 
   // Joyride callback
   const handleJoyrideCallback = (data: CallBackProps) => {
-    const { status } = data;
+    const { action, status } = data;
+    console.log(data);
+    if (action === 'close') {
+      setRunTour(false);
+    }
     if (status === STATUS.FINISHED || status === STATUS.SKIPPED) {
       console.log(`${tourName} tour finished or skipped`);
       setRunTour(false);
@@ -42,6 +56,7 @@ const JoyrideWrapper: React.FC<JoyrideWrapperProps> = ({ steps, tourName, childr
         showSkipButton={true}
         disableOverlayClose={true}
         spotlightClicks={false}
+        hideCloseButton={true}
         callback={handleJoyrideCallback}
         styles={{
           options: {
@@ -76,11 +91,13 @@ const JoyrideWrapper: React.FC<JoyrideWrapperProps> = ({ steps, tourName, childr
           }
         }}
         locale={{
-          back: 'Back',
-          close: 'Close',
-          last: 'Finish',
-          next: 'Next',
-          skip: 'Skip'
+          back: t('back'),
+          close: t('close'),
+          last: t('finish'),
+          next: t('next'),
+          skip: t('skip'),
+          nextLabelWithProgress: t('nextLabelWithProgress'), 
+          open: t('Open the dialog')
         }}
       />
             <style>
@@ -107,4 +124,4 @@ const JoyrideWrapper: React.FC<JoyrideWrapperProps> = ({ steps, tourName, childr
   );
 };
 
-export default JoyrideWrapper;
+export default forwardRef(JoyrideWrapper);

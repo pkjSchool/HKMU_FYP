@@ -5,18 +5,21 @@ import JoyrideWrapper from '../components/JoyrideWrapper';
 import AddChordTab from '../components/AIGenerationPage/AddChordTab';
 import FormatConvertionTab from '../components/AIGenerationPage/FormatConvertionTab';
 
+import { useTranslation } from 'react-i18next';
+
 import '../css/AiGenerationPage.css';
 
 const AiGenerationPage = () => {
+  const { t } = useTranslation();
   const [activeTab, setActiveTab] = useState(0);
 
   const tabs = [
     {
-      name: 'Add Chord',
+      name: t('Add Chord'),
       component: <AddChordTab />
     },
     {
-      name: 'Wav to Midi Conversion',
+      name: t('Wav to Midi Conversion'),
       component: <FormatConvertionTab/>
     }
   ]
@@ -29,17 +32,17 @@ const AiGenerationPage = () => {
   const sharedSteps: Step[] = [
     {
       target: ".tab-navbar",
-      content: "Here you can switch between different AI generation features.",
+      content: t("aiOverview-1"),
       placement: "bottom"
     },
     {
       target: ".tab-navbar td:nth-child(1)", 
-      content: "Click here to access the Add Chord feature, which helps you create chord progressions.",
+      content: t("aiOverview-2"),
       placement: "bottom"
     },
     {
       target: ".tab-navbar td:nth-child(2)", 
-      content: "Click here to access the Wav to Midi Conversion feature, which converts audio files to MIDI format.",
+      content: t("aiOverview-3"),
       placement: "bottom"
     }
   ];
@@ -47,47 +50,47 @@ const AiGenerationPage = () => {
   const addChordSteps: Step[] = [
     {
       target: ".tab-content h1", 
-      content: "In this section, you can create custom chord progressions tailored to your musical needs.",
+      content: t("aiChord-1"),
       placement: "bottom"
     },
     {
       target: "input[type='file']", 
-      content: "Optionally upload a MIDI file to use as a starting point for your chord progression.",
+      content: t("aiChord-2"),
       placement: "top"
     },
     {
       target: ".form-check-input", 
-      content: "Choose from these common chord progression patterns to quickly get started.",
+      content: t("aiChord-3"),
       placement: "bottom"
     },
     {
       target: "select[name='key']", 
-      content: "Select the key for your chord progression to define its tonal center.",
+      content: t("aiChord-4"),
       placement: "bottom"
     },
     {
       target: "select[name='mode']", 
-      content: "Choose the mode (e.g., Major, Minor) to set the mood of your progression.",
+      content: t("aiChord-5"),
       placement: "bottom"
     },
     {
       target: "input[name='progression']", 
-      content: "Enter your chord progression using scale degree numbers, separated by commas.",
+      content: t("aiChord-6"),
       placement: "top"
     },
     {
       target: "input[name='time_sig']", 
-      content: "Specify the time signature for your music. For example, use '4,4' for 4/4 time, '3,4' for 3/4 time, or '6,8' for 6/8 time.",
+      content: t("aiChord-7"),
       placement: "top"
     },
     {
       target: "input[name='tempo']", 
-      content: "Set the tempo in beats per minute (BPM) to control the speed of your music.",
+      content: t("aiChord-8"),
       placement: "top"
     },
     {
       target: "button.generate-midi", 
-      content: "Click this button to generate your MIDI file based on the settings you've configured.",
+      content: t("aiChord-9"),
       placement: "left"
     }
   ];
@@ -95,40 +98,40 @@ const AiGenerationPage = () => {
   const formatConversionSteps: Step[] = [
     {
       target: "form .form-label", 
-      content: "This tool converts WAV audio files to MIDI format. Start by uploading your file here.",
+      content: t("aiConvert-1"),
       placement: "top"
     },
     {
       target: "#audioFile", 
-      content: "Click here to select a WAV audio file from your device. Only WAV format is supported.",
+      content: t("aiConvert-2"),
       placement: "top"
     },
     {
       target: "button[type='submit']", 
-      content: "After selecting your file, click this button to start the conversion process.",
+      content: t("aiConvert-3"),
       placement: "left"
     },
     {
       target: ".alert-danger", 
-      content: "If there's an error with your file or the conversion, you'll see a message here.",
+      content: t("aiConvert-4"),
       placement: "top",
       disableBeacon: true
     },
     {
       target: "a.btn-success", 
-      content: "Once conversion is complete, click here to download your converted MIDI file.",
+      content: t("aiConvert-5"),
       placement: "bottom",
       disableBeacon: true
     },
     {
       target: "a.btn-secondary", 
-      content: "Click here to open the piano player and immediately play your converted melody.",
+      content: t("aiConvert-6"),
       placement: "bottom",
       disableBeacon: true
     },
     {
       target: ".osmd-canvas-container", 
-      content: "This shows a sheet music preview of your converted audio. You can see how your music looks in standard notation.",
+      content: t("aiConvert-7"),
       placement: "top",
       disableBeacon: true
     }
@@ -149,13 +152,17 @@ const AiGenerationPage = () => {
     <JoyrideWrapper steps={getCurrentSteps()} tourName={`AIGeneration${activeTab === 0 ? 'AddChord' : 'FormatConversion'}Tour`}>
       <div className="tab-container" >
         <div className="tab-navbar">
-          <tr>
-            {tabs.map((tab, index) => {
-              return <td key={index} onClick={() => handleTabClick(index)} 
-              style={activeTab === index ? {backgroundColor: "#4CAF50"} : {}}>
-                {tab.name}</td>}
-            )}
-          </tr>
+          <table>
+            <tbody>
+              <tr>
+                {tabs.map((tab, index) => {
+                  return <td key={index} onClick={() => handleTabClick(index)} 
+                  style={activeTab === index ? {backgroundColor: "#4CAF50"} : {}}>
+                    {tab.name}</td>}
+                )}
+              </tr>
+            </tbody>
+          </table>
         </div>
         <div className="tab-content">
           {tabs[activeTab].component}
