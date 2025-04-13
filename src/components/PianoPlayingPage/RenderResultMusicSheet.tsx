@@ -238,15 +238,21 @@ const RenderResultMusicSheet = (props: RenderResultMusicSheetProps,ref: React.Re
 
     <div className="row">
       <div className="col-5">
-        <div style={{"position": "relative", "width": "100%", "maxWidth": "200px", "marginLeft": "auto", "paddingTop": "40px"}}>
-          <div>{t("total_note")} : {formatTotalNote()}</div>
-          <div>{t("music_time")} : {formatMusicTime()}</div>
-          <div>{t("score")} : {formatScore()}</div>
-          <div>{t("note_played")} : {formatNoteEntered()}</div>
+        <div style={{"position": "relative", "width": "100%", "maxWidth": "300px", "marginLeft": "auto", "paddingTop": "20px"}}>
+          <h3>Statistic</h3>
+          <table>
+            <tbody>
+              <tr><th style={{paddingRight: "30px"}}>{t("total_note")}: </th><td>{formatTotalNote()}</td></tr>
+              <tr><th style={{paddingRight: "30px"}}>{t("music_time")}: </th><td>{formatMusicTime()}</td></tr>
+              <tr><th style={{paddingRight: "30px"}}>{t("score")}: </th><td>{formatScore()}</td></tr>
+              <tr><th style={{paddingRight: "30px"}}>{t("note_played")}: </th><td>{formatNoteEntered()}</td></tr>
+            </tbody>
+          </table>
         </div>
       </div>
       <div className="col-7"><div style={{"position": "relative", "width": "100%", "height": "300px", "maxWidth": "350px"}}><canvas ref={chartRef_1}></canvas></div></div>
     </div>
+    <hr/>
     </>
   }
 
@@ -258,7 +264,7 @@ const RenderResultMusicSheet = (props: RenderResultMusicSheetProps,ref: React.Re
             <button type="button" className="btn btn-danger text-center" style={{padding: "10px 18px", margin:"0"}} onClick={closeThis}>X</button>
           </div>
           { titleEle }
-        <div ref={resultOsmdContainerRef} ></div>
+        <div ref={resultOsmdContainerRef}></div>
         </div>
     </div>
 
