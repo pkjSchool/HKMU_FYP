@@ -220,7 +220,7 @@ const FormatConvertionTab = () => {
                             <div className="d-flex justify-content-between align-items-center mb-3">
                                 <div className="d-flex align-items-center gap-3">
                                     <a href={downloadUrl} download="converted_output.mid" className="btn btn-success">{t("Download MIDI")}</a>
-                                    <Link to='/playing' className="btn btn-secondary" state={{respFile: respFile}}>{t("Play Music")}</Link>
+                                    <Link to='/playing' className="btn btn-warning" state={{respFile: respFile}}>{t("upload_study")}</Link>
                                 </div>
                                 <div className="d-flex align-items-center gap-3">
                                     <button onClick={togglePlay}>{isPlaying?<FaPause/>:<FaPlay/>}</button>
