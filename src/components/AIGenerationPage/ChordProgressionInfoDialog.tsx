@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 
 interface ChordProgressionInfoDialogProps {
   progressionIndex: number;
@@ -9,8 +10,9 @@ const ChordProgressionInfoDialog: React.FC<ChordProgressionInfoDialogProps> = ({
   progressionIndex,
   chordProgressionInfo
 }) => {
-  const [showDialog, setShowDialog] = useState(false);
+  const { t } = useTranslation();
 
+  const [showDialog, setShowDialog] = useState(false);
   const handleOpen = () => setShowDialog(true);
   const handleClose = () => setShowDialog(false);
 
@@ -21,7 +23,7 @@ const ChordProgressionInfoDialog: React.FC<ChordProgressionInfoDialogProps> = ({
         className="btn btn-info btn-sm ms-2"
         onClick={handleOpen}
       >
-        Info
+        {t("info")}
       </button>
     );
   }
@@ -50,7 +52,7 @@ const ChordProgressionInfoDialog: React.FC<ChordProgressionInfoDialogProps> = ({
         maxWidth: '600px',
         backgroundColor: 'white'
       }}>
-        <h3>Progression Info in C Major 4/4</h3>
+        <h3>{t("Progression Info in C Major 4/4")}</h3>
         <img
           src={chordProgressionInfo[progressionIndex]}
           alt={`Progression Info ${progressionIndex + 1}`}
@@ -72,7 +74,7 @@ const ChordProgressionInfoDialog: React.FC<ChordProgressionInfoDialogProps> = ({
             cursor: 'pointer'
           }}
         >
-          Close
+          {t("close")}
         </button>
       </div>
     </div>

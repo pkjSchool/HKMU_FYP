@@ -31,6 +31,7 @@ interface RenderMusicSheetProps {
   activeNotes?: number[];
   isCollapsed?: boolean;
   cssProps?: CSSProperties;
+  singleHorizontalStaffline?: boolean;
 }
 
 const RenderMusicSheet = (props: RenderMusicSheetProps,ref: React.Ref<RenderMusicSheetRef>) => {
@@ -75,7 +76,7 @@ const RenderMusicSheet = (props: RenderMusicSheetProps,ref: React.Ref<RenderMusi
       // Load the XML and render
       osmdRef.current.load(props.musicXML).then(() => {
           // Set the options to display only one system (row)
-          osmdRef.current!.EngravingRules.RenderSingleHorizontalStaffline = true;
+          osmdRef.current!.EngravingRules.RenderSingleHorizontalStaffline = (props.singleHorizontalStaffline == false)?false:true;
           osmdRef.current!.zoom = 1.3;
           osmdRef.current!.render();
 
@@ -130,7 +131,7 @@ const RenderMusicSheet = (props: RenderMusicSheetProps,ref: React.Ref<RenderMusi
       // Load the XML and render
       osmdRef.current.load(musicSheet).then(() => {
           // Set the options to display only one system (row)
-          osmdRef.current!.EngravingRules.RenderSingleHorizontalStaffline = true;
+          osmdRef.current!.EngravingRules.RenderSingleHorizontalStaffline = (props.singleHorizontalStaffline == false)?false:true;
           osmdRef.current!.zoom = 1.3;
           osmdRef.current!.render();
 

@@ -3,6 +3,8 @@ import { api_user_music_list, api_user_music_get, api_fileMidiToXml } from "../a
 import { getLoginedUser } from "../access_control/user";
 import RenderStatisticsMusicSheet from "../components/PianoPlayingPage/RenderStatisticsMusicSheet.js";
 
+import { HiMiniCalendarDateRange } from "react-icons/hi2";
+
 function PlayingRecordPage() {
     const userInfo = getLoginedUser();
     const [userMusicList, setUserMusicList] = useState<any[]>([]);
@@ -86,18 +88,18 @@ function PlayingRecordPage() {
         <>
             <div className="card">
                 <div className="card-body">
-
-                {userMusicList.map((musicSheet, index) => (
-                    <div 
-                        key={index} 
-                        className="PianoPageTopNavBarMusicList-Item"
-                        onClick={() => {selectStortedMusic(musicSheet.user_music_id)}}
-                    >
-                    <div className="PianoPageTopNavBarMusicList-Item-Title">{ musicSheet.filename }</div>
-                    <div className="PianoPageTopNavBarMusicList-Item-Date">{ musicSheet.datetime }</div>
+                    <div className="PianoPageTopNavBarMusicList-ItemList">
+                    {userMusicList.map((musicSheet, index) => (
+                        <div 
+                            key={index} 
+                            className="PianoPageTopNavBarMusicList-Item"
+                            onClick={() => {selectStortedMusic(musicSheet.user_music_id)}}
+                        >
+                        <div className="PianoPageTopNavBarMusicList-Item-Title">{ musicSheet.filename }</div>
+                        <div className="PianoPageTopNavBarMusicList-Item-Date"><HiMiniCalendarDateRange /> { musicSheet.datetime }</div>
+                        </div>
+                    ))}
                     </div>
-                ))}
-
                 </div>
             </div>
             {resultDetailComp}

@@ -37,6 +37,10 @@ export class Player {
 		this.finishListeners = []
 		this.timeUpdatedListeners = []
 
+		this.haveNodeVoice = false
+		this.haveBeatVoice = true
+		this.haveStartDelay = true
+
 		// this.oldBPM = 0
 		// this.countBPM = 0
 		// this.noteBPM = 0
@@ -258,8 +262,10 @@ export class Player {
 					this.countBPM = 0
 				}
 	
-				this.audioPlayer.playBeat(currentTime, newMeasure)
-	
+				if(this.haveBeatVoice) {
+					this.audioPlayer.playBeat(currentTime, newMeasure)
+				}
+
 				this.nextBPMTime = currentTime + (60.0 / parseInt(this.oldBPM, 10))
 			}
 			
@@ -376,7 +382,8 @@ export class Player {
 			note,
 			this.playbackSpeed,
 			this.getNoteVolume(note),
-			false
+			false,
+			this.haveNodeVoice
 		)
 	}
 	getNoteVolume(note) {
@@ -517,8 +524,23 @@ export class Player {
 		this.clearInputRecords()
 	}
 
+	setHaveNodeVoice(tf) {
+		this.haveNodeVoice = (tf==true)?true:false
+	}
 
+	setHaveBeatVoice(tf) {
+		this.haveBeatVoice = (tf==true)?true:false
+	}
 
+	setHaveStartDelay(tf) {
+		this.haveStartDelay = (tf==true)?true:false
+
+		if (this.haveStartDelay) {
+			this.startDelay = -2
+		} else {
+			this.startDelay = -0.1
+		}
+	}
 
 
 	getPlayer = () => {

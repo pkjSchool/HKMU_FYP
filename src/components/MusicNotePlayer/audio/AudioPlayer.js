@@ -37,7 +37,7 @@ export class AudioPlayer {
 		})
 	}
 
-	playCompleteNote(currentTime, note, playbackSpeed, volume, isPlayAlong) {
+	playCompleteNote(currentTime, note, playbackSpeed, volume, isPlayAlong, haveNodeVoice) {
 		const buffer = this.buffers[note.noteNumber + 21]
 
 		const source = this.context.createBufferSource();
@@ -45,7 +45,7 @@ export class AudioPlayer {
 		const gainNode = this.context.createGain();
 		let gainValue = 2 * (note.velocity / 127) * volume
 
-		if (false) {
+		if (haveNodeVoice) {
 			gainNode.gain.value = gainValue;
 			source.connect(gainNode);
 			gainNode.connect(this.context.destination);

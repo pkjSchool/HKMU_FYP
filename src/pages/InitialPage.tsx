@@ -7,8 +7,19 @@ import { user_info_get } from "../api_request/request.tsx";
 
 import { clearInfo } from "../store/loginInfo.tsx";
 
+import { useTranslation } from 'react-i18next';
+
 function InitialPage() {
+    const { i18n } = useTranslation();
     const dispatch = useDispatch();
+
+    const setLang = () => {
+        const lang = localStorage.getItem("lang")
+        const langList = ['en', 'zh-HK']
+        if(lang && langList.includes(lang)) {
+            i18n.changeLanguage(lang)
+        }
+    }
 
     const loadUser = () => {
         // setLoginedUser(dispatch, {
@@ -53,6 +64,7 @@ function InitialPage() {
     }
 
     useEffect(() => {
+        setLang()
         loadUser();
     }, []);
 

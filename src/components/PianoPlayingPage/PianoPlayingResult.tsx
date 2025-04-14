@@ -1,6 +1,7 @@
 import {useEffect, useState} from "react";
 import { IoStar, IoStarOutline } from "react-icons/io5";
 import { NavLink } from "react-router-dom";
+import { useTranslation } from 'react-i18next';
 import shine from "../../assets/shine.mp3";
 
 function playSound(audioContext: AudioContext, buffer: AudioBuffer) {
@@ -34,6 +35,7 @@ function processStar() {
 }
 
 const PianoPlayingResult = (props:any) => {
+    const { t } = useTranslation();
     const {againCallback, handleOpenResultDetail, result} = props;
     
     useEffect(()=>{
@@ -59,6 +61,45 @@ const PianoPlayingResult = (props:any) => {
         (handleOpenResultDetail)?handleOpenResultDetail():null
     }
 
+    const calcStarNumber = (score:number, totalNote:number) => {
+        const max_score = totalNote
+        const score_per = score / max_score
+        if (score_per <= 0.33){
+            return 1
+        } else if(score_per <= 0.66) {
+            return 2
+        } else {
+            return 3
+        }
+    }
+
+    const getResultStar = (score:number, totalNote:number) => {
+        const starsNumber = calcStarNumber(score, totalNote)
+        switch (starsNumber) {
+        case 2:
+            return <>
+            <IoStar className={starAnime} style={{...starSmall, ...starOrder1}} />
+            <IoStarOutline className={starAnime} style={{...starBig, ...starOrder2}} />
+            <IoStar className={starAnime} style={{...starSmall, ...starOrder3}} />
+            </>
+            break;
+        case 3:
+            return <>
+                <IoStar className={starAnime} style={{...starSmall, ...starOrder1}} />
+                <IoStar className={starAnime} style={{...starBig, ...starOrder2}} />
+                <IoStar className={starAnime} style={{...starSmall, ...starOrder3}} />
+            </>
+            break;
+        default:
+            return <>
+            <IoStar className={starAnime} style={{...starSmall, ...starOrder1}} />
+            <IoStarOutline className={starAnime} style={{...starBig, ...starOrder2}} />
+            <IoStarOutline className={starAnime} style={{...starSmall, ...starOrder3}} />
+            </>
+            break;
+        }
+    }
+
     return (
         <div style={boxWrapper}>
             <div style={boxOverlay}></div>
@@ -69,27 +110,25 @@ const PianoPlayingResult = (props:any) => {
                     <h2 className="text-center fw-bold">{getResultData("name")}</h2>
 
                     <div className="mt-3 mb-3" style={starWrapper}>
-                        <IoStar className={starAnime} style={{...starSmall, ...starOrder1}} />
-                        <IoStar className={starAnime} style={{...starBig, ...starOrder2}} />
-                        <IoStar className={starAnime} style={{...starSmall, ...starOrder3}} />
+                        { getResultStar(getResultData("noteEntered"), getResultData("totalNote")) }
                     </div>
 
                     <div style={starScore}>{getResultData("score")}</div>
 
                     <div className="row mt-3" style={itemRow}>
                         <div className="col-6" style={itemWrapper}>
-                            <div style={itemLabel}>Music Long</div>
+                            <div style={itemLabel}>{t("music_long")}</div>
                             <div style={itemText}>{getResultData("musicTime")}</div>
                         </div>
                         <div className="col-6" style={itemWrapper}>
-                            <div style={itemLabel}>Play Time</div>
+                            <div style={itemLabel}>{t("note_played")}</div>
                             <div style={itemText}>{getResultData("playTime")}</div>
                         </div>
                     </div>
 
                     <div className="row mt-3" style={itemRow}>
                         <div className="col-12" style={itemWrapper}>
-                            <div style={itemLabel}>Note Played</div>
+                            <div style={itemLabel}>{t("note_played")}</div>
                             <div style={itemText}>{divisionHandle(getResultData("noteEntered"), getResultData("totalNote"))}%</div>
                             <div style={itemText}>{getResultData("noteEntered")} / {getResultData("totalNote")}</div>
                         </div>
@@ -101,12 +140,12 @@ const PianoPlayingResult = (props:any) => {
                     </div>
 
                     <div className="pt-5 text-center">
-                        <button type="button" className="btn btn-warning text-center" style={{padding: "10px 60px", margin:"0 5px"}} onClick={onClickDetail}>Detail</button>
+                        <button type="button" className="btn btn-warning text-center" style={{padding: "10px 60px", margin:"0 5px"}} onClick={onClickDetail}>{t("detail")}</button>
                     </div>
 
                     <div className="pt-5 text-center">
-                        <button type="button" className="btn btn-success text-center" style={{padding: "10px 60px", margin:"0 5px"}} onClick={onClickAgain}>Again</button>
-                        <NavLink to="/" className="btn btn-danger text-center" style={{padding: "10px 60px", margin:"0 5px"}}>Back</NavLink>
+                        <button type="button" className="btn btn-success text-center" style={{padding: "10px 60px", margin:"0 5px"}} onClick={onClickAgain}>{t("again")}</button>
+                        <NavLink to="/" className="btn btn-danger text-center" style={{padding: "10px 60px", margin:"0 5px"}}>{t("back")}</NavLink>
                     </div>
 
                 </div>

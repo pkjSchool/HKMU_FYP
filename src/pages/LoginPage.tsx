@@ -5,6 +5,7 @@ import { useDispatch } from "react-redux";
 import { checkUserLogined, setLoginedUser, getLoginedUser } from "../access_control/user";
 import { login } from "../api_request/request";
 import { useNavigate } from "react-router-dom";
+import { useTranslation } from 'react-i18next';
 
 interface IFormInput {
   username: string
@@ -12,6 +13,7 @@ interface IFormInput {
 }
 
 function LoginPage() {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const dispatch = useDispatch();
   // const storedInfo = getLoginedUser();
@@ -62,14 +64,14 @@ function LoginPage() {
         </div> */}
         <form onSubmit={handleSubmit(onSubmit)}>
           <div className="card">
-            <h2 className="card-header text-center">Login</h2>
+            <h2 className="card-header text-center">{t('login')}</h2>
             <div className="card-body">
-              <div className="mb-3"><label className="form-label">Username</label><input type="text" className="form-control" {...register("username", { required: true })} /></div>
+              <div className="mb-3"><label className="form-label">{t('username')}</label><input type="text" className="form-control" {...register("username", { required: true })} /></div>
               {/* {errors.username && <p role="alert" className="errorText">{errors.username.message}</p>} */}
-              {errors.username?.type === "required" && (<p role="alert" className="errorText">Username is required</p>)}
-              <div className="mb-3"><label className="form-label">Password</label><input type="password" className="form-control" {...register("password", { required: true })} /></div>
-              {errors.password?.type === "required" && (<p role="alert" className="errorText">Password is required</p>)}
-              <input type="submit" className="btn btn-primary mb-3" />
+              {errors.username?.type === "required" && (<p role="alert" className="errorText">{t('username_required')}</p>)}
+              <div className="mb-3"><label className="form-label">{t('password')}</label><input type="password" className="form-control" {...register("password", { required: true })} /></div>
+              {errors.password?.type === "required" && (<p role="alert" className="errorText">{t('password_required')}</p>)}
+              <input type="submit" className="btn btn-primary mb-3" value={t("submit")}/>
             </div>
           </div>
         </form>
