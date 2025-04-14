@@ -304,7 +304,7 @@ const AddChordTab = () => {
                     name="key"
                     value={formData.key}
                     onChange={handleInputChange}
-                    className="form-select"
+                    className="form-select fs-5"
                   >
                     {['C', 'D', 'E', 'F', 'G', 'A', 'B'].map(key => (
                       <option key={key} value={key}>{key}</option>
@@ -323,7 +323,7 @@ const AddChordTab = () => {
                     name="mode"
                     value={formData.mode}
                     onChange={handleInputChange}
-                    className="form-select"
+                    className="form-select fs-5"
                   >
                     <option value="Major">{t("Major")}</option>
                     <option value="Minor">{t("Minor")}</option>
@@ -342,7 +342,7 @@ const AddChordTab = () => {
                     name="progression"
                     value={formData.progression}
                     onChange={handleInputChange}
-                    className="form-control"
+                    className="form-control fs-5"
                   />
                   <small className="caption">{getInfo("progression")}</small>
                 </div>
@@ -358,7 +358,7 @@ const AddChordTab = () => {
                     name="time_sig"
                     value={formData.time_sig}
                     onChange={handleInputChange}
-                    className="form-control"
+                    className="form-control fs-5"
                   />
                   <small className="caption">{getInfo("time_sig")}</small>
                 </div>
@@ -374,7 +374,7 @@ const AddChordTab = () => {
                     name="tempo"
                     value={formData.tempo}
                     onChange={handleInputChange}
-                    className="form-control"
+                    className="form-control fs-5"
                   />
                   <small className="caption">{getInfo("tempo")}</small>
                 </div>
