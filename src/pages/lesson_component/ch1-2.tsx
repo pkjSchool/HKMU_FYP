@@ -150,15 +150,6 @@ function Ch1_2() {
 
   const renderStep = () => {
     switch (currentStep) {
-      case 'video':
-        return (
-          <VideoBeforeQuiz
-            videoSrc={quiz_video}
-            onVideoEnd={handleVideoEnd}
-            autoPlay={true}
-            controls={true}
-          />
-        );
       case 'memo':
         return (
           <MemoBeforeQuiz
