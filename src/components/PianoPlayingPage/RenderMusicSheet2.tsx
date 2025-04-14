@@ -23,6 +23,7 @@ export type RenderMusicSheetRef = {
   cursorMoveTo: (time:number, bpm:number) => void;
   rerenderSheet: () => void;
   exportResult: () => any;
+  checkNoteIsCorrect2: () => void;
 };
 
 interface RenderMusicSheetProps {
@@ -40,7 +41,8 @@ const RenderMusicSheet = (props: RenderMusicSheetProps,ref: React.Ref<RenderMusi
     cursorPrev,
     cursorMoveTo,
     rerenderSheet,
-    exportResult
+    exportResult,
+    checkNoteIsCorrect2
   }));
   
   const containerRef = useRef<HTMLDivElement>(null);
@@ -92,20 +94,20 @@ const RenderMusicSheet = (props: RenderMusicSheetProps,ref: React.Ref<RenderMusi
     }
   }, [props.musicXML]);
 
-  useEffect(() => {
-    if (osmdRef.current) {
-      // if (localActiveNotes.length < props.activeNotes.length) {
+  // useEffect(() => {
+  //   if (osmdRef.current) {
+  //     // if (localActiveNotes.length < props.activeNotes.length) {
 
-        // if (container && window.innerWidth - cursorX < 200) {
-        //   console.log("adfgdsfg")
-        //   container.scrollLeft = container.scrollLeft + 100;
-        // }
-      // }
+  //       // if (container && window.innerWidth - cursorX < 200) {
+  //       //   console.log("adfgdsfg")
+  //       //   container.scrollLeft = container.scrollLeft + 100;
+  //       // }
+  //     // }
 
-      checkNoteIsCorrect();
-      setLocalActiveNotes(props.activeNotes);
-    }
-  }, [props.activeNotes]);
+  //     checkNoteIsCorrect();
+  //     setLocalActiveNotes(props.activeNotes);
+  //   }
+  // }, [props.activeNotes]);
 
   const rerenderSheet = () => {
     if (osmdRef.current && osmdContainerRef.current && musicSheet) {
@@ -160,7 +162,7 @@ const RenderMusicSheet = (props: RenderMusicSheetProps,ref: React.Ref<RenderMusi
             for(const voiEntrie of staEntrie.VoiceEntries) {
               let _voi = []
               for(const note of voiEntrie.Notes) {
-                _voi.push({ "entered": (note.StemColorXml === TRUECOLOR) })
+                _voi.push({ "entered": (note.StemColorXml === TRUECOLOR)})
               }
               _sta.push(_voi)
             }
@@ -280,7 +282,6 @@ const RenderMusicSheet = (props: RenderMusicSheetProps,ref: React.Ref<RenderMusi
     const vsse = measure.VerticalSourceStaffEntryContainers[voiceEntryIndex];
     // _currentMeasureIndex = index;
     // _currentVoiceEntryIndex = voiceEntryIndex;
-
     if (index === 0 && voiceEntryIndex === 0) {
         osmd.cursor.reset();
     } else {
@@ -344,13 +345,15 @@ const RenderMusicSheet = (props: RenderMusicSheetProps,ref: React.Ref<RenderMusi
         // console.log("currentSheetNote: ", currentSheetNote.Pitch.ToStringShortGet);
 
         if (!currentSheetNote.isRest()) {
-          if (currentPressedNoteName[0] === currentSheetNote.Pitch.ToStringShortGet[0] && currentPressedNoteName[1] === '4') {
-            noteMarkRed( cursor.GNotesUnderCursor()[0].sourceNote)
+          console.log("currentPressedNoteName: ", (parseInt(currentPressedNoteName[1]) - 3).toString());
+          console.log("currentSheetNote: ", currentSheetNote.Pitch?.ToStringShortGet);
+          if (currentPressedNoteName[0] === currentSheetNote.Pitch?.ToStringShortGet[0] && (parseInt(currentPressedNoteName[1]) - 3).toString() === currentSheetNote.Pitch?.ToStringShortGet[1]) {
+            noteMarkGreen( cursor.GNotesUnderCursor()[0].sourceNote)
             // osmdRef.current.render();
             // var cursor = osmdRef.current.cursor;
             // cursor.next();
           } else {
-            noteMarkGreen(cursor.GNotesUnderCursor()[0].sourceNote)
+            noteMarkRed(cursor.GNotesUnderCursor()[0].sourceNote)
             // osmdRef.current.render();
             // var cursor = osmdRef.current.cursor;
             // cursor.next();
@@ -377,10 +380,68 @@ const RenderMusicSheet = (props: RenderMusicSheetProps,ref: React.Ref<RenderMusi
           }
         }
       }
+    }else {
+      if (osmdRef.current) {
+        var cursor = osmdRef.current.cursor;
+        var currentSheetNote = cursor.NotesUnderCursor()[0];
+        if (currentSheetNote?.isRest()) {
+          noteMarkGreen(cursor.GNotesUnderCursor()[0].sourceNote)
+          // osmdRef.current.render();
+        }
+      }
     }
-  }
+  }  
 
-  const noteMarkRed = (sourceNote:any) => {
+  const checkNoteIsCorrect2 = () => {
+      if (osmdRef.current && props.activeNotes) {
+      
+        // get current sheet note
+        var cursor = osmdRef.current.cursor;
+        if (cursor.GNotesUnderCursor().length === 0) {
+          return;
+        }
+        var currentSheetNote = cursor.NotesUnderCursor()[0];
+
+        if (cursor.GNotesUnderCursor()[0].sourceNote.StemColorXml === TRUECOLOR) {
+          return;
+        }
+
+        if (props.activeNotes) {
+          if (props.activeNotes.length > 0) {
+            var currentPressedNote = props.activeNotes[props.activeNotes.length - 1];
+            var currentPressedNoteName = noteMap[currentPressedNote];
+            console.log("currentPressedNoteName: ", currentPressedNoteName);
+            if (!currentSheetNote.isRest()) {
+              if (currentPressedNoteName[0] === currentSheetNote.Pitch?.ToStringShortGet[0] && 
+                (parseInt(currentPressedNoteName[1]) - 3).toString() === currentSheetNote.Pitch?.ToStringShortGet[1]) {
+                noteMarkGreen( cursor.GNotesUnderCursor()[0].sourceNote)
+              } else {
+                noteMarkRed(cursor.GNotesUnderCursor()[0].sourceNote)
+              }
+            }
+          } else {
+            if (currentSheetNote.isRest()) {
+              noteMarkGreen(cursor.GNotesUnderCursor()[0].sourceNote)
+            }
+          }
+
+          if (!currentSheetNote.isRest()) {
+            console.log("currentSheetNote: ", currentSheetNote.Pitch.ToStringShortGet);
+          } else {
+            console.log("currentSheetNote: ", "rest");
+          }
+          setLocalActiveNotes(props.activeNotes);
+        }
+
+        if (!currentSheetNote.isRest()) {
+          console.log("currentSheetNote: ", currentSheetNote.Pitch.ToStringShortGet);
+        } else {
+          console.log("currentSheetNote: ", "rest");
+        }
+    }
+  }  
+
+  const noteMarkGreen = (sourceNote:any) => {
     sourceNote.StemColorXml = TRUECOLOR;
     sourceNote.NoteheadColor = TRUECOLOR;
     if (osmdRef.current) {
@@ -388,7 +449,7 @@ const RenderMusicSheet = (props: RenderMusicSheetProps,ref: React.Ref<RenderMusi
     }
   }
 
-  const noteMarkGreen = (sourceNote:any) => {
+  const noteMarkRed = (sourceNote:any) => {
     if (sourceNote.NoteheadColor != TRUECOLOR) {
       sourceNote.StemColorXml = FALSECOLOR;
       sourceNote.NoteheadColor = FALSECOLOR;

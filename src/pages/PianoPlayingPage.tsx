@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, act } from "react";
 import { Midi } from "tonejs-midi-fix";
 
 import MIDIController, {
@@ -451,7 +451,8 @@ function App() {
 
       getPlayer().addTimeUpdatedListener(onPlayerTimeUpdated);
       getPlayer().addTimeUpdatedListener((time: number, end: number, bpm: number)=>{
-        musicSheetRenderRef.current?.cursorMoveTo(time * 1000, bpm)
+        musicSheetRenderRef.current?.checkNoteIsCorrect2();
+        musicSheetRenderRef.current?.cursorMoveTo(time * 1000, bpm);
       });
 
       getPlayer().addNewSongCallback(() => {
