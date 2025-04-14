@@ -94,7 +94,7 @@ const tutorialCards = [
 const chapter_ref_id = 1
 const lesson_ref_id = 2
 function Ch1_2() {
-  const [currentStep, setCurrentStep] = useState<'video' | 'memo' | 'quiz'>('video');
+  const [currentStep, setCurrentStep] = useState<'video' | 'memo' | 'quiz'>('memo');
   const navigate = useNavigate();
 
   const handleVideoEnd = () => {
@@ -112,15 +112,6 @@ function Ch1_2() {
 
   const renderStep = () => {
     switch (currentStep) {
-      case 'video':
-        return (
-          <VideoBeforeQuiz
-            videoSrc={quiz_video}
-            onVideoEnd={handleVideoEnd}
-            autoPlay={true}
-            controls={true}
-          />
-        );
       case 'memo':
         return (
           <MemoBeforeQuiz
