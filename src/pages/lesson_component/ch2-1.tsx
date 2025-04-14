@@ -175,7 +175,7 @@ const chapter_ref_id = 2;
 const lesson_ref_id = 1;
 
 function Ch1_5() {
-  const [currentStep, setCurrentStep] = useState<'video' | 'memo' | 'quiz'>('video');
+  const [currentStep, setCurrentStep] = useState<'video' | 'memo' | 'quiz'>('memo');
   const navigate = useNavigate();
 
   const handleVideoEnd = () => {
@@ -193,15 +193,6 @@ function Ch1_5() {
 
   const renderStep = () => {
     switch (currentStep) {
-      case 'video':
-        return (
-          <VideoBeforeQuiz
-            videoSrc={quiz_video}
-            onVideoEnd={handleVideoEnd}
-            autoPlay={true}
-            controls={false}
-          />
-        );
       case 'memo':
         return (
           <MemoBeforeQuiz

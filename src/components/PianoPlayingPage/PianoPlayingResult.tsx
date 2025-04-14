@@ -61,6 +61,45 @@ const PianoPlayingResult = (props:any) => {
         (handleOpenResultDetail)?handleOpenResultDetail():null
     }
 
+    const calcStarNumber = (score:number, totalNote:number) => {
+        const max_score = totalNote
+        const score_per = score / max_score
+        if (score_per <= 0.33){
+            return 1
+        } else if(score_per <= 0.66) {
+            return 2
+        } else {
+            return 3
+        }
+    }
+
+    const getResultStar = (score:number, totalNote:number) => {
+        const starsNumber = calcStarNumber(score, totalNote)
+        switch (starsNumber) {
+        case 2:
+            return <>
+            <IoStar className={starAnime} style={{...starSmall, ...starOrder1}} />
+            <IoStarOutline className={starAnime} style={{...starBig, ...starOrder2}} />
+            <IoStar className={starAnime} style={{...starSmall, ...starOrder3}} />
+            </>
+            break;
+        case 3:
+            return <>
+                <IoStar className={starAnime} style={{...starSmall, ...starOrder1}} />
+                <IoStar className={starAnime} style={{...starBig, ...starOrder2}} />
+                <IoStar className={starAnime} style={{...starSmall, ...starOrder3}} />
+            </>
+            break;
+        default:
+            return <>
+            <IoStar className={starAnime} style={{...starSmall, ...starOrder1}} />
+            <IoStarOutline className={starAnime} style={{...starBig, ...starOrder2}} />
+            <IoStarOutline className={starAnime} style={{...starSmall, ...starOrder3}} />
+            </>
+            break;
+        }
+    }
+
     return (
         <div style={boxWrapper}>
             <div style={boxOverlay}></div>
@@ -71,9 +110,7 @@ const PianoPlayingResult = (props:any) => {
                     <h2 className="text-center fw-bold">{getResultData("name")}</h2>
 
                     <div className="mt-3 mb-3" style={starWrapper}>
-                        <IoStar className={starAnime} style={{...starSmall, ...starOrder1}} />
-                        <IoStar className={starAnime} style={{...starBig, ...starOrder2}} />
-                        <IoStar className={starAnime} style={{...starSmall, ...starOrder3}} />
+                        { getResultStar(getResultData("noteEntered"), getResultData("totalNote")) }
                     </div>
 
                     <div style={starScore}>{getResultData("score")}</div>

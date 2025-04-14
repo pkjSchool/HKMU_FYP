@@ -4,7 +4,7 @@ import Quiz from "../../components/Quiz";
 import { useNavigate } from "react-router-dom";
 import VideoBeforeQuiz from "../../components/VideoBeforeQuiz.tsx";
 import MemoBeforeQuiz from "../../components/MemoBeforeQuiz.tsx";
-import quiz_video from "../../assets/quiz_video/test.mp4";
+import quiz_video from "../../assets/quiz_video/quiz1.mov";
 // import question1 from "../../assets/quiz_img/quiz_1/quiz1_1piano.png";
 import question2_ans1 from "../../assets/quiz_img/quiz_1/quiz1_2.jpg";
 import question2_ans2 from "../../assets/quiz_img/quiz_1/quiz1_2_1.png";
