@@ -147,7 +147,6 @@ const RenderMusicSheet = (props: RenderMusicSheetProps,ref: React.Ref<RenderMusi
         });
     }
   }
-
   const exportResult = () => {
     let _result: any[] = []
     if (osmdRef.current) {
@@ -162,7 +161,11 @@ const RenderMusicSheet = (props: RenderMusicSheetProps,ref: React.Ref<RenderMusi
             for(const voiEntrie of staEntrie.VoiceEntries) {
               let _voi = []
               for(const note of voiEntrie.Notes) {
-                _voi.push({ "entered": (note.StemColorXml === TRUECOLOR)})
+                // Check if note is a rest and set entered to true if it is, 
+                // otherwise check for the TRUECOLOR marking
+                _voi.push({ 
+                  "entered": note.isRest() ? true : (note.StemColorXml == TRUECOLOR)
+                })
               }
               _sta.push(_voi)
             }
@@ -172,7 +175,6 @@ const RenderMusicSheet = (props: RenderMusicSheetProps,ref: React.Ref<RenderMusi
         }
         _result.push(_measure)
       }
-
     }
 
     return _result
@@ -410,7 +412,6 @@ const RenderMusicSheet = (props: RenderMusicSheetProps,ref: React.Ref<RenderMusi
           if (props.activeNotes.length > 0) {
             var currentPressedNote = props.activeNotes[props.activeNotes.length - 1];
             var currentPressedNoteName = noteMap[currentPressedNote];
-            console.log("currentPressedNoteName: ", currentPressedNoteName);
             if (!currentSheetNote.isRest()) {
               if (currentPressedNoteName[0] === currentSheetNote.Pitch?.ToStringShortGet[0] && 
                 (parseInt(currentPressedNoteName[1]) - 3).toString() === currentSheetNote.Pitch?.ToStringShortGet[1]) {
@@ -423,12 +424,6 @@ const RenderMusicSheet = (props: RenderMusicSheetProps,ref: React.Ref<RenderMusi
             if (currentSheetNote.isRest()) {
               noteMarkGreen(cursor.GNotesUnderCursor()[0].sourceNote)
             }
-          }
-
-          if (!currentSheetNote.isRest()) {
-            console.log("currentSheetNote: ", currentSheetNote.Pitch.ToStringShortGet);
-          } else {
-            console.log("currentSheetNote: ", "rest");
           }
           setLocalActiveNotes(props.activeNotes);
         }
