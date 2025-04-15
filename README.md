@@ -1,68 +1,50 @@
-# React + TypeScript + Vite Project
+# Final Year Project - AIvories: A Piano Learning Platform with Gamification and Generative AI
 
-A modern web development setup using React, TypeScript, and Vite with hot module replacement (HMR).
+## Frontend
 
-## Features
+This is a fianl year project source code. There are three repository for this project.
 
-- React 18
+
+- [Frontend Repository](https://github.com/pkjSchool/HKMU_FYP) : The Fontend of the piano learning platform 
+- [Backend Repository](https://github.com/HKMU-13336215/HKMU_FYP_API) : The Databse and MIDI to musicXML function source code
+- [AI Backend Repository](https://github.com/KennethNgdev/HKMU_FYP_AI_API) : The Add Chord function and Wav to MIDI function source code
+
+## Background
+
+&emsp; The COVID-19 pandemic and advances in digital technology have transformed music education, leading to the use of learning videos, apps, and online courses. However, many children struggle to stay motivated and often give up on learning music. Research indicates that a lack of choice in repertoire and parental interference negatively impacts students’ engagement. In reviewing traditional and online piano platforms, we identified key issues such as insufficient engagement, ineffective practice routines, and a lack of personalized learning experiences. To address these challenges, we propose a web application that combines gamification with real-time interaction through MIDI pianos. This innovative platform aims to make learning music theory and piano techniques more appealing, enhancing student motivation. By utilizing AI to customize music styles and offering a game-like experience, our application seeks to inspire users and improve their overall musical skills. Targeted at beginner pianists, it will teach essential skills such as reading sheet music, fingering, and rhythm. Ultimately, our goal is to contribute to the musical culture of Hong Kong by raising music accomplishment and appreciation among users, ensuring a comfortable and enjoyable learning environment.
+
+
+## Implemented Features
+
+| Feature | 
+|----------|
+|Challenging Gamification-Based Teaching |
+|Interactive feedback mechanism with MIDI piano |
+|Daily Tasks |
+|Various statistics of user learning performance and preference |
+|transformation of music style |
+|Wav to Midi Conversion | 
+|Piano character | 
+|User Guidance | 
+|Multiple Languages |
+
+## Tech Stack
+
+Mainly used tech stack:
+
+- React
 - TypeScript
-- Vite build tool
-- ESLint configuration
-- Hot Module Replacement (HMR)
+- Open Music Sheet Display (OMSD)
+- Bootstrap 5 
+- i18next
 
-## Quick Start
+## Acknowledgments
 
-1. Clone the repository
-2. Install dependencies:
-```bash
-npm install
-```
-3. Start development server:
-```bash
-npm run dev
-```
-4. Visit `http://localhost:5173`
+- [MIDIano](https://github.com/Bewelge/MIDIano/tree/master)
 
-## Development
+## Group Member
 
-### Available Vite Plugins
-
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) - Uses Babel
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) - Uses SWC
-
-### ESLint Setup
-
-1. Configure parser options:
-```js
-export default tseslint.config({
-  languageOptions: {
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
-```
-
-2. Update ESLint config with React support:
-```js
-import react from 'eslint-plugin-react'
-
-export default tseslint.config({
-  settings: { react: { version: '18.3' } },
-  plugins: { react },
-  rules: {
-    ...react.configs.recommended.rules,
-    ...react.configs['jsx-runtime'].rules,
-  },
-})
-```
-
-## Production Build
-
-Generate production build:
-```bash
-npm run build
-```
-
-Output will be in the `dist` directory.
+- [TimLau1008](https://github.com/TimLau1008): Group Leader
+- [KennethNgdev](https://github.com/KennethNgdev)
+- [HKMU-13336215](https://github.com/HKMU-13336215)
+- [pkjSchool](https://github.com/pkjSchool)
