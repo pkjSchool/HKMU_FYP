@@ -80,14 +80,15 @@ const JoyrideWrapper = ({ steps, tourName, children }: JoyrideWrapperProps,ref: 
             backgroundColor: 'rgba(135, 206, 235, 0.7)',
           },
           beacon: {
-            animation: 'pulse 1.5s infinite',
+            animation: 'pulse 1s infinite',
           },
           beaconInner: {
-            backgroundColor: '#5cb7b7',
+            backgroundColor: 'rgba(218, 26, 74, 0.8)',
           },
           beaconOuter: {
-            backgroundColor: 'rgba(92, 183, 183, 0.4)',
-            border: '2px solid rgba(92, 183, 183, 0.8)'
+            backgroundColor: 'rgba(255, 215, 0, 0.4)',
+            border: '2px solid rgba(255, 215, 0, 0.8)',
+            boxShadow: '0 0 0 2px rgba(255, 215, 0, 0.8)',
           }
         }}
         locale={{
@@ -108,8 +109,8 @@ const JoyrideWrapper = ({ steps, tourName, children }: JoyrideWrapperProps,ref: 
               opacity: 1;
             }
             50% {
-              transform: scale(1.1);
-              opacity: 0.8;
+              transform: scale(1.5);
+              opacity: 0.9;
             }
             100% {
               transform: scale(1);
